@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-nowrap h-40">
     <!-- 图片容器 -->
-    <div class="w-28 relative overflow-hidden flex-shrink-0">
+    <div class="w-28 relative overflow-hidden shrink-0">
       <img
         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         :src="vod.vod_pic_thumb || vod.vod_pic"
@@ -61,7 +61,7 @@
         <div v-if="vod.vod_remarks" class="flex items-start gap-2 text-muted-foreground">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class="h-4 w-4 flex-shrink-0 mt-0.5"
+            class="h-4 w-4 shrink-0 mt-0.5"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -80,7 +80,7 @@
         <div class="flex items-center gap-2 text-foreground/70">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class="h-4 w-4 flex-shrink-0"
+            class="h-4 w-4 shrink-0"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"

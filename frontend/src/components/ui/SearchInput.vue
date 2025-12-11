@@ -2,7 +2,7 @@
   <div class="relative flex items-center gap-2 px-4 py-2 rounded-lg">
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      class="size-5 text-muted-foreground flex-shrink-0"
+      class="size-5 text-muted-foreground shrink-0"
       viewBox="0 0 24 24"
     >
       <g
@@ -79,7 +79,7 @@
         >
           <div class="flex items-center gap-3 flex-1">
             <svg
-              class="size-4 text-muted-foreground flex-shrink-0"
+              class="size-4 text-muted-foreground shrink-0"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"

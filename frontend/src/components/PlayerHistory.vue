@@ -101,7 +101,7 @@
                   <div class="flex items-start gap-4">
                     <!-- 播放图标 -->
                     <div
-                      class="flex-shrink-0 w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors"
+                      class="shrink-0 w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors"
                     >
                       <svg
                         class="w-6 h-6 text-primary"

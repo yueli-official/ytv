@@ -18,7 +18,7 @@
           class="flex items-center gap-4 px-5 py-3.5 rounded-xl bg-gradient-to-r from-primary/5 via-primary/3 to-transparent text-sm max-w-sm border border-primary/10"
         >
           <div
-            class="flex-shrink-0 w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center ring-4 ring-primary/5"
+            class="shrink-0 w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center ring-4 ring-primary/5"
           >
             <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -73,7 +73,7 @@
           >
             <div class="flex items-center gap-2 md:gap-3">
               <div
-                class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0"
+                class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0"
               >
                 <svg
                   class="w-4 h-4 md:w-5 md:h-5 text-primary"
@@ -98,7 +98,7 @@
 
             <button
               @click="vodInfoRef?.close()"
-              class="w-9 h-9 md:w-10 md:h-10 rounded-full bg-muted/50 hover:bg-muted flex items-center justify-center transition-colors group flex-shrink-0"
+              class="w-9 h-9 md:w-10 md:h-10 rounded-full bg-muted/50 hover:bg-muted flex items-center justify-center transition-colors group shrink-0"
             >
               <svg
                 class="w-5 h-5 text-muted-foreground group-hover:text-foreground transition-colors"
@@ -158,7 +158,7 @@
                   <div class="space-y-3 md:space-y-4">
                     <div class="flex items-start gap-3">
                       <div
-                        class="w-9 h-9 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-background flex items-center justify-center flex-shrink-0"
+                        class="w-9 h-9 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-background flex items-center justify-center shrink-0"
                       >
                         <svg
                           class="w-4 h-4 md:w-5 md:h-5 text-primary"
@@ -188,7 +188,7 @@
 
                     <div class="flex items-start gap-3">
                       <div
-                        class="w-9 h-9 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-background flex items-center justify-center flex-shrink-0"
+                        class="w-9 h-9 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-background flex items-center justify-center shrink-0"
                       >
                         <svg
                           class="w-4 h-4 md:w-5 md:h-5 text-primary"
@@ -218,7 +218,7 @@
 
                     <div class="flex items-start gap-3">
                       <div
-                        class="w-9 h-9 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-background flex items-center justify-center flex-shrink-0"
+                        class="w-9 h-9 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-background flex items-center justify-center shrink-0"
                       >
                         <svg
                           class="w-4 h-4 md:w-5 md:h-5 text-primary"
@@ -254,7 +254,7 @@
 
                     <div class="flex items-start gap-3">
                       <div
-                        class="w-9 h-9 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-background flex items-center justify-center flex-shrink-0"
+                        class="w-9 h-9 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-background flex items-center justify-center shrink-0"
                       >
                         <svg
                           class="w-4 h-4 md:w-5 md:h-5 text-primary"
@@ -284,7 +284,7 @@
 
                     <div class="flex items-start gap-3">
                       <div
-                        class="w-9 h-9 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-background flex items-center justify-center flex-shrink-0"
+                        class="w-9 h-9 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-background flex items-center justify-center shrink-0"
                       >
                         <svg
                           class="w-4 h-4 md:w-5 md:h-5 text-primary"

@@ -29,7 +29,7 @@
           <ThemeToggle class="btn-hover btn btn-icon btn-ghost"></ThemeToggle>
 
           <button class="btn btn-ghost btn-icon btn-hover" @click="showHistory = true">
-            <svg class="size-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="size-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"

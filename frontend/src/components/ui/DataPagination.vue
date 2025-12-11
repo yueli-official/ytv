@@ -7,7 +7,7 @@
       <button
         @click="currentPage = Math.max(1, currentPage - 1)"
         :disabled="currentPage === 1"
-        class="btn rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200 flex-shrink-0"
+        class="btn rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200 shrink-0"
         :class="{ 'hover:bg-transparent': currentPage === 1 }"
         aria-label="上一页"
       >
@@ -29,7 +29,7 @@
           <button
             v-if="typeof page === 'number'"
             @click="currentPage = page"
-            class="btn rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 flex-shrink-0 min-w-[28px] sm:min-w-[32px]"
+            class="btn rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 shrink-0 min-w-[28px] sm:min-w-[32px]"
             :class="
               currentPage === page
                 ? 'bg-primary text-primary-foreground shadow-sm'
@@ -40,7 +40,7 @@
           </button>
           <span
             v-else
-            class="btn rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 flex-shrink-0 min-w-[28px] sm:min-w-[32px] cursor-default text-muted-foreground"
+            class="btn rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 shrink-0 min-w-[28px] sm:min-w-[32px] cursor-default text-muted-foreground"
           >
             {{ page }}
           </span>
@@ -51,7 +51,7 @@
       <button
         @click="currentPage = Math.min(totalPages, currentPage + 1)"
         :disabled="currentPage === totalPages"
-        class="btn rounded-lg btn-ghost flex-shrink-0 text-muted-foreground hover:text-foreground hover:bg-accent disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
+        class="btn rounded-lg btn-ghost shrink-0 text-muted-foreground hover:text-foreground hover:bg-accent disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-200"
         :class="{ 'hover:bg-transparent': currentPage === totalPages }"
         aria-label="下一页"
       >

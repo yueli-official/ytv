@@ -150,7 +150,7 @@
               <div class="flex items-center gap-1.5 mt-auto">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  class="size-3.5 text-muted-foreground flex-shrink-0"
+                  class="size-3.5 text-muted-foreground shrink-0"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
