@@ -39,9 +39,17 @@ func main() {
 		// cachecontrol.Default(),
 		ratelimit.Default(),
 	}
+	port := "9000"
+	if conf.Cfg.App.Port != "" {
+		port = conf.Cfg.App.Port
+	}
+
+	if !strings.HasPrefix(port, ":") {
+		port = ":" + port
+	}
 
 	server.Start(server.ServerConfig{
-		Addr:        ":9000",
+		Addr:        port,
 		Logger:      logger,
 		Mode:        strings.ToLower(os.Getenv("APP_MODE")),
 		EnableCORS:  true,
