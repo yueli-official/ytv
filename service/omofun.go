@@ -98,7 +98,7 @@ func (api *VideoAPI) GetOmoDetail(vodID int, index int) sourceResult {
 // scrapeOmoSearch 爬取搜索结果页
 func (api *VideoAPI) scrapeOmoSearch(keyword string) ([]models.VodItem, error) {
 	searchCollector := colly.NewCollector(
-		colly.AllowedDomains("www.omofun.link", "omofun.link"),
+		colly.AllowedDomains("www.omofun.icu", "omofun.icu"),
 		colly.Async(true),
 		colly.UserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"),
 	)
@@ -143,7 +143,7 @@ func (api *VideoAPI) scrapeOmoSearch(keyword string) ([]models.VodItem, error) {
 
 	// 并发限制
 	searchCollector.Limit(&colly.LimitRule{
-		DomainGlob:  "*omofun.link*",
+		DomainGlob:  "*omofun.icu*",
 		Parallelism: 2,
 		Delay:       300 * time.Millisecond,
 	})
@@ -152,7 +152,7 @@ func (api *VideoAPI) scrapeOmoSearch(keyword string) ([]models.VodItem, error) {
 	searchCollector.SetRequestTimeout(5 * time.Second)
 
 	// 访问搜索页
-	searchURL := "https://www.omofun.link/vod/search/page/1/wd/" + keyword + ".html"
+	searchURL := "https://www.omofun.icu/vod/search/page/1/wd/" + keyword + ".html"
 	if err := searchCollector.Visit(searchURL); err != nil {
 		return nil, fmt.Errorf("访问搜索页失败: %v", err)
 	}
@@ -193,7 +193,7 @@ func (api *VideoAPI) scrapeOmoSearch(keyword string) ([]models.VodItem, error) {
 
 // scrapeEpisodeList 获取指定视频的剧集列表（不包含播放地址）
 func (api *VideoAPI) scrapeEpisodeList(vodID int) ([]models.Episode, error) {
-	detailURL := fmt.Sprintf("https://www.omofun.link/vod/detail/id/%d.html", vodID)
+	detailURL := fmt.Sprintf("https://www.omofun.icu/vod/detail/id/%d.html", vodID)
 
 	resp, err := api.client.R().Get(detailURL)
 	if err != nil {
@@ -281,7 +281,7 @@ func (api *VideoAPI) getPlayerUrl(url string) (string, error) {
 // scrapeOmoPlayPage 直接爬取播放页面获取视频信息和播放地址
 func (api *VideoAPI) scrapeOmoPlayPage(vodID int, index int) (models.VodItem, error) {
 	// 构建播放页 URL（网站的 nid 从 1 开始，所以要 +1）
-	playPageURL := fmt.Sprintf("https://www.omofun.link/vod/play/id/%d/sid/8/nid/%d.html", vodID, index+1)
+	playPageURL := fmt.Sprintf("https://www.omofun.icu/vod/play/id/%d/sid/8/nid/%d.html", vodID, index+1)
 
 	log.Debug().
 		Str("play_page_url", playPageURL).
@@ -343,7 +343,7 @@ func (api *VideoAPI) scrapeOmoPlayPage(vodID int, index int) (models.VodItem, er
 		episode := models.Episode{
 			EpisodeIndex: episodeIndex,
 			EpisodeTitle: title,
-			URL:          "https://www.omofun.link" + href,
+			URL:          "https://www.omofun.icu" + href,
 		}
 
 		vod.Episodes = append(vod.Episodes, episode)
