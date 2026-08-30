@@ -1,0 +1,15 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+@import "@yueli/ui/tailwind.css";
+@import "@yueli/ui/theme.css";
+
+@layer components {
+  .dark body:not(.ytv-manage-active) :where(a, button).bg-primary {
+    background-color: var(--ui-color-primary-700) !important;
+    color: white !important;
+  }
+
+  .dark body:not(.ytv-manage-active) :where(a, button).bg-primary:hover {
+    background-color: var(--ui-color-primary-600) !important;
+  }
+}

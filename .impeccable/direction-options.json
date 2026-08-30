@@ -1,0 +1,73 @@
+{
+  "title": "选择 YTV 的视觉世界",
+  "question": "保留 YTV 与紫色识别，但重新定义多源搜索、继续观看和来源恢复应该长什么样。选择一个方向、改用常规影视产品路径，或重新抽取。",
+  "options": [
+    {
+      "id": "assigned",
+      "label": "紫色放映节目册",
+      "kicker": "主方向",
+      "lineage": "电影节节目册、场刊网格与检票票据",
+      "thesis": "把一次多源搜索编成一份可进入、可换场、可续看的放映节目。",
+      "palette": ["#17131f", "#f4f0e8", "#6d28d9", "#a78bfa"],
+      "materials": ["哑光场刊纸", "紫色检票章", "打孔票根", "细线节目网格"],
+      "viewport": "窄顶栏下是一条横贯页面的节目检索台；继续观看像一张仍有效的票，影片与来源按节目格进入首屏。",
+      "risk": "场刊语言若出现虚构场次会误导；实现只使用来源、集数和可用状态，不显示假时间表。",
+      "sketch": ".impeccable/sketches/assigned.png"
+    },
+    {
+      "id": "challenger-rhythm",
+      "label": "来源节拍机",
+      "lineage": "八十年代鼓机步进排与运行追光",
+      "thesis": "每个来源和剧集是一枚可触发的步骤，播放位置沿一条紫色追光前进。",
+      "case": "观影节奏明确，但电影和超长剧集很难自然映射到固定步进排。",
+      "palette": ["#151218", "#7c3aed", "#f59e0b", "#f5f3ff"],
+      "materials": ["炭黑设备面板", "丝印标签", "分段读数", "发光步骤键"],
+      "viewport": "搜索像主显示窗，来源成为一排可触发通道，继续观看由运行追光标出当前位置。",
+      "risk": "容易被读成音乐制作工具，对单集电影和数百集内容的产品清晰度不足。",
+      "sketch": ".impeccable/sketches/challenger-rhythm.webp",
+      "hero": "https://impeccable.style/worlds/cards/signals-instruments-drum-machine-step-row-hero.webp",
+      "board": "https://impeccable.style/worlds/cards/signals-instruments-drum-machine-step-row.webp"
+    },
+    {
+      "id": "challenger-miura",
+      "label": "多源折叠图",
+      "lineage": "可展开的 Miura 折纸结构与航天图纸",
+      "thesis": "一个查询从紧凑入口展开为彼此联动的来源、影片和剧集平面。",
+      "case": "展开机制能说明 fan-out，但抽象几何会弱化影片识别和观看欲望。",
+      "palette": ["#f7f5f2", "#5b21b6", "#c4b5fd", "#17131f"],
+      "materials": ["哑光折页", "紫色箔面", "山谷折痕", "技术编号"],
+      "viewport": "首屏从一个紧凑搜索包展开，结果沿平行四边形折痕铺成来源与剧集关系图。",
+      "risk": "形式强于内容，移动端可能让普通搜索显得过度工程化。",
+      "sketch": ".impeccable/sketches/challenger-miura.webp",
+      "hero": "https://impeccable.style/worlds/cards/paper-folds-pleats-deployable-miura-orbit-sheet-hero.webp",
+      "board": "https://impeccable.style/worlds/cards/paper-folds-pleats-deployable-miura-orbit-sheet.webp"
+    },
+    {
+      "id": "challenger-catalog",
+      "label": "来源目录地图",
+      "lineage": "同人展场刊、摊位编号与手绘路线",
+      "thesis": "海量影片是一张可标记的密集目录，来源代码就是找到可播放入口的路线。",
+      "case": "高密度发现很贴近旧 YTV，但纸质展会语义可能盖过稳定播放与续播。",
+      "palette": ["#eee9df", "#17131f", "#6d28d9", "#8b5cf6"],
+      "materials": ["灰白新闻纸", "单色网点", "紫色手写圈记", "编号目录格"],
+      "viewport": "搜索与继续观看在目录封面，下面是邮票大小的影片网格；每格有来源代码和可播放标记。",
+      "risk": "过度密集时会牺牲海报、标题和恢复动作的可读性。",
+      "sketch": ".impeccable/sketches/challenger-catalog.webp",
+      "hero": "https://impeccable.style/worlds/cards/pop-culture-shelf-doujin-event-catalog-hero.webp",
+      "board": "https://impeccable.style/worlds/cards/pop-culture-shelf-doujin-event-catalog.webp"
+    }
+  ],
+  "reroll": true,
+  "canon": true,
+  "canonCard": {
+    "label": "常规影视门户",
+    "lineage": "大幅焦点影片、搜索框和横向内容轨道",
+    "thesis": "按成熟流媒体门户的预期布局执行，并把多源切换作为详情页功能。",
+    "palette": ["#0b0a0f", "#7c3aed", "#f5f3ff", "#272331"],
+    "materials": ["大幅海报", "深色媒体画布", "横向滑轨", "紫色主操作"],
+    "viewport": "顶栏和焦点影片占据首屏，搜索与继续观看位于其下，热门内容沿横向轨道展开。",
+    "risk": "熟悉但会弱化 YTV 的多源恢复机制，容易与任何影视站互换。",
+    "sketch": ".impeccable/sketches/canon.png"
+  },
+  "steer": true
+}

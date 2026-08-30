@@ -1,0 +1,45 @@
+{
+  "title": "选择 YTV 首页构图",
+  "question": "三张都采用 Netflix 工艺标杆、YTV 紫色和熟悉的流媒体门户语法；请选择要落实的首页结构，或用文字说明需要组合的部分。",
+  "options": [
+    {
+      "id": "comp-a",
+      "label": "A · 影院级全幅主视觉",
+      "kicker": "CINEMATIC",
+      "lineage": "全幅焦点内容与叠层继续观看",
+      "thesis": "让一个当前热门标题先建立观看欲望，再把来源状态和继续观看叠入同一场景。",
+      "palette": ["#080a0f", "#7c3aed", "#a78bfa", "#f5f3ff"],
+      "materials": ["全幅合成场景", "暗色媒体画布", "紫色动作信号", "叠层观看进度"],
+      "viewport": "顶栏可见搜索，主视觉占半屏以上；来源状态在标题上方，继续观看压住主视觉下沿。",
+      "risk": "沉浸感最强，但搜索仍是顶部快捷入口而不是页面最大元素。",
+      "sketch": ".impeccable/mocks/home-canon-a-cinematic-source.png"
+    },
+    {
+      "id": "comp-b",
+      "label": "B · 来源分栏主视觉",
+      "kicker": "RECOVERY",
+      "lineage": "标题、来源与画面三段式媒体舞台",
+      "thesis": "把标题决定、来源可用性和大画面并排，让切源恢复在首屏一眼可见。",
+      "palette": ["#080a0f", "#6d28d9", "#8b5cf6", "#f5f3ff"],
+      "materials": ["分栏媒体舞台", "来源信号条", "紫色主操作", "横向内容轨道"],
+      "viewport": "左侧标题与动作、中间来源列表、右侧大画面；继续观看和热门轨道紧跟其下。",
+      "risk": "多源机制最清晰，但来源栏容易显得偏技术，需要在实现中保持媒体感。",
+      "sketch": ".impeccable/mocks/home-canon-b-source-split.png"
+    },
+    {
+      "id": "comp-c",
+      "label": "C · 搜索先行影院",
+      "kicker": "SEARCH FIRST",
+      "lineage": "影院背景上的宽搜索台与紧凑焦点内容",
+      "thesis": "让搜索成为首屏最大动作，标题、来源、继续观看和熟悉内容轨道在同一屏内完成接力。",
+      "palette": ["#080a0f", "#7c3aed", "#a78bfa", "#f5f3ff"],
+      "materials": ["低对比影院背景", "宽幅搜索台", "来源状态卡", "高密度内容轨道"],
+      "viewport": "顶栏下方的大搜索横贯画面；紧凑标题和来源同行，继续观看与热门在首屏完整出现。",
+      "risk": "最符合搜索主任务，但焦点内容的影院级尺度小于 A。",
+      "sketch": ".impeccable/mocks/home-canon-c-search-first.png"
+    }
+  ],
+  "reroll": false,
+  "canon": false,
+  "steer": true
+}

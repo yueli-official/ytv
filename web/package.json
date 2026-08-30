@@ -1,0 +1,53 @@
+{
+  "name": "@yueli/ytv-web",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.28.2",
+  "engines": {
+    "node": ">=24.18 <25",
+    "pnpm": "10.28.x"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@parcel/watcher",
+      "esbuild",
+      "unrs-resolver",
+      "vue-demi"
+    ],
+    "overrides": {
+      "vue": "3.5.39",
+      "vue-router": "5.1.0"
+    }
+  },
+  "scripts": {
+    "postinstall": "nuxt prepare",
+    "dev": "nuxt dev",
+    "build": "nuxt build",
+    "typecheck": "nuxt typecheck",
+    "test": "vitest run",
+    "test:e2e": "playwright test --config test/e2e/playwright.config.ts"
+  },
+  "dependencies": {
+    "@nuxt/ui": "4.9.0",
+    "@yueli/http-runtime": "https://github.com/yueli-official/foundation/releases/download/js-v0.5.0/yueli-http-runtime-0.1.1.tgz",
+    "@yueli/identity-nuxt": "https://github.com/yueli-official/identity/releases/download/v0.2.0/yueli-identity-nuxt-0.1.0.tgz",
+    "@yueli/nuxt-runtime": "https://github.com/yueli-official/foundation/releases/download/js-v0.5.0/yueli-nuxt-runtime-0.1.2.tgz",
+    "@yueli/ui": "https://github.com/yueli-official/foundation/releases/download/js-v0.5.0/yueli-ui-0.1.1.tgz",
+    "hls.js": "1.7.1",
+    "nuxt": "4.5.1",
+    "plyr": "3.8.4",
+    "tailwindcss": "4.3.1",
+    "vue": "3.5.39",
+    "vue-router": "5.1.0",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.12.1",
+    "@iconify-json/tabler": "1.2.35",
+    "@playwright/test": "1.61.1",
+    "@types/node": "24.13.3",
+    "typescript": "6.0.3",
+    "vitest": "4.1.10",
+    "vue-tsc": "3.3.7"
+  }
+}

@@ -1,0 +1,310 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-30T16:50:00Z",
+  "title": "Design System: YTV",
+  "extensions": {
+    "colorMeta": {
+      "primary-soft": {
+        "role": "primary",
+        "displayName": "Soft Sky",
+        "canonical": "oklch(82.8% 0.111 230.318)",
+        "tonalRamp": ["oklch(29.3% 0.066 243.157)", "oklch(44.3% 0.11 240.79)", "oklch(50% 0.134 242.749)", "oklch(58.8% 0.158 241.966)", "oklch(68.5% 0.169 237.323)", "#38bdf8", "oklch(82.8% 0.111 230.318)", "oklch(97.7% 0.013 236.62)"]
+      },
+      "primary": {
+        "role": "primary",
+        "displayName": "Signal Sky",
+        "canonical": "#38bdf8",
+        "tonalRamp": ["oklch(29.3% 0.066 243.157)", "oklch(44.3% 0.11 240.79)", "oklch(50% 0.134 242.749)", "oklch(58.8% 0.158 241.966)", "oklch(68.5% 0.169 237.323)", "#38bdf8", "oklch(82.8% 0.111 230.318)", "oklch(97.7% 0.013 236.62)"]
+      },
+      "primary-action": {
+        "role": "primary",
+        "displayName": "Action Sky",
+        "canonical": "oklch(50% 0.134 242.749)",
+        "tonalRamp": ["oklch(29.3% 0.066 243.157)", "oklch(44.3% 0.11 240.79)", "oklch(50% 0.134 242.749)", "oklch(58.8% 0.158 241.966)", "oklch(68.5% 0.169 237.323)", "#38bdf8", "oklch(82.8% 0.111 230.318)", "oklch(97.7% 0.013 236.62)"]
+      },
+      "primary-action-hover": {
+        "role": "primary",
+        "displayName": "Action Sky Hover",
+        "canonical": "oklch(58.8% 0.158 241.966)",
+        "tonalRamp": ["oklch(29.3% 0.066 243.157)", "oklch(44.3% 0.11 240.79)", "oklch(50% 0.134 242.749)", "oklch(58.8% 0.158 241.966)", "oklch(68.5% 0.169 237.323)", "#38bdf8", "oklch(82.8% 0.111 230.318)", "oklch(97.7% 0.013 236.62)"]
+      },
+      "navigation-ink": {
+        "role": "neutral",
+        "displayName": "Navigation Ink",
+        "canonical": "#06090d",
+        "tonalRamp": ["oklch(12% 0.012 240)", "oklch(22% 0.018 240)", "oklch(34% 0.024 240)", "oklch(46% 0.026 240)", "oklch(58% 0.022 240)", "oklch(70% 0.018 240)", "oklch(83% 0.012 240)", "oklch(96% 0.006 240)"]
+      },
+      "page-ink": {
+        "role": "neutral",
+        "displayName": "Page Ink",
+        "canonical": "#070b10",
+        "tonalRamp": ["oklch(12% 0.012 240)", "oklch(22% 0.018 240)", "oklch(34% 0.024 240)", "oklch(46% 0.026 240)", "oklch(58% 0.022 240)", "oklch(70% 0.018 240)", "oklch(83% 0.012 240)", "oklch(96% 0.006 240)"]
+      },
+      "title-canvas": {
+        "role": "neutral",
+        "displayName": "Title Canvas",
+        "canonical": "#080b10",
+        "tonalRamp": ["oklch(12% 0.012 240)", "oklch(22% 0.018 240)", "oklch(34% 0.024 240)", "oklch(46% 0.026 240)", "oklch(58% 0.022 240)", "oklch(70% 0.018 240)", "oklch(83% 0.012 240)", "oklch(96% 0.006 240)"]
+      },
+      "poster-well": {
+        "role": "neutral",
+        "displayName": "Poster Well",
+        "canonical": "#0c1219",
+        "tonalRamp": ["oklch(12% 0.012 240)", "oklch(22% 0.018 240)", "oklch(34% 0.024 240)", "oklch(46% 0.026 240)", "oklch(58% 0.022 240)", "oklch(70% 0.018 240)", "oklch(83% 0.012 240)", "oklch(96% 0.006 240)"]
+      },
+      "search-summary": {
+        "role": "neutral",
+        "displayName": "Search Summary",
+        "canonical": "#0e151d",
+        "tonalRamp": ["oklch(12% 0.012 240)", "oklch(22% 0.018 240)", "oklch(34% 0.024 240)", "oklch(46% 0.026 240)", "oklch(58% 0.022 240)", "oklch(70% 0.018 240)", "oklch(83% 0.012 240)", "oklch(96% 0.006 240)"]
+      },
+      "module-panel": {
+        "role": "neutral",
+        "displayName": "Module Panel",
+        "canonical": "#0f1720",
+        "tonalRamp": ["oklch(12% 0.012 240)", "oklch(22% 0.018 240)", "oklch(34% 0.024 240)", "oklch(46% 0.026 240)", "oklch(58% 0.022 240)", "oklch(70% 0.018 240)", "oklch(83% 0.012 240)", "oklch(96% 0.006 240)"]
+      },
+      "card-slate": {
+        "role": "neutral",
+        "displayName": "Card Slate",
+        "canonical": "#111a24",
+        "tonalRamp": ["oklch(12% 0.012 240)", "oklch(22% 0.018 240)", "oklch(34% 0.024 240)", "oklch(46% 0.026 240)", "oklch(58% 0.022 240)", "oklch(70% 0.018 240)", "oklch(83% 0.012 240)", "oklch(96% 0.006 240)"]
+      },
+      "detail-card": {
+        "role": "neutral",
+        "displayName": "Detail Card",
+        "canonical": "#121821",
+        "tonalRamp": ["oklch(12% 0.012 240)", "oklch(22% 0.018 240)", "oklch(34% 0.024 240)", "oklch(46% 0.026 240)", "oklch(58% 0.022 240)", "oklch(70% 0.018 240)", "oklch(83% 0.012 240)", "oklch(96% 0.006 240)"]
+      },
+      "episode-panel": {
+        "role": "neutral",
+        "displayName": "Episode Panel",
+        "canonical": "#10151d",
+        "tonalRamp": ["oklch(12% 0.012 240)", "oklch(22% 0.018 240)", "oklch(34% 0.024 240)", "oklch(46% 0.026 240)", "oklch(58% 0.022 240)", "oklch(70% 0.018 240)", "oklch(83% 0.012 240)", "oklch(96% 0.006 240)"]
+      },
+      "player-canvas": {
+        "role": "neutral",
+        "displayName": "Player Canvas",
+        "canonical": "#05080d",
+        "tonalRamp": ["oklch(12% 0.012 240)", "oklch(22% 0.018 240)", "oklch(34% 0.024 240)", "oklch(46% 0.026 240)", "oklch(58% 0.022 240)", "oklch(70% 0.018 240)", "oklch(83% 0.012 240)", "oklch(96% 0.006 240)"]
+      },
+      "player-panel": {
+        "role": "neutral",
+        "displayName": "Player Panel",
+        "canonical": "#10151c",
+        "tonalRamp": ["oklch(12% 0.012 240)", "oklch(22% 0.018 240)", "oklch(34% 0.024 240)", "oklch(46% 0.026 240)", "oklch(58% 0.022 240)", "oklch(70% 0.018 240)", "oklch(83% 0.012 240)", "oklch(96% 0.006 240)"]
+      },
+      "black": {
+        "role": "neutral",
+        "displayName": "True Black",
+        "canonical": "#000000",
+        "tonalRamp": ["#000000", "oklch(22% 0.018 240)", "oklch(34% 0.024 240)", "oklch(46% 0.026 240)", "oklch(58% 0.022 240)", "oklch(70% 0.018 240)", "oklch(83% 0.012 240)", "oklch(96% 0.006 240)"]
+      },
+      "white": {
+        "role": "neutral",
+        "displayName": "Full White",
+        "canonical": "#ffffff",
+        "tonalRamp": ["oklch(12% 0.012 240)", "oklch(22% 0.018 240)", "oklch(34% 0.024 240)", "oklch(46% 0.026 240)", "oklch(58% 0.022 240)", "oklch(70% 0.018 240)", "oklch(83% 0.012 240)", "#ffffff"]
+      },
+      "muted-white": {
+        "role": "neutral",
+        "displayName": "Muted White",
+        "canonical": "rgb(255 255 255 / 0.60)",
+        "tonalRamp": ["oklch(12% 0.012 240)", "oklch(22% 0.018 240)", "oklch(34% 0.024 240)", "oklch(46% 0.026 240)", "oklch(58% 0.022 240)", "oklch(70% 0.018 240)", "oklch(83% 0.012 240)", "#ffffff"]
+      },
+      "faint-border": {
+        "role": "neutral",
+        "displayName": "Faint White Hairline",
+        "canonical": "rgb(255 255 255 / 0.10)",
+        "tonalRamp": ["oklch(12% 0.012 240)", "oklch(22% 0.018 240)", "oklch(34% 0.024 240)", "oklch(46% 0.026 240)", "oklch(58% 0.022 240)", "oklch(70% 0.018 240)", "oklch(83% 0.012 240)", "#ffffff"]
+      },
+      "score-amber": {
+        "role": "status",
+        "displayName": "Score Amber",
+        "canonical": "oklch(82.8% 0.189 84.429)",
+        "tonalRamp": ["oklch(27.9% 0.077 45.635)", "oklch(47.3% 0.137 46.201)", "oklch(55.5% 0.163 48.998)", "oklch(66.6% 0.179 58.318)", "oklch(76.9% 0.188 70.08)", "oklch(82.8% 0.189 84.429)", "oklch(92.4% 0.12 95.746)", "oklch(98.7% 0.022 95.277)"]
+      },
+      "status-warning": {
+        "role": "status",
+        "displayName": "Warning Yellow",
+        "canonical": "oklch(85.2% 0.199 91.936)",
+        "tonalRamp": ["oklch(28.6% 0.066 53.813)", "oklch(47.6% 0.114 61.907)", "oklch(55.4% 0.135 66.442)", "oklch(68.1% 0.162 75.834)", "oklch(79.5% 0.184 86.047)", "oklch(85.2% 0.199 91.936)", "oklch(94.5% 0.129 101.54)", "oklch(98.7% 0.026 102.212)"]
+      },
+      "status-error": {
+        "role": "status",
+        "displayName": "Error Red",
+        "canonical": "oklch(70.4% 0.191 22.216)",
+        "tonalRamp": ["oklch(25.8% 0.092 26.042)", "oklch(44.4% 0.177 26.899)", "oklch(50.5% 0.213 27.518)", "oklch(57.7% 0.245 27.325)", "oklch(63.7% 0.237 25.331)", "oklch(70.4% 0.191 22.216)", "oklch(88.5% 0.062 18.334)", "oklch(97.1% 0.013 17.38)"]
+      }
+    },
+    "typographyMeta": {
+      "brand-mark": { "displayName": "Brand Mark", "purpose": "White YTV text beside the 6px sky dot." },
+      "display": { "displayName": "Detail Display", "purpose": "Title-detail names below 640px." },
+      "display-wide": { "displayName": "Detail Display Wide", "purpose": "Title-detail names from 640px." },
+      "page-title": { "displayName": "Page Title", "purpose": "Dedicated public route titles below 640px." },
+      "page-title-wide": { "displayName": "Page Title Wide", "purpose": "Dedicated public route titles from 640px." },
+      "headline": { "displayName": "Section Headline", "purpose": "Search, source-update, and external-discovery headings below 640px." },
+      "headline-wide": { "displayName": "Section Headline Wide", "purpose": "Search, source-update, and external-discovery headings from 640px." },
+      "card-title": { "displayName": "Card Title", "purpose": "Source poster and playlist titles below 640px." },
+      "card-title-wide": { "displayName": "Card Title Wide", "purpose": "Source poster titles from 640px." },
+      "body": { "displayName": "Body", "purpose": "Search values, summaries, and supporting copy." },
+      "control": { "displayName": "Control", "purpose": "Navigation, search, paging, playback, and episode actions." },
+      "meta": { "displayName": "Metadata", "purpose": "Attribution, range, year, category, episode, source, and progress facts." },
+      "episode-row": { "displayName": "Episode Row", "purpose": "One-line watch-playlist number and real title." },
+      "eyebrow": { "displayName": "Search Eyebrow", "purpose": "Sparse uppercase YTV Search label." }
+    },
+    "shadows": [
+      { "name": "title-poster-lift", "value": "0 20px 25px -5px rgb(0 0 0 / 0.10), 0 8px 10px -6px rgb(0 0 0 / 0.10)", "purpose": "Standalone title poster only." },
+      { "name": "video-stage-lift", "value": "0 25px 50px -12px rgb(0 0 0 / 0.25)", "purpose": "Dominant playback surface only." }
+    ],
+    "motion": [
+      { "name": "poster-hover", "value": "transform 300ms cubic-bezier(0.4, 0, 0.2, 1)", "purpose": "Scale only source poster imagery to 1.035." },
+      { "name": "control-state", "value": "background-color 150ms cubic-bezier(0.4, 0, 0.2, 1)", "purpose": "Button, filter, and episode state changes." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "xl", "value": "1280px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Public Navigation",
+      "kind": "nav",
+      "refersTo": "site-navigation",
+      "description": "Dark-locked navigation with the sole home action on the white YTV mark, one sky dot, Playback History, and no appearance switch.",
+      "html": "<header class=\"ds-nav\"><a class=\"ds-nav-brand\" href=\"#\" aria-label=\"YTV 首页\"><span class=\"ds-nav-wordmark\">YTV</span><span class=\"ds-nav-dot\" aria-hidden=\"true\"></span></a><nav class=\"ds-nav-links\" aria-label=\"主导航\"><a class=\"ds-nav-link\" href=\"#\">播放历史</a></nav><button class=\"ds-nav-action\" type=\"button\" aria-label=\"搜索\"><svg viewBox=\"0 0 24 24\" width=\"19\" height=\"19\" aria-hidden=\"true\"><path d=\"m21 21-4.35-4.35m2.35-5.65a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg><span>搜索</span></button></header>",
+      "css": ".ds-nav { min-height: 4rem; display: flex; align-items: center; gap: 0.75rem; padding: 0 1rem; border-bottom: 1px solid rgb(255 255 255 / 0.10); color: #fff; background: rgb(6 9 13 / 0.95); font-family: \"DM Sans\", system-ui, sans-serif; backdrop-filter: blur(12px); } .ds-nav-brand { display: inline-flex; align-items: center; gap: 0.375rem; color: #fff; text-decoration: none; } .ds-nav-wordmark { font-size: 1.5rem; line-height: 1.3333; font-weight: 900; letter-spacing: -0.04em; } .ds-nav-dot { width: 0.375rem; height: 0.375rem; border-radius: 9999px; background: #38bdf8; } .ds-nav-links { display: flex; gap: 0.25rem; } .ds-nav-link, .ds-nav-action { min-height: 2.75rem; display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.5rem 0.75rem; border: 0; border-radius: 0.5rem; color: #fff; background: transparent; font: 500 0.875rem/1.4286 \"DM Sans\", system-ui, sans-serif; text-decoration: none; transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-nav-link:hover, .ds-nav-action:hover { background: #111a24; } .ds-nav-link:active, .ds-nav-action:active { background: #0f1720; } .ds-nav-link:focus-visible, .ds-nav-action:focus-visible, .ds-nav-brand:focus-visible { outline: 2px solid #38bdf8; outline-offset: 2px; } .ds-nav-action { margin-inline-start: auto; cursor: pointer; }"
+    },
+    {
+      "name": "Compact Search Command",
+      "kind": "input",
+      "refersTo": "search-compact",
+      "description": "Black 44px browse search with an attached sky submit action.",
+      "html": "<form class=\"ds-search\" role=\"search\"><label class=\"ds-search-field\"><svg class=\"ds-search-icon\" viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" aria-hidden=\"true\"><path d=\"m21 21-4.35-4.35m2.35-5.65a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg><input class=\"ds-search-input\" type=\"search\" placeholder=\"搜索想看的影视\" aria-label=\"搜索想看的影视\"></label><button class=\"ds-search-submit\" type=\"submit\" aria-label=\"开始搜索\"><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" aria-hidden=\"true\"><path d=\"M5 12h14m-6-6 6 6-6 6\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg></button></form>",
+      "css": ".ds-search { width: 100%; min-height: 2.75rem; display: flex; color: #fff; font-family: \"DM Sans\", system-ui, sans-serif; } .ds-search-field { min-width: 0; flex: 1; display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.75rem; border: 1px solid rgb(255 255 255 / 0.14); border-right: 0; border-radius: 0.5rem 0 0 0.5rem; color: rgb(255 255 255 / 0.45); background: #000; } .ds-search-icon { flex: none; } .ds-search-input { min-width: 0; width: 100%; border: 0; outline: 0; color: #fff; background: transparent; font: 400 0.875rem/1.4286 \"DM Sans\", system-ui, sans-serif; } .ds-search-input::placeholder { color: rgb(255 255 255 / 0.50); } .ds-search:focus-within { outline: 2px solid #38bdf8; outline-offset: 2px; border-radius: 0.5rem; } .ds-search-submit { min-width: 3rem; display: grid; place-items: center; border: 0; border-radius: 0 0.5rem 0.5rem 0; color: #fff; background: oklch(50% 0.134 242.749); cursor: pointer; transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-search-submit:hover { background: oklch(58.8% 0.158 241.966); } .ds-search-submit:active { background: oklch(44.3% 0.11 240.79); } .ds-search-submit:focus-visible { outline: 2px solid #fff; outline-offset: -4px; }"
+    },
+    {
+      "name": "Primary Action",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Solid sky action used for playback, submit, selected mode, and current episode.",
+      "html": "<button class=\"ds-primary-action\" type=\"button\"><svg viewBox=\"0 0 24 24\" width=\"18\" height=\"18\" aria-hidden=\"true\"><path d=\"M7 4v16l13-8Z\" fill=\"currentColor\"/></svg><span>开始播放</span></button>",
+      "css": ".ds-primary-action { min-height: 2.75rem; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.5rem 0.75rem; border: 0; border-radius: 0.5rem; color: #fff; background: oklch(50% 0.134 242.749); font: 500 0.875rem/1.4286 \"DM Sans\", system-ui, sans-serif; cursor: pointer; transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-primary-action:hover { background: oklch(58.8% 0.158 241.966); } .ds-primary-action:active { background: oklch(44.3% 0.11 240.79); } .ds-primary-action:focus-visible { outline: 2px solid #38bdf8; outline-offset: 2px; }"
+    },
+    {
+      "name": "Search Panel",
+      "kind": "custom",
+      "refersTo": "search-panel",
+      "description": "Search-only panel with local history and viewer source toggles.",
+      "html": "<section class=\"ds-search-panel\" aria-labelledby=\"ds-search-panel-title\"><h2 class=\"ds-search-panel-title\" id=\"ds-search-panel-title\">影视搜索</h2><p class=\"ds-search-panel-meta\">选择来源，同时搜索多个互联网片库</p><div class=\"ds-search-panel-field\">搜索想看的影视 <span class=\"ds-search-panel-arrow\">→</span></div><div class=\"ds-search-panel-row\"><strong class=\"ds-search-panel-label\">搜索历史</strong><a class=\"ds-search-history\" href=\"#\">海贼王</a><a class=\"ds-search-history\" href=\"#\">凡人修仙传</a><button class=\"ds-search-clear\" type=\"button\">清空</button></div><div class=\"ds-search-panel-row\"><strong class=\"ds-search-panel-label\">搜索来源</strong><button class=\"ds-source-toggle ds-source-toggle-on\" type=\"button\" aria-pressed=\"true\">360资源</button><button class=\"ds-source-toggle ds-source-toggle-on\" type=\"button\" aria-pressed=\"true\">MD资源</button><button class=\"ds-source-toggle\" type=\"button\" aria-pressed=\"false\">最大资源</button></div></section>",
+      "css": ".ds-search-panel { display: grid; gap: 0.75rem; padding: 1rem; border: 1px solid rgb(56 189 248 / 0.20); border-top-width: 2px; border-top-color: rgb(56 189 248 / 0.70); border-radius: 0.75rem; color: #fff; background: #0f1720; font-family: \"DM Sans\", system-ui, sans-serif; } .ds-search-panel-title { margin: 0; font-size: 1.25rem; line-height: 1.4; font-weight: 700; } .ds-search-panel-meta { margin: -0.5rem 0 0; color: rgb(255 255 255 / 0.55); font-size: 0.75rem; } .ds-search-panel-field { min-height: 2.75rem; display: flex; align-items: center; padding-left: 0.75rem; border: 1px solid rgb(255 255 255 / 0.14); border-radius: 0.5rem; color: rgb(255 255 255 / 0.50); background: #000; font-size: 0.875rem; } .ds-search-panel-arrow { align-self: stretch; min-width: 3rem; margin-left: auto; display: grid; place-items: center; color: #fff; background: oklch(50% 0.134 242.749); } .ds-search-panel-row { display: flex; align-items: center; gap: 0.5rem; overflow-x: auto; } .ds-search-panel-label { flex: none; color: rgb(255 255 255 / 0.60); font-size: 0.75rem; } .ds-search-history, .ds-source-toggle, .ds-search-clear { flex: none; padding: 0.5rem 0.75rem; border: 1px solid rgb(255 255 255 / 0.14); border-radius: 0.5rem; color: rgb(255 255 255 / 0.80); background: #111a24; font: 500 0.75rem/1.3333 \"DM Sans\", system-ui, sans-serif; text-decoration: none; cursor: pointer; } .ds-search-clear { margin-left: auto; border: 0; background: transparent; } .ds-source-toggle-on { border-color: rgb(56 189 248 / 0.40); color: #38bdf8; background: rgb(56 189 248 / 0.10); } .ds-search-history:hover, .ds-source-toggle:hover, .ds-search-clear:hover { color: #fff; background: #162333; } .ds-search-history:active, .ds-source-toggle:active, .ds-search-clear:active { background: #0c1219; } .ds-search-history:focus-visible, .ds-source-toggle:focus-visible, .ds-search-clear:focus-visible { outline: 2px solid #38bdf8; outline-offset: 2px; }"
+    },
+    {
+      "name": "Douban Hot Module",
+      "kind": "custom",
+      "refersTo": "douban-hot-module",
+      "description": "Independent attributed module with its own filters, paging, and one compact 2:3 poster rail.",
+      "html": "<section class=\"ds-hot-module\"><div class=\"ds-hot-head\"><div><h2 class=\"ds-hot-title\">豆瓣热门</h2><p class=\"ds-hot-meta\">外部热门标题与评分</p></div><button class=\"ds-hot-batch\" type=\"button\">换一批热门</button></div><div class=\"ds-hot-filters\"><button class=\"ds-hot-filter ds-hot-filter-on\" type=\"button\">电影</button><button class=\"ds-hot-filter\" type=\"button\">电视剧</button><button class=\"ds-hot-filter ds-hot-filter-on\" type=\"button\">热门</button></div><div class=\"ds-hot-strip\"><a class=\"ds-hot-entry\" href=\"#\"><span class=\"ds-hot-poster\"><span class=\"ds-hot-score\">★ 7.4</span></span><strong>抓特务</strong></a><a class=\"ds-hot-entry\" href=\"#\"><span class=\"ds-hot-poster\"><span class=\"ds-hot-score\">★ 6.7</span></span><strong>一夜限定</strong></a></div></section>",
+      "css": ".ds-hot-module { display: grid; gap: 1rem; padding: 1rem; border: 1px solid rgb(255 255 255 / 0.10); border-radius: 0.75rem; color: #fff; background: #0f1720; font-family: \"DM Sans\", system-ui, sans-serif; } .ds-hot-head { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; } .ds-hot-title { margin: 0; font-size: 1.25rem; line-height: 1.4; font-weight: 700; } .ds-hot-meta { margin: 0.25rem 0 0; color: rgb(255 255 255 / 0.55); font-size: 0.75rem; } .ds-hot-batch, .ds-hot-filter { flex: none; padding: 0.5rem 0.75rem; border: 1px solid rgb(255 255 255 / 0.14); border-radius: 0.5rem; color: #fff; background: #111a24; font: 500 0.75rem/1.3333 \"DM Sans\", system-ui, sans-serif; cursor: pointer; } .ds-hot-filters, .ds-hot-strip { display: flex; gap: 0.75rem; overflow-x: auto; } .ds-hot-strip { padding-top: 1rem; border-top: 1px solid rgb(255 255 255 / 0.10); } .ds-hot-entry { width: 10rem; flex: none; display: grid; gap: 0.5rem; color: #fff; text-decoration: none; } .ds-hot-poster { position: relative; display: block; aspect-ratio: 2 / 3; border: 1px solid rgb(255 255 255 / 0.10); border-radius: 0.75rem; background: #111923; } .ds-hot-score { position: absolute; top: 0.5rem; right: 0.5rem; padding: 0.25rem 0.5rem; border-radius: 0.5rem; color: oklch(82.8% 0.189 84.429); background: rgb(0 0 0 / 0.75); font-size: 0.6875rem; } .ds-hot-entry strong { overflow: hidden; font-size: 0.875rem; text-overflow: ellipsis; white-space: nowrap; } .ds-hot-filter-on { border-color: oklch(50% 0.134 242.749); background: oklch(50% 0.134 242.749); } .ds-hot-batch:hover, .ds-hot-filter:hover, .ds-hot-entry:hover { color: #7dd3fc; } .ds-hot-filter-on:hover { color: #fff; background: oklch(58.8% 0.158 241.966); } .ds-hot-batch:focus-visible, .ds-hot-filter:focus-visible, .ds-hot-entry:focus-visible { outline: 2px solid #38bdf8; outline-offset: 2px; }"
+    },
+    {
+      "name": "Progress Poster Card",
+      "kind": "card",
+      "refersTo": "progress-poster-card",
+      "description": "De-duplicated playback record with a real 2:3 source poster, episode overlay, percent badge, progress edge, and whole-card resume action.",
+      "html": "<a class=\"ds-progress-card\" href=\"#\"><span class=\"ds-progress-poster\"><span class=\"ds-progress-percent\">16%</span><span class=\"ds-progress-episode\">第01集</span><span class=\"ds-progress-edge\"></span></span><strong>辐射</strong><small>360资源 · 08/30 22:57</small></a>",
+      "css": ".ds-progress-card { display: grid; gap: 0.5rem; color: #fff; font-family: \"DM Sans\", system-ui, sans-serif; text-decoration: none; } .ds-progress-poster { position: relative; display: block; aspect-ratio: 2 / 3; overflow: hidden; border: 1px solid rgb(255 255 255 / 0.10); border-radius: 0.75rem; background: #0c1219; } .ds-progress-percent { position: absolute; top: 0.5rem; right: 0.5rem; padding: 0.25rem 0.5rem; border-radius: 0.5rem; background: rgb(0 0 0 / 0.75); color: #bae6fd; font-size: 0.6875rem; } .ds-progress-episode { position: absolute; inset-inline: 0; bottom: 0; padding: 2.5rem 0.75rem 0.75rem; background: linear-gradient(to top, rgb(0 0 0 / 0.95), transparent); font-size: 0.75rem; } .ds-progress-edge { position: absolute; inset-inline: 0; bottom: 0; height: 0.25rem; background: linear-gradient(to right, #0ea5e9 16%, rgb(255 255 255 / 0.15) 16%); } .ds-progress-card strong { font-size: 0.875rem; } .ds-progress-card small { color: rgb(255 255 255 / 0.45); font-size: 0.75rem; } .ds-progress-card:focus-visible { outline: 2px solid #38bdf8; outline-offset: 4px; }"
+    },
+    {
+      "name": "Source Poster Card",
+      "kind": "card",
+      "refersTo": "source-poster-card",
+      "description": "Real allowlisted source poster with episode remark, score, title, year, and category.",
+      "html": "<a class=\"ds-source-card\" href=\"#\"><span class=\"ds-source-poster\" role=\"img\" aria-label=\"来源海报位置\"><svg class=\"ds-source-missing\" viewBox=\"0 0 24 24\" width=\"34\" height=\"34\" aria-hidden=\"true\"><path d=\"M4 5h16v14H4zM8 10h.01M4 16l4-4 3 3 2-2 7 6\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg><span class=\"ds-source-score\">★ 8.2</span><span class=\"ds-source-remark\">全34集（合集）</span></span><span class=\"ds-source-body\"><strong class=\"ds-source-title\">月薪四千的秘密 AI短剧</strong><span class=\"ds-source-meta\">2026 · 360资源</span></span></a>",
+      "css": ".ds-source-card { width: min(100%, 12rem); display: block; overflow: hidden; border: 1px solid rgb(255 255 255 / 0.10); border-radius: 0.5rem; color: #fff; background: #111a24; font-family: \"DM Sans\", system-ui, sans-serif; text-decoration: none; } .ds-source-poster { position: relative; display: grid; aspect-ratio: 2 / 3; place-items: center; overflow: hidden; color: rgb(255 255 255 / 0.20); background: #0c1219; transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-source-missing { opacity: 0.8; } .ds-source-score { position: absolute; top: 0.5rem; right: 0.5rem; padding: 0.25rem 0.5rem; border-radius: 9999px; color: oklch(82.8% 0.189 84.429); background: rgb(0 0 0 / 0.80); font-size: 0.75rem; line-height: 1.3333; font-weight: 700; } .ds-source-remark { position: absolute; right: 0; bottom: 0; left: 0; padding: 2rem 0.75rem 0.5rem; overflow: hidden; color: rgb(255 255 255 / 0.85); background: linear-gradient(to top, rgb(0 0 0 / 0.90), transparent); font-size: 0.75rem; line-height: 1.3333; text-overflow: ellipsis; white-space: nowrap; } .ds-source-body { display: grid; gap: 0.25rem; padding: 0.625rem 0.75rem; border-top: 1px solid rgb(255 255 255 / 0.05); } .ds-source-title { overflow: hidden; font-size: 0.875rem; line-height: 1.4286; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; } .ds-source-meta { overflow: hidden; color: rgb(255 255 255 / 0.60); font-size: 0.75rem; line-height: 1.3333; text-overflow: ellipsis; white-space: nowrap; } .ds-source-card:hover .ds-source-poster { transform: scale(1.035); } .ds-source-card:active { border-color: rgb(56 189 248 / 0.45); } .ds-source-card:focus-visible { outline: 2px solid #38bdf8; outline-offset: 4px; } @media (prefers-reduced-motion: reduce) { .ds-source-poster { transition: none; } }"
+    },
+    {
+      "name": "Compact Search Result Card",
+      "kind": "card",
+      "refersTo": "search-result-card",
+      "description": "Horizontal source result keeping poster, title, year, category, episode state, and source together.",
+      "html": "<article class=\"ds-result-card\"><a class=\"ds-result-link\" href=\"#\"><span class=\"ds-result-poster\" role=\"img\" aria-label=\"搜索结果海报\"><span class=\"ds-result-year\">2026</span></span><span class=\"ds-result-copy\"><strong class=\"ds-result-title\">凡人修仙传 燕云之战</strong><span class=\"ds-result-badges\"><span class=\"ds-result-badge\">国产动漫</span><span class=\"ds-result-badge ds-result-badge-error\">更新至13集</span></span><span class=\"ds-result-facts\"><span>◷ 更新至13集</span><span>▤ 360资源</span></span></span></a><div class=\"ds-result-footer\"><button class=\"ds-result-source\" type=\"button\">备用来源</button></div></article>",
+      "css": ".ds-result-card { min-height: 10rem; overflow: hidden; border: 1px solid rgb(56 189 248 / 0.15); border-radius: 0.75rem; color: #fff; background: #111a24; font-family: \"DM Sans\", system-ui, sans-serif; } .ds-result-link { min-height: 10rem; display: flex; color: inherit; text-decoration: none; } .ds-result-poster { position: relative; width: 7rem; flex: none; display: block; background: #0c1219; } .ds-result-year { position: absolute; top: 0.375rem; right: 0.375rem; padding: 0.125rem 0.375rem; border-radius: 9999px; color: #0c1219; background: #fff; font-size: 0.625rem; line-height: 1.2; } .ds-result-copy { min-width: 0; flex: 1; display: flex; flex-direction: column; padding: 0.75rem; } .ds-result-title { display: -webkit-box; overflow: hidden; font-size: 0.875rem; line-height: 1.25rem; font-weight: 700; -webkit-box-orient: vertical; -webkit-line-clamp: 2; } .ds-result-badges { display: flex; flex-wrap: wrap; gap: 0.375rem; margin-top: 0.5rem; } .ds-result-badge { padding: 0.125rem 0.375rem; border-radius: 0.375rem; color: oklch(82.8% 0.111 230.318); background: rgb(56 189 248 / 0.12); font-size: 0.625rem; line-height: 1.2; } .ds-result-badge-error { color: oklch(80.8% 0.114 19.571); background: rgb(248 113 113 / 0.12); } .ds-result-facts { display: grid; gap: 0.375rem; margin-top: auto; padding-top: 0.75rem; color: rgb(255 255 255 / 0.60); font-size: 0.75rem; line-height: 1.3333; } .ds-result-footer { padding: 0.5rem 0.75rem; border-top: 1px solid rgb(255 255 255 / 0.05); } .ds-result-source { padding: 0.25rem 0.5rem; border: 0; border-radius: 0.5rem; color: rgb(255 255 255 / 0.75); background: transparent; font: 500 0.75rem/1.3333 \"DM Sans\", system-ui, sans-serif; cursor: pointer; } .ds-result-card:hover { border-color: rgb(56 189 248 / 0.40); } .ds-result-source:hover { color: #fff; background: #0c1219; } .ds-result-source:active { background: #0f1720; } .ds-result-link:focus-visible, .ds-result-source:focus-visible { outline: 2px solid #38bdf8; outline-offset: -2px; }"
+    },
+    {
+      "name": "Title Facts Card",
+      "kind": "card",
+      "refersTo": "title-facts-card",
+      "description": "Poster-adjacent factual summary with source badges and 44px playback/search actions.",
+      "html": "<section class=\"ds-title-card\"><div class=\"ds-title-badges\"><span class=\"ds-title-badge\">360资源</span><span class=\"ds-title-badge ds-title-score\">★ 9.5</span><span class=\"ds-title-badge ds-title-error\">更新至1175集</span></div><h1 class=\"ds-title-name\">海贼王</h1><p class=\"ds-title-meta\">1999 · 日韩动漫 · 日本</p><p class=\"ds-title-summary\">来源提供的剧情简介保持事实性，并在没有简介时显示明确的空状态。</p><div class=\"ds-title-actions\"><button class=\"ds-title-primary\" type=\"button\">▶ 开始播放</button><button class=\"ds-title-secondary\" type=\"button\">⌕ 返回搜索</button></div></section>",
+      "css": ".ds-title-card { padding: 1.25rem; border: 1px solid rgb(255 255 255 / 0.10); border-radius: 0.75rem; color: #fff; background: #121821; font-family: \"DM Sans\", system-ui, sans-serif; } .ds-title-badges { display: flex; flex-wrap: wrap; gap: 0.5rem; } .ds-title-badge { padding: 0.25rem 0.5rem; border-radius: 0.5rem; color: oklch(82.8% 0.111 230.318); background: rgb(56 189 248 / 0.10); font-size: 0.75rem; line-height: 1.3333; } .ds-title-score { color: oklch(82.8% 0.189 84.429); background: rgb(251 191 36 / 0.10); } .ds-title-error { color: oklch(80.8% 0.114 19.571); background: rgb(248 113 113 / 0.10); } .ds-title-name { margin: 1rem 0 0; font-size: 1.875rem; line-height: 1.2; font-weight: 900; letter-spacing: -0.035em; } .ds-title-meta { margin: 0.75rem 0 0; color: rgb(255 255 255 / 0.55); font-size: 0.875rem; line-height: 1.4286; } .ds-title-summary { max-width: 48rem; margin: 1.25rem 0 0; color: rgb(255 255 255 / 0.72); line-height: 1.75rem; } .ds-title-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.25rem; } .ds-title-primary, .ds-title-secondary { min-height: 2.75rem; padding: 0.5rem 0.75rem; border: 0; border-radius: 0.5rem; color: #fff; font: 500 0.875rem/1.4286 \"DM Sans\", system-ui, sans-serif; cursor: pointer; } .ds-title-primary { background: oklch(50% 0.134 242.749); } .ds-title-secondary { background: #10151d; } .ds-title-primary:hover { background: oklch(58.8% 0.158 241.966); } .ds-title-secondary:hover { background: #111a24; } .ds-title-primary:active, .ds-title-secondary:active { background: #0c1219; } .ds-title-primary:focus-visible, .ds-title-secondary:focus-visible { outline: 2px solid #38bdf8; outline-offset: 2px; }"
+    },
+    {
+      "name": "Episode Browser",
+      "kind": "custom",
+      "refersTo": "title-episode-browser",
+      "description": "Independent 50-episode range selector with 44px episode targets.",
+      "html": "<section class=\"ds-episodes\" aria-labelledby=\"ds-episodes-title\"><div class=\"ds-episodes-head\"><div class=\"ds-episodes-copy\"><h2 class=\"ds-episodes-title\" id=\"ds-episodes-title\">选择剧集</h2><p class=\"ds-episodes-meta\">共 1175 集，每次显示 50 集</p></div><button class=\"ds-episodes-range\" type=\"button\">1–50 集⌄</button></div><div class=\"ds-episodes-grid\"><a class=\"ds-episode\" href=\"#\">第01集</a><a class=\"ds-episode ds-episode-active\" href=\"#\">第02集</a><a class=\"ds-episode\" href=\"#\">第03集</a><a class=\"ds-episode\" href=\"#\">第04集</a><a class=\"ds-episode\" href=\"#\">第05集</a><a class=\"ds-episode\" href=\"#\">第06集</a><a class=\"ds-episode\" href=\"#\">第07集</a><a class=\"ds-episode\" href=\"#\">第08集</a></div></section>",
+      "css": ".ds-episodes { padding: 1rem; border: 1px solid rgb(255 255 255 / 0.10); border-radius: 0.75rem; color: #fff; background: #10151d; font-family: \"DM Sans\", system-ui, sans-serif; } .ds-episodes-head { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; } .ds-episodes-title { margin: 0; font-size: 1.125rem; line-height: 1.5556; font-weight: 700; } .ds-episodes-meta { margin: 0.25rem 0 0; color: rgb(255 255 255 / 0.50); font-size: 0.75rem; line-height: 1.3333; } .ds-episodes-range { min-height: 2.75rem; width: 9rem; padding: 0.5rem 0.75rem; border: 1px solid rgb(255 255 255 / 0.16); border-radius: 0.5rem; color: #fff; background: #070b10; font: 500 0.875rem/1.4286 \"DM Sans\", system-ui, sans-serif; cursor: pointer; } .ds-episodes-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.5rem; margin-top: 1rem; } .ds-episode { min-height: 2.75rem; display: grid; place-items: center; padding: 0.375rem; border: 1px solid rgb(255 255 255 / 0.24); border-radius: 0.5rem; color: #fff; background: #070b10; font-size: 0.75rem; line-height: 1.3333; text-decoration: none; } .ds-episode-active { border-color: oklch(50% 0.134 242.749); background: oklch(50% 0.134 242.749); } .ds-episodes-range:hover, .ds-episode:hover { border-color: rgb(56 189 248 / 0.65); background: #0c1219; } .ds-episode-active:hover { background: oklch(58.8% 0.158 241.966); } .ds-episodes-range:active, .ds-episode:active { background: #0f1720; } .ds-episodes-range:focus-visible, .ds-episode:focus-visible { outline: 2px solid #38bdf8; outline-offset: 2px; } @media (min-width: 640px) { .ds-episodes-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); } }"
+    },
+    {
+      "name": "Player Control and Playlist",
+      "kind": "custom",
+      "refersTo": "player-playlist",
+      "description": "App-owned play/replay overlay with a 50-episode one-line playlist and 20–22rem desktop sidebar.",
+      "html": "<section class=\"ds-player-layout\"><div class=\"ds-player-main\"><div class=\"ds-player-stage\"><span class=\"ds-player-label\">第01集</span><button class=\"ds-player-primary\" type=\"button\" aria-label=\"播放\">▶</button></div><div class=\"ds-player-prevnext\"><button class=\"ds-player-step\" type=\"button\">|◀ 上一集</button><span class=\"ds-player-current\">第 1 / 1175 集</span><button class=\"ds-player-step\" type=\"button\">下一集 ▶|</button></div></div><aside class=\"ds-playlist\"><div class=\"ds-playlist-head\"><div><strong class=\"ds-playlist-title\">选集</strong><span class=\"ds-playlist-meta\">当前第 1 / 1175 集</span></div><button class=\"ds-playlist-range\" type=\"button\">1–50集⌄</button></div><div class=\"ds-playlist-list\"><a class=\"ds-playlist-row ds-playlist-active\" href=\"#\"><span class=\"ds-playlist-number\">1</span><span class=\"ds-playlist-name\">第一章</span><span class=\"ds-playlist-marker\">▶</span></a><a class=\"ds-playlist-row\" href=\"#\"><span class=\"ds-playlist-number\">2</span><span class=\"ds-playlist-name\">风起天南</span></a><a class=\"ds-playlist-row\" href=\"#\"><span class=\"ds-playlist-number\">3</span><span class=\"ds-playlist-name\">燕家堡之战</span></a></div></aside></section>",
+      "css": ".ds-player-layout { display: grid; gap: 0.75rem; padding: 0.75rem; color: #fff; background: #05080d; font-family: \"DM Sans\", system-ui, sans-serif; } .ds-player-main { min-width: 0; display: grid; gap: 0.75rem; } .ds-player-stage { position: relative; display: grid; aspect-ratio: 16 / 9; place-items: center; border: 1px solid rgb(255 255 255 / 0.10); border-radius: 0.75rem; background: #000; box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25); } .ds-player-label { position: absolute; top: 0.75rem; left: 0.75rem; padding: 0.5rem 0.75rem; border-radius: 0.5rem; background: rgb(0 0 0 / 0.75); font-size: 0.75rem; } .ds-player-primary { width: 4rem; height: 4rem; display: grid; place-items: center; border: 1px solid rgb(255 255 255 / 0.25); border-radius: 9999px; color: #fff; background: rgb(0 0 0 / 0.75); font-size: 1.5rem; cursor: pointer; transition: transform 150ms, background-color 150ms; } .ds-player-prevnext { min-height: 3.75rem; display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0.5rem; border: 1px solid rgb(255 255 255 / 0.10); border-radius: 0.5rem; background: #10151c; } .ds-player-step, .ds-playlist-range { min-height: 2.75rem; padding: 0.5rem 0.75rem; border: 1px solid rgb(255 255 255 / 0.16); border-radius: 0.5rem; color: #fff; background: transparent; font: 500 0.75rem/1.3333 \"DM Sans\", system-ui, sans-serif; cursor: pointer; } .ds-player-current, .ds-playlist-meta { color: rgb(255 255 255 / 0.55); font-size: 0.75rem; } .ds-playlist { border: 1px solid rgb(255 255 255 / 0.10); border-radius: 0.75rem; background: #10151c; } .ds-playlist-head { position: sticky; top: 4rem; display: flex; min-height: 3.5rem; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0.75rem; border-bottom: 1px solid rgb(255 255 255 / 0.10); background: #10151c; } .ds-playlist-head > div { display: grid; gap: 0.125rem; } .ds-playlist-list { display: grid; } .ds-playlist-row { min-height: 2.75rem; display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.75rem; border-left: 2px solid transparent; border-bottom: 1px solid rgb(255 255 255 / 0.08); color: rgb(255 255 255 / 0.72); font-size: 0.8125rem; line-height: 1.25rem; text-decoration: none; } .ds-playlist-number { width: 2.5rem; flex: none; text-align: center; color: rgb(255 255 255 / 0.45); font-weight: 600; } .ds-playlist-name { min-width: 0; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .ds-playlist-marker { color: #38bdf8; } .ds-playlist-active { border-left-color: #38bdf8; color: #fff; background: rgb(56 189 248 / 0.10); } .ds-player-primary:hover { transform: scale(1.05); background: oklch(58.8% 0.158 241.966); } .ds-player-step:hover, .ds-playlist-range:hover, .ds-playlist-row:hover { color: #fff; background: rgb(255 255 255 / 0.05); } .ds-player-primary:active, .ds-player-step:active, .ds-playlist-range:active, .ds-playlist-row:active { background: #0c1219; } .ds-player-primary:focus-visible, .ds-player-step:focus-visible, .ds-playlist-range:focus-visible, .ds-playlist-row:focus-visible { outline: 2px solid #38bdf8; outline-offset: 2px; } @media (min-width: 640px) { .ds-player-primary { width: 4.5rem; height: 4.5rem; } } @media (min-width: 1024px) { .ds-player-layout { grid-template-columns: minmax(0, 1fr) clamp(20rem, 24vw, 22rem); } .ds-playlist-head { position: static; } .ds-playlist-list { max-height: 28rem; overflow-y: auto; } }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Cold-Blue Portal",
+    "overview": "The Cold-Blue Portal is a dense, dark-locked film interface built for finding, selecting, and watching rather than promotion. Near-black canvas, cold slate panels, portrait posters, compact facts, and one sky/cyan interaction signal make the public product feel like a working source portal.\n\nDiscovery tasks are explicit siblings. Search owns viewer-local history and source choice; the source-update grid owns its own paging; Douban owns its own filters and paging. Title facts, ranged episode browsing, and complete in-player episode navigation each receive a distinct task region. Administration stays in the shared Yueli console family and inherits its semantic light/dark shell instead of the public dark lock.",
+    "keyCharacteristics": [
+      "Dark-locked public browse, search, title, history, and playback surfaces.",
+      "White YTV wordmark with one small sky/cyan dot.",
+      "Search history capped at eight and viewer source exclusions stored locally.",
+      "Independent source-update and Douban poster modules with separate batch actions.",
+      "Compact real-poster Continue Watching and a de-duplicated two-to-six-column playback-history grid.",
+      "Real source posters in a two-to-six-column 2:3 grid and compact horizontal search results.",
+      "Stable 50-episode ranges on title and watch routes.",
+      "App-owned central play/replay plus a 20–22rem single-line desktop playlist.",
+      "Shared semantic admin console with dashboard, sources, search insights, and public profile settings only."
+    ],
+    "rules": [
+      { "name": "The One Sky Signal Rule", "body": "Sky/cyan is the sole public interaction color; it marks action and state without becoming a large surface.", "section": "colors" },
+      { "name": "The White Mark Rule", "body": "The YTV name stays white and gains identity from one 6px sky dot; never apply a gradient or multicolor fill to the public wordmark.", "section": "colors" },
+      { "name": "The Split Appearance Rule", "body": "Public routes stay dark-locked, while the shared administration shell retains its semantic light/dark appearance control.", "section": "colors" },
+      { "name": "The Workhorse Only Rule", "body": "Use the same sans family throughout YTV; let compact facts, poster density, charts, and row structure provide character.", "section": "typography" },
+      { "name": "The Independent Modules Rule", "body": "Search, source updates, and Douban never share paging, filtering, batch actions, or recovery state.", "section": "layout" },
+      { "name": "The Density Ladder Rule", "body": "Preserve the 2→3→4→5→6 source-poster progression and 1→2→4 search-result progression.", "section": "layout" },
+      { "name": "The Complete Player Rule", "body": "The watch route contains every episode in stable 50-episode ranges; desktop reserves 20–22rem for the list and mobile uses document scroll.", "section": "layout" },
+      { "name": "The Media-Only Lift Rule", "body": "Public shadows lift the title poster and video stage; ordinary public components use tone and border, while admin uses shared semantic depth.", "section": "elevation" },
+      { "name": "The Source Poster Rule", "body": "Homepage poster cards always represent real administrator-selected source entries with a 2:3 image well and compact facts.", "section": "shapes" },
+      { "name": "The Playlist Row Rule", "body": "Watch episodes form one continuous divided list; the current row gains a sky leading edge and tint without changing geometry.", "section": "shapes" }
+    ],
+    "dos": [
+      "Do keep public routes dark-locked and administration on the shared semantic light/dark console.",
+      "Do keep search history unique, local, clearable, and capped at eight.",
+      "Do persist disabled viewer source keys, preserve at least one selected source, and respect globally enabled definitions.",
+      "Do give source updates and Douban independent headers, actions, filters, paging, and recovery.",
+      "Do use stable 50-episode ranges on title and watch routes.",
+      "Do keep the app-owned play/replay control unmistakable in ready, paused, and ended states.",
+      "Do use one-line 44px playlist rows and keep every episode reachable on the watch route.",
+      "Do restrict source creation to deployment-approved definitions while allowing install/remove, display-name and policy management.",
+      "Do auto-save source changes with explicit row feedback and keep one-click probing available for all installed sources.",
+      "Do keep the initial policy explicit: zy360/mdzy/zuid enabled, qgikun disabled, and only zy360 home-visible.",
+      "Do keep yinghua, qgsuoni, and qgyouzhiziyuanku as approved but initially uninstalled and disabled candidates."
+    ],
+    "donts": [
+      "Don't place Douban filters, hot entries, or batch action inside the search panel.",
+      "Don't let one batch action change both source updates and external discovery.",
+      "Don't render watch episodes as a multi-column button grid or send viewers away to find the full list.",
+      "Don't merge title facts, episode browsing, and playback into one oversized card.",
+      "Don't add a placeholder access-control page or unsupported user/role workflows to the admin console.",
+      "Don't add deployment endpoints, adapters, or secrets to source settings.",
+      "Don't require a redundant per-row Save button for independently editable source fields."
+    ]
+  }
+}
