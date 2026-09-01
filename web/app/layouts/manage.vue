@@ -13,7 +13,6 @@ const messages: AdminShellMessages = {
 const navigation = computed<readonly AdminNavigationItem[]>(() => [
   { label: "控制台", icon: "i-tabler-layout-dashboard", to: "/manage", active: route.path === "/manage" },
   { label: "数据源", icon: "i-tabler-plug-connected", to: "/manage/sources", active: route.path.startsWith("/manage/sources") },
-  { label: "搜索洞察", icon: "i-tabler-search", to: "/manage/searches", active: route.path.startsWith("/manage/searches") },
   { label: "站点设置", icon: "i-tabler-adjustments-horizontal", to: "/manage/settings", active: route.path.startsWith("/manage/settings") }
 ]);
 

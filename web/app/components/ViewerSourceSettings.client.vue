@@ -1,0 +1,21 @@
+<script setup lang="ts">
+const { sources, selected, ready, saving, loggedIn, toggle, selectAll } = useViewerSourcePreferences();
+</script>
+
+<template>
+  <div class="space-y-4">
+    <div class="flex items-center justify-between gap-3">
+      <p class="text-xs text-white/55">{{ !ready ? "正在读取设置" : loggedIn ? "已同步到账号" : "保存在此浏览器" }}</p>
+      <UButton label="全选" color="neutral" variant="ghost" size="xs" :disabled="selected.length === sources.length" @click="selectAll" />
+    </div>
+    <div v-if="ready" class="divide-y divide-white/10 overflow-hidden rounded-xl border border-white/10">
+      <div v-for="source in sources" :key="source.key" class="flex min-h-14 items-center justify-between gap-4 px-4 py-3">
+        <span class="min-w-0 truncate text-sm font-medium text-white">{{ source.name }}</span>
+        <USwitch :model-value="selected.includes(source.key)" :disabled="selected.includes(source.key) && selected.length === 1" :aria-label="`使用来源 ${source.name}`" @update:model-value="toggle(source.key)" />
+      </div>
+    </div>
+    <div v-else class="space-y-3"><USkeleton v-for="item in 5" :key="item" class="h-14 rounded-xl bg-white/10" /></div>
+    <p v-if="selected.length === 1" class="text-xs text-white/50">至少保留一个来源。</p>
+    <p v-if="saving" class="text-xs text-sky-300" role="status">正在保存…</p>
+  </div>
+</template>

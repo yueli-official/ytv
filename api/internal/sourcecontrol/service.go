@@ -27,21 +27,27 @@ type Setting struct {
 }
 
 type SourceView struct {
-	Key         string
-	Name        string
-	Kind        source.Kind
-	Enabled     bool
-	HomeVisible bool
-	Priority    int
-	Revision    int64
-	UpdatedAt   time.Time
+	Key            string
+	Name           string
+	Kind           source.Kind
+	Catalog        string
+	CatalogVersion string
+	Enabled        bool
+	HomeVisible    bool
+	Priority       int
+	Revision       int64
+	UpdatedAt      time.Time
+	Compatibility  []source.CompatibilityNotice
 }
 
 type AvailableSource struct {
-	Key      string
-	Name     string
-	Kind     source.Kind
-	Revision int64
+	Key            string
+	Name           string
+	Kind           source.Kind
+	Catalog        string
+	CatalogVersion string
+	Revision       int64
+	Compatibility  []source.CompatibilityNotice
 }
 
 type ProbeResult struct {
@@ -109,8 +115,10 @@ func (service *Service) List() []SourceView {
 		}
 		result = append(result, SourceView{
 			Key: definition.Key, Name: setting.DisplayName, Kind: definition.Kind,
+			Catalog: definition.Catalog, CatalogVersion: definition.CatalogVersion,
 			Enabled: setting.Enabled, HomeVisible: setting.HomeVisible, Priority: setting.Priority,
 			Revision: setting.Revision, UpdatedAt: setting.UpdatedAt,
+			Compatibility: definition.Compatibility,
 		})
 	}
 	return result
@@ -125,7 +133,7 @@ func (service *Service) Available() []AvailableSource {
 		if setting.Installed {
 			continue
 		}
-		result = append(result, AvailableSource{Key: definition.Key, Name: setting.DisplayName, Kind: definition.Kind, Revision: setting.Revision})
+		result = append(result, AvailableSource{Key: definition.Key, Name: setting.DisplayName, Kind: definition.Kind, Catalog: definition.Catalog, CatalogVersion: definition.CatalogVersion, Revision: setting.Revision, Compatibility: definition.Compatibility})
 	}
 	return result
 }
@@ -218,7 +226,7 @@ func (service *Service) Remove(ctx context.Context, sourceKey string, expectedRe
 	service.settings[sourceKey] = saved
 	for _, definition := range service.registry.Definitions() {
 		if definition.Key == sourceKey {
-			return AvailableSource{Key: sourceKey, Name: saved.DisplayName, Kind: definition.Kind, Revision: saved.Revision}, nil
+			return AvailableSource{Key: sourceKey, Name: saved.DisplayName, Kind: definition.Kind, Catalog: definition.Catalog, CatalogVersion: definition.CatalogVersion, Revision: saved.Revision, Compatibility: definition.Compatibility}, nil
 		}
 	}
 	return AvailableSource{}, fmt.Errorf("%w: %s", source.ErrNotFound, sourceKey)
@@ -238,8 +246,10 @@ func (service *Service) view(sourceKey string, setting Setting) (SourceView, err
 		if definition.Key == sourceKey {
 			return SourceView{
 				Key: definition.Key, Name: setting.DisplayName, Kind: definition.Kind,
+				Catalog: definition.Catalog, CatalogVersion: definition.CatalogVersion,
 				Enabled: setting.Enabled, HomeVisible: setting.HomeVisible, Priority: setting.Priority,
 				Revision: setting.Revision, UpdatedAt: setting.UpdatedAt,
+				Compatibility: definition.Compatibility,
 			}, nil
 		}
 	}
@@ -277,7 +287,7 @@ func (service *Service) Probe(ctx context.Context, sourceKey string) (ProbeResul
 func (service *Service) ProbeAll(ctx context.Context) []ProbeResult {
 	items := service.List()
 	results := make([]ProbeResult, len(items))
-	semaphore := make(chan struct{}, 4)
+	semaphore := make(chan struct{}, 8)
 	var wait sync.WaitGroup
 	for index, item := range items {
 		wait.Add(1)
@@ -285,7 +295,9 @@ func (service *Service) ProbeAll(ctx context.Context) []ProbeResult {
 			defer wait.Done()
 			semaphore <- struct{}{}
 			defer func() { <-semaphore }()
-			result, err := service.Probe(ctx, item.Key)
+			probeContext, cancel := context.WithTimeout(ctx, 4*time.Second)
+			defer cancel()
+			result, err := service.Probe(probeContext, item.Key)
 			if result.Source.Key == "" {
 				result.Source = item
 			}

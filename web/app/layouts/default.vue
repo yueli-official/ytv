@@ -2,6 +2,7 @@
 import type { AccountMenuAction } from "@yueli/ui/account-menu/pattern";
 
 const drawerOpen = ref(false);
+const sourceSettingsOpen = ref(false);
 const api = useYtvApi();
 const { data: siteMeta } = await useAsyncData("ytv-site-meta", () => api.meta());
 const siteName = computed(() => siteMeta.value?.name || "YTV");
@@ -21,6 +22,8 @@ function openDrawer() {
 function closeDrawer() {
   drawerOpen.value = false;
 }
+function openSourceSettings() { sourceSettingsOpen.value = true; }
+function updateSourceSettingsOpen(value: boolean) { if (!value) sourceSettingsOpen.value = false; }
 </script>
 
 <template>
@@ -32,6 +35,7 @@ function closeDrawer() {
           <UButton v-for="item in navigation" :key="item.to" :to="item.to" :label="item.label" color="neutral" variant="ghost" />
         </nav>
         <UButton to="/search" label="搜索" icon="i-tabler-search" color="neutral" variant="ghost" class="ms-auto hidden min-h-11 md:inline-flex" />
+        <button type="button" aria-label="来源设置" class="grid size-11 shrink-0 place-items-center rounded-lg text-white/75 transition hover:bg-white/10 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-300" @click="openSourceSettings"><UIcon name="i-tabler-adjustments-horizontal" class="size-5" /></button>
         <ConsumerAccountControl :context-actions="accountActions" />
         <UButton
           icon="i-tabler-menu-2"
@@ -46,6 +50,9 @@ function closeDrawer() {
       </div>
     </header>
     <main id="main-content"><slot /></main>
+    <USlideover :open="sourceSettingsOpen" side="right" title="来源设置" description="选择搜索和热门入口使用的数据源。" :ui="{ content: 'w-full max-w-md bg-[#0c1219] text-white', body: 'p-4 sm:p-5' }" @update:open="updateSourceSettingsOpen">
+      <template #body><ViewerSourceSettings /></template>
+    </USlideover>
 
     <USlideover v-model:open="drawerOpen" side="right" title="导航" :ui="{ content: 'max-w-80 bg-[#0c1219] text-white', body: 'p-4' }">
       <template #body>

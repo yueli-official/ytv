@@ -238,14 +238,23 @@ type GetSearchOverviewRes struct {
 }
 
 type SourceAdminView struct {
-	Key         string    `json:"key"`
-	Name        string    `json:"name"`
-	Kind        string    `json:"kind"`
-	Enabled     bool      `json:"enabled"`
-	HomeVisible bool      `json:"homeVisible"`
-	Priority    int       `json:"priority"`
-	Revision    int64     `json:"revision"`
-	UpdatedAt   time.Time `json:"updatedAt"`
+	Key            string                    `json:"key"`
+	Name           string                    `json:"name"`
+	Kind           string                    `json:"kind"`
+	Catalog        string                    `json:"catalog"`
+	CatalogVersion string                    `json:"catalogVersion"`
+	Enabled        bool                      `json:"enabled"`
+	HomeVisible    bool                      `json:"homeVisible"`
+	Priority       int                       `json:"priority"`
+	Revision       int64                     `json:"revision"`
+	UpdatedAt      time.Time                 `json:"updatedAt"`
+	Compatibility  []SourceCompatibilityView `json:"compatibility"`
+}
+
+type SourceCompatibilityView struct {
+	Level   string `json:"level"`
+	Code    string `json:"code"`
+	Message string `json:"message"`
 }
 
 type GetSourcesReq struct {
@@ -257,10 +266,13 @@ type GetSourcesRes struct {
 }
 
 type AvailableSourceView struct {
-	Key      string `json:"key"`
-	Name     string `json:"name"`
-	Kind     string `json:"kind"`
-	Revision int64  `json:"revision"`
+	Key            string                    `json:"key"`
+	Name           string                    `json:"name"`
+	Kind           string                    `json:"kind"`
+	Catalog        string                    `json:"catalog"`
+	CatalogVersion string                    `json:"catalogVersion"`
+	Revision       int64                     `json:"revision"`
+	Compatibility  []SourceCompatibilityView `json:"compatibility"`
 }
 
 type GetAvailableSourcesReq struct {
@@ -368,6 +380,29 @@ type SaveProgressReq struct {
 type SaveProgressRes struct {
 	Item    PlaybackProgressView `json:"item"`
 	Applied bool                 `json:"applied"`
+}
+
+type SourcePreferenceView struct {
+	DisabledSourceKeys []string  `json:"disabledSourceKeys"`
+	Revision           int64     `json:"revision"`
+	UpdatedAt          time.Time `json:"updatedAt"`
+	Exists             bool      `json:"exists"`
+}
+
+type GetSourcePreferenceReq struct {
+	g.Meta `path:"/api/v1/preferences/sources" method:"get" tags:"Account" summary:"Read the signed-in user's source preference"`
+}
+type GetSourcePreferenceRes struct {
+	Preference SourcePreferenceView `json:"preference"`
+}
+
+type SaveSourcePreferenceReq struct {
+	g.Meta             `path:"/api/v1/preferences/sources" method:"put" tags:"Account" summary:"Save the signed-in user's source preference"`
+	DisabledSourceKeys []string `json:"disabledSourceKeys"`
+	Revision           int64    `json:"revision" v:"min:0"`
+}
+type SaveSourcePreferenceRes struct {
+	Preference SourcePreferenceView `json:"preference"`
 }
 
 type SiteProfileView struct {

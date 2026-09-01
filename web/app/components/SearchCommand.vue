@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { clearSearchHistory, readSearchHistory, readSelectedSources, rememberSearch, writeSelectedSources } from "~/utils/search-preferences";
+import { clearSearchHistory, readSearchHistory, rememberSearch } from "~/utils/search-preferences";
 
 const props = withDefaults(defineProps<{
   compact?: boolean;
@@ -14,60 +14,24 @@ const props = withDefaults(defineProps<{
   showSources: true
 });
 
-const api = useYtvApi();
 const draft = ref(props.initialValue);
 const composing = ref(false);
 const history = ref<string[]>([]);
-const selectedSources = useState<string[]>("ytv-selected-source-keys", () => []);
 const hydrated = ref(false);
-const selectionInitialized = ref(false);
-const { data: sourceData } = await useAsyncData("ytv-public-sources", () => api.publicSources());
-const availableKeys = computed(() => (sourceData.value?.sources || []).map((source) => source.key));
+const { sources, selected: selectedSources, toggle: toggleSource } = useViewerSourcePreferences();
 const searchEnabled = computed(() => draft.value.trim() !== "" && !composing.value && (!props.showSources || selectedSources.value.length > 0));
 const routeSources = computed(() => selectedSources.value.join(","));
-
-if (availableKeys.value.length && selectedSources.value.length === 0) {
-  selectedSources.value = props.initialSources?.length
-    ? props.initialSources.filter((key) => availableKeys.value.includes(key))
-    : [...availableKeys.value];
-}
-
-function syncAvailableSources(keys: string[]) {
-  if (!hydrated.value || keys.length === 0) return;
-  const available = new Set(keys);
-  if (props.initialSources === undefined) {
-    selectedSources.value = readSelectedSources(keys);
-  } else if (!selectionInitialized.value) {
-    selectedSources.value = props.initialSources.length ? props.initialSources.filter((key) => available.has(key)) : [...keys];
-  } else {
-    selectedSources.value = selectedSources.value.filter((key) => available.has(key));
-  }
-  selectionInitialized.value = true;
-}
 
 onMounted(() => {
   history.value = readSearchHistory();
   hydrated.value = true;
-  syncAvailableSources(availableKeys.value);
 });
-
-watch(availableKeys, (keys) => {
-  syncAvailableSources(keys);
-}, { flush: "post" });
 
 async function submit() {
   if (!searchEnabled.value) return;
   const query = draft.value.trim();
   history.value = rememberSearch(query);
   await navigateTo({ path: "/search", query: { q: query, ...(routeSources.value ? { sources: routeSources.value } : {}) } });
-}
-
-function toggleSource(key: string) {
-	if (selectedSources.value.includes(key) && selectedSources.value.length === 1) return;
-  selectedSources.value = selectedSources.value.includes(key)
-    ? selectedSources.value.filter((item) => item !== key)
-    : [...selectedSources.value, key];
-  writeSelectedSources(selectedSources.value, availableKeys.value);
 }
 
 function clearHistory() {
@@ -124,14 +88,14 @@ function historyTo(query: string) {
       </div>
     </section>
 
-    <section v-if="showSources && sourceData?.sources.length" aria-labelledby="search-sources-heading">
+    <section v-if="showSources && sources.length" aria-labelledby="search-sources-heading">
       <div class="mb-2 flex items-center justify-between gap-3">
         <h2 id="search-sources-heading" class="text-xs font-semibold text-white/60">搜索来源</h2>
-        <span class="text-xs text-white/55">已选 {{ selectedSources.length }} / {{ sourceData.sources.length }}</span>
+        <span class="text-xs text-white/55">已选 {{ selectedSources.length }} / {{ sources.length }}</span>
       </div>
       <div class="flex flex-wrap gap-2">
         <UButton
-          v-for="source in sourceData.sources"
+          v-for="source in sources"
           :key="source.key"
           :label="source.name"
           :aria-pressed="selectedSources.includes(source.key)"

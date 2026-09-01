@@ -47,6 +47,9 @@ resolved episode and a recoverable playback session, while YTV itself does not h
 - Source Definitions, endpoints, adapter kinds, scraping selectors and credentials are code/deployment allowlist facts. The product
   UI may install or remove an approved definition, rename its presentation, enable or disable it, prioritize it, choose homepage
   visibility and probe one or all installed sources. It never accepts an endpoint, playback host or image host.
+- The approved source catalog may include definitions compiled at startup from an immutable KazumiRules commit selected by deployment.
+  Catalog failure or one invalid rule does not block YTV or existing sources; imported definitions remain uninstalled and disabled until an
+  administrator explicitly adds them, and their compatibility notices stay visible in the source collection.
 - Only sources that the operator has the right to use may enter the allowlist. Technical reachability is not evidence of permission.
 - The current local approved catalog contains the four installed definitions plus three initially uninstalled candidates validated
   from the user-supplied configuration: 樱花资源、索尼资源 and 优质资源库. 卧龙、旺旺 and the Omo placeholder remain excluded
@@ -57,7 +60,7 @@ resolved episode and a recoverable playback session, while YTV itself does not h
   non-image or oversized responses, and never accepts an arbitrary URL.
 - Similar search results may be grouped for one presentation, but automated grouping never becomes permanent title identity.
   `sourceKey + externalID` remains the authoritative Source Title Locator.
-- The administration MVP contains Dashboard, Sources, Search Insights and Site Settings. Identity and Foundation Authorization
+- The administration MVP contains Dashboard, Sources and Site Settings. Search insights belong to the Dashboard rather than a separate route. Identity and Foundation Authorization
   still protect every management route, but YTV does not expose a placeholder governance page without application, role or user
   workflows. A film CMS, editorial recommendations, community comments, product-authored ratings, payments and subtitle uploads
   are outside the current scope.
@@ -125,8 +128,7 @@ resolved episode and a recoverable playback session, while YTV itself does not h
 - Let anonymous viewing work immediately, then make signing in earn its place through durable history.
 - Reuse platform capabilities and keep YTV-specific complexity behind small, testable interfaces.
 - Count only clearly named events and retain the minimum data needed to operate the product.
-- Keep viewer search history and disabled-source preferences local and bounded; a viewer preference cannot re-enable an
-  administrator-disabled Source Definition.
+- Keep viewer search history local and bounded. Anonymous disabled-source preferences stay in LocalStorage; signed-in preferences synchronize to the YTV account and migrate the browser choice on first use. A viewer preference cannot re-enable an administrator-disabled Source Definition.
 
 ## Accessibility & Inclusion
 

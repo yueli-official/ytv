@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 	"time"
+
+	"github.com/yueli-official/ytv/api/internal/source/rules"
 )
 
 var (
@@ -17,6 +19,7 @@ type Kind string
 const (
 	KindJSONCatalog Kind = "json_catalog"
 	KindHTMLCatalog Kind = "html_catalog"
+	KindDeclarative Kind = "declarative"
 	KindFixture     Kind = "fixture"
 )
 
@@ -24,6 +27,8 @@ type Definition struct {
 	Key                  string
 	Name                 string
 	Kind                 Kind
+	Catalog              string
+	CatalogVersion       string
 	Endpoint             string
 	PlaybackHosts        []string
 	ImageHosts           []string
@@ -32,6 +37,14 @@ type Definition struct {
 	HomeVisible          bool
 	Priority             int
 	AllowHTTP            bool
+	Rule                 *rules.Plan
+	Compatibility        []CompatibilityNotice
+}
+
+type CompatibilityNotice struct {
+	Level   string
+	Code    string
+	Message string
 }
 
 type Query struct {

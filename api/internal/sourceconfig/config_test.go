@@ -28,3 +28,36 @@ func TestLoadDefaultsHomeVisibilityAndAcceptsExplicitOptOut(t *testing.T) {
 		t.Fatalf("definitions/error = %#v / %v", definitions, err)
 	}
 }
+
+func TestLoadCompilesDeclarativeKazumiDefinition(t *testing.T) {
+	definitions, err := Load(`[{
+		"key":"anime","name":"Anime","kind":"declarative","enabled":true,
+		"playbackHosts":["media.example"],"ruleFormat":"kazumi",
+		"rule":{
+			"api":1,"name":"Anime","baseURL":"https://anime.example","searchURL":"/search/@keyword",
+			"searchList":"//li","searchName":"/a/text()","searchResult":"/a/@href",
+			"chapterRoads":"//main","chapterResult":"/a","useNativePlayer":true,
+			"ytv":{"mediaXPath":"//video/source/@src"}
+		}
+	}]`, false)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(definitions) != 1 || definitions[0].Endpoint != "https://anime.example" || definitions[0].Rule == nil || definitions[0].Rule.Playback.MediaXPath == "" {
+		t.Fatalf("definitions = %#v", definitions)
+	}
+}
+
+func TestLoadKeepsUnsupportedCapabilitiesAsOperatorNotices(t *testing.T) {
+	definitions, err := Load(`[{
+		"key":"scripted","name":"Scripted","kind":"declarative","enabled":true,"ruleFormat":"kazumi",
+		"rule":{
+			"api":5,"name":"Scripted","baseURL":"https://anime.example","searchURL":"/search/@keyword",
+			"searchList":"//li","searchName":"/a/text()","searchResult":"/a/@href",
+			"chapterRoads":"//main","chapterResult":"/a","antiCrawlerConfig":{"script":"run()"}
+		}
+	}]`, false)
+	if err != nil || len(definitions) != 1 || len(definitions[0].Compatibility) != 1 || definitions[0].Compatibility[0].Level != "unsupported" {
+		t.Fatalf("definitions/error = %#v / %v", definitions, err)
+	}
+}

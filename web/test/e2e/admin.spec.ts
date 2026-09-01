@@ -32,10 +32,30 @@ test("a public query appears in administrator search analytics", async ({ page }
   await page.goto(`/search?q=${encodeURIComponent(query)}`, { waitUntil: "networkidle" });
   await expect(page.getByText("没有找到可播放结果", { exact: true })).toBeVisible();
   await login(page);
-  await page.goto("/manage/searches");
+  await page.goto("/manage");
   await expect(page.getByRole("heading", { name: "搜索洞察" })).toBeVisible();
   await expect(page.getByText(query, { exact: true })).toBeVisible();
   await expect(page.getByText("近 14 天搜索", { exact: true })).toBeVisible();
+});
+
+test("signed-in source preference survives reload", async ({ page }) => {
+  await login(page);
+  await page.goto("/", { waitUntil: "networkidle" });
+  await page.getByRole("button", { name: "来源设置" }).click();
+  const drawer = page.getByRole("dialog", { name: "来源设置" });
+  await expect(drawer.getByText("已同步到账号", { exact: true })).toBeVisible();
+  const switches = drawer.getByRole("switch");
+  if (await switches.count() > 1) {
+    const first = switches.first();
+    const before = await first.getAttribute("aria-checked");
+    const saved = page.waitForResponse((response) => response.request().method() === "PUT" && response.url().endsWith("/api/v1/preferences/sources"));
+    await first.click();
+    const saveResponse = await saved;
+    expect(saveResponse.ok()).toBe(true);
+    await page.reload({ waitUntil: "networkidle" });
+    await page.getByRole("button", { name: "来源设置" }).click();
+    await expect(page.getByRole("dialog", { name: "来源设置" }).getByRole("switch").first()).toHaveAttribute("aria-checked", before === "true" ? "false" : "true");
+  }
 });
 
 test("administrator probes an installed source without a manual save action", async ({ page }) => {
@@ -43,11 +63,22 @@ test("administrator probes an installed source without a manual save action", as
   await page.goto("/manage/sources");
   await expect(page.getByRole("heading", { name: "数据源" })).toBeVisible();
   await expect(page.getByLabel("本地演示源 名称")).toHaveValue("本地演示源");
-  const probeButton = page.getByRole("button", { name: "检测 本地演示源" });
-  await expect.poll(() => probeButton.evaluate((element: HTMLButtonElement & { __vueParentComponent?: unknown }) => Boolean(element.__vueParentComponent))).toBe(true);
+  await page.getByRole("button", { name: "本地演示源 的操作" }).click();
+  const probeButton = page.getByRole("menuitem", { name: "检测 本地演示源" });
   await probeButton.click();
   await expect(page.getByText("可用", { exact: true })).toBeVisible();
   await expect(page.getByRole("button", { name: "保存 本地演示源" })).toHaveCount(0);
+});
+
+test("administrator can add sources from the bundled Kazumi catalog", async ({ page }) => {
+  await login(page);
+  await page.goto("/manage/sources", { waitUntil: "networkidle" });
+  await expect(page.getByLabel("7sefun 名称")).toHaveValue("7sefun");
+  await expect(page.getByText("Kazumi 1.3 · kazumi-7sefun", { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "添加数据源" }).click();
+  const dialog = page.getByRole("dialog", { name: "添加数据源" });
+  await expect(dialog.getByText("全部来源已添加", { exact: true })).toBeVisible();
+  await expect(dialog.getByText(/目录中的 \d+ 个来源都已在当前数据源列表中/u)).toBeVisible();
 });
 
 test("signed-in playback progress is merged into account history", async ({ page }) => {

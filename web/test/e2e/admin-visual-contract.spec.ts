@@ -87,8 +87,28 @@ test("source collection supports CRUD auto-save and bulk probing in aligned colu
   await page.goto("/manage/sources");
 
   await expect(page.getByRole("button", { name: "添加数据源" })).toBeVisible();
-  await expect(page.getByRole("button", { name: "检测全部" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "来源工具" })).toBeVisible();
   await expect(page.getByRole("button", { name: /保存 .*资源/u })).toHaveCount(0);
+
+  await page.getByRole("checkbox", { name: /选择 .*资源/u }).first().check();
+  const bulkRegion = page.getByRole("region", { name: "来源批量操作" });
+  await expect(bulkRegion).toBeVisible();
+  await expect(bulkRegion.getByRole("combobox", { name: "批量操作" })).toBeVisible();
+  await expect(bulkRegion.getByRole("button", { name: "应用" })).toBeDisabled();
+  await bulkRegion.getByRole("button", { name: "清除选择" }).click();
+
+  await page.getByRole("button", { name: "筛选" }).click();
+  await expect(page.getByText("参与搜索", { exact: true }).last()).toBeVisible();
+  await expect(page.getByText("首页展示", { exact: true }).last()).toBeVisible();
+  await page.keyboard.press("Escape");
+
+  await page.getByRole("button", { name: "添加数据源" }).click();
+  const addDialog = page.getByRole("dialog", { name: "添加数据源" });
+  if (await addDialog.getByRole("checkbox", { name: "选择全部可添加来源" }).count()) {
+    await addDialog.getByRole("checkbox", { name: "选择全部可添加来源" }).check();
+    await expect(addDialog.getByRole("button", { name: /添加所选（\d+）/u })).toBeEnabled();
+  }
+  await addDialog.getByRole("button", { name: "取消" }).click();
 
   const header = page.locator("[data-source-columns]");
   const firstRow = page.locator("[data-source-row]").first();
@@ -109,8 +129,10 @@ test("source collection supports CRUD auto-save and bulk probing in aligned colu
     expect(dimensions.page).toBe(dimensions.viewport);
   }
 
-  const probeAllButton = page.getByRole("button", { name: "检测全部" });
-  await expect.poll(() => probeAllButton.evaluate((element: HTMLButtonElement & { __vueParentComponent?: unknown }) => Boolean(element.__vueParentComponent))).toBe(true);
+  await page.getByRole("button", { name: "来源工具" }).click();
+  await expect(page.getByRole("menuitem", { name: "启用可用来源" })).toBeVisible();
+  await expect(page.getByRole("menuitem", { name: "停用不可用来源" })).toBeVisible();
+  const probeAllButton = page.getByRole("menuitem", { name: "检测全部" });
   const probed = page.waitForResponse((response) => response.request().method() === "POST" && response.url().endsWith("/api/v1/admin/sources/probe-all"));
   await probeAllButton.click();
   expect((await probed).ok()).toBe(true);

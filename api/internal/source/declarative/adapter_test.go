@@ -1,0 +1,83 @@
+package declarative
+
+import (
+	"context"
+	"fmt"
+	"net/http"
+	"net/http/httptest"
+	"testing"
+
+	"github.com/yueli-official/ytv/api/internal/source"
+	"github.com/yueli-official/ytv/api/internal/source/rules"
+)
+
+func TestAdapterExecutesSearchTitleAndMediaExtractionPlan(t *testing.T) {
+	server := httptest.NewTLSServer(http.HandlerFunc(func(response http.ResponseWriter, request *http.Request) {
+		switch request.URL.Path {
+		case "/search":
+			if request.URL.Query().Get("q") != "海" {
+				t.Fatalf("query = %q", request.URL.RawQuery)
+			}
+			fmt.Fprint(response, `<ul><li class="result"><a href="/title/sea"><strong>海之环</strong></a></li></ul>`)
+		case "/title/sea":
+			fmt.Fprint(response, `<section class="road"><a class="episode" href="/watch/sea-1">第一集</a><a class="episode" href="/watch/sea-2">第二集</a></section>`)
+		case "/watch/sea-1":
+			fmt.Fprint(response, `<video><source src="https://media.example/sea-1.m3u8"></video>`)
+		case "/watch/sea-2":
+			fmt.Fprint(response, `<video><source src="https://media.example/sea-2.m3u8"></video>`)
+		default:
+			http.NotFound(response, request)
+		}
+	}))
+	defer server.Close()
+
+	adapter, err := New(server.Client())
+	if err != nil {
+		t.Fatal(err)
+	}
+	definition := source.Definition{
+		Key: "anime", Name: "Anime", Kind: source.KindDeclarative, Endpoint: server.URL, Enabled: true,
+		Rule: &rules.Plan{
+			BaseURL: server.URL,
+			Search: rules.SearchPlan{
+				Request:   rules.RequestPlan{Method: http.MethodGet, URL: "/search?q=@keyword"},
+				ListXPath: "//li[@class='result']", NameXPath: "/a/strong/text()", LinkXPath: "/a/@href",
+			},
+			Title:    rules.TitlePlan{RoadsXPath: "//section[@class='road']", EpisodesXPath: "/a[@class='episode']"},
+			Playback: rules.PlaybackPlan{MediaXPath: "//video/source/@src"},
+		},
+	}
+
+	page, err := adapter.Search(context.Background(), definition, source.Query{Text: "海"})
+	if err != nil || len(page.Items) != 1 || page.Items[0].Name != "海之环" {
+		t.Fatalf("search = %#v, %v", page, err)
+	}
+	title, err := adapter.ResolveTitle(context.Background(), definition, page.Items[0].Locator)
+	if err != nil || len(title.Episodes) != 2 || title.Episodes[0].Title != "第一集" {
+		t.Fatalf("title = %#v, %v", title, err)
+	}
+	_, episode, err := adapter.ResolveEpisode(context.Background(), definition, source.EpisodeLocator{Title: title.Locator, EpisodeKey: title.Episodes[0].Key})
+	if err != nil || episode.PlaybackURL != "https://media.example/sea-1.m3u8" {
+		t.Fatalf("episode = %#v, %v", episode, err)
+	}
+}
+
+func TestAdapterAllowsDirectMediaEpisodeWithoutExtractor(t *testing.T) {
+	server := httptest.NewTLSServer(http.HandlerFunc(func(response http.ResponseWriter, request *http.Request) {
+		fmt.Fprint(response, `<main><a href="https://media.example/direct.mp4">正片</a></main>`)
+	}))
+	defer server.Close()
+	adapter, _ := New(server.Client())
+	definition := source.Definition{Key: "direct", Name: "Direct", Kind: source.KindDeclarative, Endpoint: server.URL, Enabled: true, Rule: &rules.Plan{
+		BaseURL: server.URL, Title: rules.TitlePlan{RoadsXPath: "//main", EpisodesXPath: "/a"},
+	}}
+	locator := source.TitleLocator{SourceKey: definition.Key, ExternalID: encodeURL(server.URL + "/title")}
+	title, err := adapter.ResolveTitle(context.Background(), definition, locator)
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, episode, err := adapter.ResolveEpisode(context.Background(), definition, source.EpisodeLocator{Title: locator, EpisodeKey: title.Episodes[0].Key})
+	if err != nil || episode.PlaybackURL != "https://media.example/direct.mp4" {
+		t.Fatalf("episode = %#v, %v", episode, err)
+	}
+}

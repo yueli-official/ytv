@@ -18,7 +18,7 @@ related_targets: ["web/app/pages/manage/index.vue", "web/app/pages/manage/source
   mutations. It does not implement local Sidebar, PageHeader, Collection, Toast or Overlay equivalents.
 - Reading path: Sidebar navigation → Topbar context → Canvas PageHeader/primary action → tabs or time range → one task surface →
   inline result or recovery.
-- Page kinds: Dashboard for `/manage` and `/manage/searches`; Collection for sources; Settings for site profile. Identity,
+- Page kinds: Dashboard for `/manage`, including search insights; `/manage/searches` redirects there. Collection owns sources; Settings owns site profile. Identity,
   Foundation Authorization and `adminSession` remain server-side access boundaries without a placeholder governance page.
 - Density and rhythm: full-width working Canvas, `space-y-5`, four summary metrics at wide widths, asymmetric primary/secondary
   trend regions, compact lists, and no decorative or explanatory filler.
@@ -26,10 +26,12 @@ related_targets: ["web/app/pages/manage/index.vue", "web/app/pages/manage/source
   the single `YManagePage` action via `ActionFeedbackButton`; high-frequency source policy fields auto-save after switch activation
   or a 350ms settled input value and expose pending/success/error beside the source.
 - Source lifecycle: Add lists only deployment-approved definitions not currently installed; inline name, participation, homepage
-  visibility and priority are editable; Delete removes runtime participation but retains the approved definition for later reinstall.
-  “检测全部” probes installed sources concurrently and projects per-row availability plus one summary.
-- Collection columns: wide header and rows share the exact `minmax(18rem,1fr) 7rem 7rem 8rem 13rem` template. Below `xl`, the
-  header collapses and each row exposes explicit labels instead of pretending to remain tabular.
+  visibility and priority are editable; multi-select supports batch policy, probing and removal, while Add supports selecting multiple
+  candidates. “检测全部” probes installed sources concurrently and projects per-row availability plus one summary.
+- Source tools: the page action area keeps Add as primary and groups Probe All, enable available and disable unavailable in one compact menu.
+- Collection behavior: `CollectionPanel` owns enabled/home-visible filters, selection and bulk workflow; `AdminRowActions` overflow owns
+  per-row Probe/Delete. Wide header and rows share `minmax(18rem,1fr) 7rem 7rem 7rem 3rem`; below `xl`, the header collapses and rows
+  expose explicit labels without horizontal overflow.
 - Appearance: admin supports the shared light/dark appearance control. Shell, Canvas, Card, Inset and Overlay remain semantically
   distinct in both modes; public dark-lock rules never leak into the admin subtree.
 - Responsive behavior: 390/768/1024/1440px; metrics collapse 4→2→1, trend columns stack below `xl`, collection rows reflow without

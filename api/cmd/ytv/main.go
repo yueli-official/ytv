@@ -25,11 +25,14 @@ import (
 	"github.com/yueli-official/ytv/api/internal/server"
 	"github.com/yueli-official/ytv/api/internal/siteprofile"
 	"github.com/yueli-official/ytv/api/internal/source"
+	"github.com/yueli-official/ytv/api/internal/source/declarative"
 	"github.com/yueli-official/ytv/api/internal/source/fixture"
 	"github.com/yueli-official/ytv/api/internal/source/htmlcatalog"
 	"github.com/yueli-official/ytv/api/internal/source/jsoncatalog"
+	"github.com/yueli-official/ytv/api/internal/source/rulecatalog"
 	"github.com/yueli-official/ytv/api/internal/sourceconfig"
 	"github.com/yueli-official/ytv/api/internal/sourcecontrol"
+	"github.com/yueli-official/ytv/api/internal/sourcepreference"
 	"github.com/yueli-official/ytv/api/internal/trending"
 )
 
@@ -68,15 +71,32 @@ func main() {
 	})
 	must(err)
 
-	definitions, err := sourceconfig.Load(os.Getenv("YTV_SOURCE_DEFINITIONS_JSON"), environment("YTV_DEV_FIXTURE", "false") == "true")
+	includeFixture := environment("YTV_DEV_FIXTURE", "false") == "true"
+	definitions, err := sourceconfig.Load(os.Getenv("YTV_SOURCE_DEFINITIONS_JSON"), includeFixture)
 	must(err)
+	if !includeFixture && environment("YTV_KAZUMI_RULES_ENABLED", "true") == "true" {
+		catalog, catalogErr := rulecatalog.LoadKazumiSnapshot(
+			environment("YTV_KAZUMI_RULES_REF", "5fea5eb84768a2290ddedb156583ef20d9b43561"),
+		)
+		if catalogErr != nil {
+			panic(catalogErr)
+		} else {
+			definitions = append(definitions, catalog.Definitions...)
+			if len(catalog.Skipped) > 0 {
+				g.Log().Warningf(ctx, "Kazumi rule catalog skipped %d invalid rules", len(catalog.Skipped))
+			}
+		}
+	}
 	jsonAdapter, err := jsoncatalog.New(&http.Client{Timeout: 5 * time.Second})
 	must(err)
 	htmlAdapter, err := htmlcatalog.New(&http.Client{Timeout: 5 * time.Second})
 	must(err)
+	declarativeAdapter, err := declarative.New(&http.Client{Timeout: 5 * time.Second})
+	must(err)
 	registry, err := source.NewRegistry(definitions, map[source.Kind]source.Adapter{
 		source.KindJSONCatalog: jsonAdapter,
 		source.KindHTMLCatalog: htmlAdapter,
+		source.KindDeclarative: declarativeAdapter,
 		source.KindFixture:     fixture.New(fixture.Titles()),
 	})
 	must(err)
@@ -110,6 +130,10 @@ func main() {
 	must(err)
 	progressService, err := progress.New(progressStore, nil)
 	must(err)
+	preferenceStore, err := sourcepreference.NewPostgresStore(database)
+	must(err)
+	preferenceService, err := sourcepreference.New(preferenceStore, nil)
+	must(err)
 	profileStore, err := siteprofile.NewPostgresStore(database)
 	must(err)
 	profileService, err := siteprofile.New(environment("YTV_SITE_KEY", "ytv-main"), profileStore, nil)
@@ -120,7 +144,7 @@ func main() {
 	controller, err := httpapi.New(environment("YTV_SITE_KEY", "ytv-main"), httpapi.Dependencies{
 		Authorization: authz.New(authorizationRuntime), Discovery: discoveryModule, Catalog: registry,
 		Playback: playbackResolver, Traffic: trafficService, Searches: searchService,
-		Sources: sourceService, Progress: progressService, SiteProfile: profileService, Trending: trendingService,
+		Sources: sourceService, Progress: progressService, SourcePreferences: preferenceService, SiteProfile: profileService, Trending: trendingService,
 	})
 	must(err)
 	httpServer := g.Server()

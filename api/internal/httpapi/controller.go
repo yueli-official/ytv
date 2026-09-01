@@ -19,21 +19,23 @@ import (
 	"github.com/yueli-official/ytv/api/internal/siteprofile"
 	"github.com/yueli-official/ytv/api/internal/source"
 	"github.com/yueli-official/ytv/api/internal/sourcecontrol"
+	"github.com/yueli-official/ytv/api/internal/sourcepreference"
 	"github.com/yueli-official/ytv/api/internal/trending"
 )
 
 type Core struct {
-	siteKey   string
-	authz     *authz.Service
-	discovery *discovery.Module
-	catalog   source.Catalog
-	playback  *playback.Resolver
-	traffic   *analytics.Traffic
-	searches  *searchanalytics.Service
-	sources   *sourcecontrol.Service
-	progress  *progress.Service
-	profile   *siteprofile.Service
-	trending  *trending.Service
+	siteKey     string
+	authz       *authz.Service
+	discovery   *discovery.Module
+	catalog     source.Catalog
+	playback    *playback.Resolver
+	traffic     *analytics.Traffic
+	searches    *searchanalytics.Service
+	sources     *sourcecontrol.Service
+	progress    *progress.Service
+	preferences *sourcepreference.Service
+	profile     *siteprofile.Service
+	trending    *trending.Service
 }
 
 type Public struct{ core *Core }
@@ -41,16 +43,17 @@ type Account struct{ core *Core }
 type Administrator struct{ core *Core }
 
 type Dependencies struct {
-	Authorization *authz.Service
-	Discovery     *discovery.Module
-	Catalog       source.Catalog
-	Playback      *playback.Resolver
-	Traffic       *analytics.Traffic
-	Searches      *searchanalytics.Service
-	Sources       *sourcecontrol.Service
-	Progress      *progress.Service
-	SiteProfile   *siteprofile.Service
-	Trending      *trending.Service
+	Authorization     *authz.Service
+	Discovery         *discovery.Module
+	Catalog           source.Catalog
+	Playback          *playback.Resolver
+	Traffic           *analytics.Traffic
+	Searches          *searchanalytics.Service
+	Sources           *sourcecontrol.Service
+	Progress          *progress.Service
+	SourcePreferences *sourcepreference.Service
+	SiteProfile       *siteprofile.Service
+	Trending          *trending.Service
 }
 
 func New(siteKey string, dependencies Dependencies) (*Core, error) {
@@ -60,7 +63,7 @@ func New(siteKey string, dependencies Dependencies) (*Core, error) {
 	return &Core{
 		siteKey: siteKey, authz: dependencies.Authorization, discovery: dependencies.Discovery,
 		catalog: dependencies.Catalog, playback: dependencies.Playback, traffic: dependencies.Traffic,
-		searches: dependencies.Searches, sources: dependencies.Sources, progress: dependencies.Progress,
+		searches: dependencies.Searches, sources: dependencies.Sources, progress: dependencies.Progress, preferences: dependencies.SourcePreferences,
 		profile: dependencies.SiteProfile, trending: dependencies.Trending,
 	}, nil
 }
@@ -278,6 +281,36 @@ func (controller *Account) SaveProgress(ctx context.Context, request *v1.SavePro
 		return nil, apierr.Error(apierr.Validation)
 	}
 	return &v1.SaveProgressRes{Item: playbackProgressView(result.Record), Applied: result.Applied}, nil
+}
+
+func (controller *Account) GetSourcePreference(ctx context.Context, _ *v1.GetSourcePreferenceReq) (*v1.GetSourcePreferenceRes, error) {
+	userKey, err := requiredUser(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if controller.core.preferences == nil {
+		return nil, errors.New("source preferences are unavailable")
+	}
+	value, err := controller.core.preferences.Get(ctx, userKey)
+	if err != nil {
+		return nil, mapError(err)
+	}
+	return &v1.GetSourcePreferenceRes{Preference: sourcePreferenceView(value)}, nil
+}
+
+func (controller *Account) SaveSourcePreference(ctx context.Context, request *v1.SaveSourcePreferenceReq) (*v1.SaveSourcePreferenceRes, error) {
+	userKey, err := requiredUser(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if controller.core.preferences == nil {
+		return nil, errors.New("source preferences are unavailable")
+	}
+	value, err := controller.core.preferences.Save(ctx, userKey, request.DisabledSourceKeys, request.Revision)
+	if err != nil {
+		return nil, mapError(err)
+	}
+	return &v1.SaveSourcePreferenceRes{Preference: sourcePreferenceView(value)}, nil
 }
 
 func (controller *Administrator) GetTrafficOverview(ctx context.Context, request *v1.GetTrafficOverviewReq) (*v1.GetTrafficOverviewRes, error) {
@@ -506,12 +539,22 @@ func trafficChannelView(channel analytics.ChannelOverview) v1.TrafficChannelView
 func sourceAdminView(value sourcecontrol.SourceView) v1.SourceAdminView {
 	return v1.SourceAdminView{
 		Key: value.Key, Name: value.Name, Kind: string(value.Kind), Enabled: value.Enabled,
+		Catalog: value.Catalog, CatalogVersion: value.CatalogVersion,
 		HomeVisible: value.HomeVisible, Priority: value.Priority, Revision: value.Revision, UpdatedAt: value.UpdatedAt,
+		Compatibility: sourceCompatibilityView(value.Compatibility),
 	}
 }
 
 func availableSourceView(value sourcecontrol.AvailableSource) v1.AvailableSourceView {
-	return v1.AvailableSourceView{Key: value.Key, Name: value.Name, Kind: string(value.Kind), Revision: value.Revision}
+	return v1.AvailableSourceView{Key: value.Key, Name: value.Name, Kind: string(value.Kind), Catalog: value.Catalog, CatalogVersion: value.CatalogVersion, Revision: value.Revision, Compatibility: sourceCompatibilityView(value.Compatibility)}
+}
+
+func sourceCompatibilityView(values []source.CompatibilityNotice) []v1.SourceCompatibilityView {
+	result := make([]v1.SourceCompatibilityView, 0, len(values))
+	for _, value := range values {
+		result = append(result, v1.SourceCompatibilityView{Level: value.Level, Code: value.Code, Message: value.Message})
+	}
+	return result
 }
 
 func splitSourceKeys(raw string) []string {
@@ -538,6 +581,10 @@ func playbackProgressView(value progress.Record) v1.PlaybackProgressView {
 	}
 }
 
+func sourcePreferenceView(value sourcepreference.Preference) v1.SourcePreferenceView {
+	return v1.SourcePreferenceView{DisabledSourceKeys: value.DisabledSourceKeys, Revision: value.Revision, UpdatedAt: value.UpdatedAt, Exists: value.Exists}
+}
+
 func siteProfileView(value siteprofile.Profile) v1.SiteProfileView {
 	return v1.SiteProfileView{
 		SiteKey: value.SiteKey, Name: value.Name, Description: value.Description,
@@ -556,6 +603,8 @@ func mapError(err error) error {
 	case errors.Is(err, source.ErrUnavailable), errors.Is(err, playback.ErrUnsafeURL), errors.Is(err, discovery.ErrAllSourcesFailed):
 		return apierr.Error(apierr.Conflict)
 	case errors.Is(err, sourcecontrol.ErrRevisionConflict):
+		return apierr.Error(apierr.Conflict)
+	case errors.Is(err, sourcepreference.ErrRevisionConflict):
 		return apierr.Error(apierr.Conflict)
 	case errors.Is(err, sourcecontrol.ErrAlreadyInstalled), errors.Is(err, sourcecontrol.ErrNotInstalled):
 		return apierr.Error(apierr.Conflict)

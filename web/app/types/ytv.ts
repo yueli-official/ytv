@@ -101,23 +101,42 @@ export interface AdminSource {
   key: string;
   name: string;
   kind: string;
+  catalog: string;
+  catalogVersion: string;
   enabled: boolean;
   homeVisible: boolean;
   priority: number;
   revision: number;
   updatedAt: string;
+  compatibility: SourceCompatibilityNotice[];
+}
+
+export interface SourceCompatibilityNotice {
+  level: "notice" | "warning" | "unsupported";
+  code: string;
+  message: string;
 }
 
 export interface AvailableSource {
   key: string;
   name: string;
   kind: string;
+  catalog: string;
+  catalogVersion: string;
   revision: number;
+  compatibility: SourceCompatibilityNotice[];
 }
 
 export interface PublicSource {
   key: string;
   name: string;
+}
+
+export interface SourcePreference {
+  disabledSourceKeys: string[];
+  revision: number;
+  updatedAt: string;
+  exists: boolean;
 }
 
 export interface SourceProbe {

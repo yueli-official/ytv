@@ -1,6 +1,24 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
+test("anonymous source preference stays in the browser", async ({ page }) => {
+  await page.goto("/", { waitUntil: "networkidle" });
+  const settingsButton = page.getByRole("button", { name: "来源设置" });
+  await settingsButton.click();
+  const drawer = page.getByRole("dialog", { name: "来源设置" });
+  await expect(drawer).toBeVisible();
+  await expect(drawer.getByText("保存在此浏览器", { exact: true })).toBeVisible();
+  const switches = drawer.getByRole("switch");
+  if (await switches.count() > 1) {
+    const first = switches.first();
+    const before = await first.getAttribute("aria-checked");
+    await first.click();
+    await page.reload({ waitUntil: "networkidle" });
+    await page.getByRole("button", { name: "来源设置" }).click();
+    await expect(page.getByRole("dialog", { name: "来源设置" }).getByRole("switch").first()).toHaveAttribute("aria-checked", before === "true" ? "false" : "true");
+  }
+});
+
 test("browse-first homepage exposes recovery without horizontal page overflow", async ({ page }, testInfo) => {
   const errors: string[] = [];
   page.on("console", (message) => {

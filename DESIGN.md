@@ -229,7 +229,7 @@ Discovery tasks are explicit siblings. Search owns viewer-local history and sour
 
 - Dark-locked public browse, search, title, history, and playback surfaces.
 - White YTV wordmark with one small sky/cyan dot.
-- Search history capped at eight and viewer source exclusions stored locally.
+- Search history capped at eight; viewer source exclusions stay local for visitors and synchronize for signed-in users.
 - Independent source-update and Douban poster modules with separate batch actions.
 - Compact real-poster Continue Watching and a de-duplicated 2→6-column playback-history grid.
 - Real source posters in a two-to-six-column 2:3 grid and compact horizontal search results.
@@ -366,7 +366,7 @@ The recurring media silhouette is a bordered 2:3 poster. Search results preserve
 
 - **Contents:** Search field, local search history, and viewer source toggles only.
 - **History:** Most-recent unique queries first, maximum eight, clearable, and passed back through the current selected sources.
-- **ViewerSourcePreference:** Show globally enabled definitions, start with all selected, keep at least one, and persist only disabled keys locally so newly enabled sources enter selected by default.
+- **ViewerSourcePreference:** A public-header settings action opens a right Slideover listing globally enabled definitions. Keep at least one source selected and persist only disabled keys so newly enabled sources enter by default; visitors use LocalStorage and signed-in users synchronize the same preference to their account.
 - **Submit:** Include selected source keys in the search route; empty query, IME composition, or zero selected sources prevents submission.
 
 ### Source Updates
@@ -424,15 +424,17 @@ The recurring media silhouette is a bordered 2:3 poster. Search results preserve
 
 ### Administration
 
-- **Routes:** Dashboard, Sources, Search Insights, and Site Settings only; access checks remain an invisible boundary rather than a placeholder page.
+- **Routes:** Dashboard, Sources, and Site Settings only; search metrics, trend and top queries live on Dashboard. The former Search Insights route redirects to Dashboard.
 - **Source Lifecycle:** “添加数据源” installs only an uninstalled deployment-approved definition. Delete removes it from runtime
   search/home participation but retains the approved definition for later reinstall. Endpoint, adapter and host fields never enter the UI.
 - **Source Policy:** Display name, `enabled`, `homeVisible`, and `priority` auto-save; switches persist immediately and text/number
   fields settle for 350ms. Pending, “已自动保存”, and failure feedback stay beside the edited source; there is no per-row Save button.
 - **Source Probing:** Per-row Probe remains available and “检测全部” probes every installed source with bounded concurrency, then
   shows row results and an available/total summary.
-- **Source Collection Layout:** Desktop header and rows share the exact five-column template; mobile removes the tabular header and
-  uses explicit field labels with no horizontal page scroll.
+- **Source Collection:** Foundation `CollectionPanel` owns search, enabled/home-visible filters, paging, selection and bulk actions.
+  Per-row Probe/Delete are low-frequency actions inside an `AdminRowActions` overflow menu. Desktop header and rows share the exact
+  `minmax(18rem,1fr) 7rem 7rem 7rem 3rem` template; mobile removes the tabular header and uses explicit field labels without overflow.
+- **Source Tools:** A compact header menu owns Probe All, enable available sources and disable unavailable sources. Availability tools probe first, then apply only the matching policy and report the changed count in place.
 - **Initial Policy:** `zy360`, `mdzy`, and `zuid` start enabled; `qgikun` starts disabled; only `zy360` starts visible on the homepage.
 - **Approved Candidates:** `yinghua`, `qgsuoni`, and `qgyouzhiziyuanku` start uninstalled and disabled, so the Add dialog has
   meaningful choices without making an unprobed source participate in public search.

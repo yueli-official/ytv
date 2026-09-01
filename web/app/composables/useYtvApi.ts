@@ -1,6 +1,6 @@
 import { createBrowserUUID, useApi as useFoundationApi } from "@yueli/nuxt-runtime/runtime";
 import type { JsonValue } from "@yueli/http-runtime";
-import type { AdminSource, AvailableSource, DiscoveryResponse, PlaybackManifest, PlaybackProgress, PublicSource, SearchAnalyticsOverview, SiteProfile, SourceProbe, TitleResponse, TrendingItem } from "~/types/ytv";
+import type { AdminSource, AvailableSource, DiscoveryResponse, PlaybackManifest, PlaybackProgress, PublicSource, SearchAnalyticsOverview, SiteProfile, SourcePreference, SourceProbe, TitleResponse, TrendingItem } from "~/types/ytv";
 
 export function useYtvApi() {
   const api = useFoundationApi("platform");
@@ -101,6 +101,14 @@ export function useYtvApi() {
         `/api/v1/progress/${encodeURIComponent(sourceKey)}/${encodeURIComponent(externalId)}/${encodeURIComponent(episodeKey)}`,
         { method: "PUT", body: input as unknown as JsonValue, auth: "required", replayAfterReauth: "never" }
       );
+    },
+    sourcePreference() {
+      return api.request<{ preference: SourcePreference }>("/api/v1/preferences/sources", { auth: "required" });
+    },
+    saveSourcePreference(disabledSourceKeys: string[], revision: number) {
+      return api.request<{ preference: SourcePreference }>("/api/v1/preferences/sources", {
+        method: "PUT", body: { disabledSourceKeys, revision } as unknown as JsonValue, auth: "required", replayAfterReauth: "never"
+      });
     },
     adminSiteProfile() {
       return api.request<{ profile: SiteProfile }>("/api/v1/admin/site-profile", { auth: "required" });

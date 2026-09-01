@@ -24,7 +24,10 @@ function hideBrokenImage(event: Event) {
             <UBadge v-if="group.candidates[0].remarks" :label="group.candidates[0].remarks" color="error" variant="subtle" size="xs" />
           </div>
           <div class="mt-auto space-y-1.5 pt-3 text-xs text-white/60">
-            <p class="flex items-center gap-1.5"><UIcon name="i-tabler-clock" />{{ group.candidates[0].remarks || `${group.candidates[0].episodeCount} 集` }}</p>
+            <p class="flex items-center gap-1.5">
+              <UIcon name="i-tabler-clock" />
+              {{ group.candidates[0].remarks || (group.candidates[0].episodeCount > 0 ? `${group.candidates[0].episodeCount} 集` : "进入详情查看选集") }}
+            </p>
             <p class="flex items-center gap-1.5"><UIcon name="i-tabler-server" />{{ group.candidates[0].sourceName }}</p>
           </div>
         </div>
