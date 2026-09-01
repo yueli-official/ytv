@@ -7,6 +7,7 @@ const trendingTag = ref("热门");
 const failedTrendingPosters = ref(new Set<string>());
 const tags = ["热门", "美剧", "英剧", "日剧", "韩剧", "港剧", "综艺", "纪录片"];
 const viewerSourceKeys = useState<string[]>("ytv-selected-source-keys", () => []);
+const { rail: trendingRail, canPrevious: canPreviousTrending, canNext: canNextTrending, previous: previousTrending, next: nextTrending } = useHorizontalRail();
 
 const { data: sourceData, pending: sourcePending, error: sourceError, refresh: refreshSources } = await useAsyncData(
   () => `ytv-discover-${sourcePage.value}`,
@@ -89,16 +90,20 @@ useSeoMeta({
           <span class="hidden h-7 w-px bg-white/10 sm:block" aria-hidden="true" />
           <UButton v-for="item in tags" :key="item" :label="item" :color="trendingTag === item ? 'primary' : 'neutral'" :variant="trendingTag === item ? 'solid' : 'outline'" size="sm" @click="selectTag(item)" />
         </div>
-        <div v-if="trendingData?.items.length" data-douban-grid class="flex snap-x gap-3 overflow-x-auto border-t border-white/10 pt-4 pb-2" aria-label="豆瓣热门搜索">
-          <NuxtLink v-for="item in trendingData.items" :key="item.id" :to="{ path: '/search', query: { q: item.title } }" class="group w-[8.75rem] shrink-0 snap-start text-white no-underline sm:w-40" @click.prevent="searchTrending(item.title)">
-            <div class="relative aspect-[2/3] overflow-hidden rounded-xl border border-white/10 bg-[#111923] transition group-hover:-translate-y-0.5 group-hover:border-sky-400/45">
-              <img v-if="trendingPoster(item)" :src="trendingPoster(item)" :alt="`${item.title} 海报`" loading="lazy" decoding="async" class="size-full object-cover" @error="failTrendingPoster(item.id)">
-              <span v-else class="grid size-full place-items-center text-white/25"><UIcon name="i-tabler-photo" class="size-9" aria-hidden="true" /></span>
-              <span v-if="item.score" class="absolute right-2 top-2 rounded-md bg-black/75 px-2 py-1 text-[11px] font-bold text-amber-300">★ {{ item.score }}</span>
-              <span v-if="item.isNew" class="absolute left-2 top-2 rounded-md bg-sky-300 px-2 py-1 text-[10px] font-semibold text-sky-950">新片</span>
-            </div>
-            <h3 class="mt-2 truncate text-sm font-semibold group-hover:text-sky-300">{{ item.title }}</h3>
-          </NuxtLink>
+        <div v-if="trendingData?.items.length" class="relative border-t border-white/10 pt-4">
+          <UButton v-if="canPreviousTrending" data-carousel-previous icon="i-tabler-chevron-left" aria-label="上一组豆瓣热门" color="neutral" variant="ghost" class="absolute -left-3 top-1/2 z-10 hidden min-h-11 min-w-11 -translate-y-1/2 justify-center rounded-full border border-white/15 bg-[#070b10]/95 text-white shadow-lg hover:bg-[#111a24] sm:inline-flex" @click="previousTrending" />
+          <div ref="trendingRail" data-douban-grid class="douban-rail flex snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain pb-1" aria-label="豆瓣热门搜索">
+            <NuxtLink v-for="item in trendingData.items" :key="item.id" :to="{ path: '/search', query: { q: item.title } }" class="group w-[8.75rem] shrink-0 snap-start text-white no-underline sm:w-40" @click.prevent="searchTrending(item.title)">
+              <div class="relative aspect-[2/3] overflow-hidden rounded-xl border border-white/10 bg-[#111923] transition group-hover:-translate-y-0.5 group-hover:border-sky-400/45">
+                <img v-if="trendingPoster(item)" :src="trendingPoster(item)" :alt="`${item.title} 海报`" loading="lazy" decoding="async" class="size-full object-cover" @error="failTrendingPoster(item.id)">
+                <span v-else class="grid size-full place-items-center text-white/25"><UIcon name="i-tabler-photo" class="size-9" aria-hidden="true" /></span>
+                <span v-if="item.score" class="absolute right-2 top-2 rounded-md bg-black/75 px-2 py-1 text-[11px] font-bold text-amber-300">★ {{ item.score }}</span>
+                <span v-if="item.isNew" class="absolute left-2 top-2 rounded-md bg-sky-300 px-2 py-1 text-[10px] font-semibold text-sky-950">新片</span>
+              </div>
+              <h3 class="mt-2 truncate text-sm font-semibold group-hover:text-sky-300">{{ item.title }}</h3>
+            </NuxtLink>
+          </div>
+          <UButton v-if="canNextTrending" data-carousel-next icon="i-tabler-chevron-right" aria-label="下一组豆瓣热门" color="neutral" variant="ghost" class="absolute -right-3 top-1/2 z-10 hidden min-h-11 min-w-11 -translate-y-1/2 justify-center rounded-full border border-white/15 bg-[#070b10]/95 text-white shadow-lg hover:bg-[#111a24] sm:inline-flex" @click="nextTrending" />
         </div>
         <p v-else-if="trendingError" class="border-t border-white/10 pt-4 text-xs text-white/45">热门列表暂时不可用，来源浏览与搜索不受影响。</p>
       </section>
@@ -117,3 +122,13 @@ useSeoMeta({
     </div>
   </div>
 </template>
+
+<style scoped>
+.douban-rail {
+  scrollbar-width: none;
+}
+
+.douban-rail::-webkit-scrollbar {
+  display: none;
+}
+</style>

@@ -307,7 +307,7 @@ Public browse, search, and playback use a fluid frame capped at 90rem; global na
 
 The source and playback-history poster grids use two columns by default, then three at 640px, four at 768px, five at 1024px, and six at 1280px. Search results use one compact horizontal card column by default, two at 768px, and four at 1280px. The dedicated search route keeps its form, source controls, result summary, results and paging on one 90rem axis.
 
-The homepage sequence is search, optional compact resume rail, source updates, then external discovery. Continue Watching is a 15–16rem horizontal card rail and never a large 16:9 feature row. The search panel contains only the field, local history, and globally enabled source toggles. Source updates and Douban each own an independent header, filter or paging state, batch action, failure state, and content region.
+The homepage sequence is search, optional compact resume rail, Douban hot, then source updates. Continue Watching is a 15–16rem horizontal card carousel and never a large 16:9 feature row. The search panel contains only the field and local history; viewer source choice lives in the navigation settings drawer. Continue Watching and Douban hide native scrollbar chrome and use side-centered carousel controls. Source updates and Douban each own an independent header, filter or paging state, batch action, failure state, and content region.
 
 Title details stack on mobile and become a 15rem poster column plus flexible facts at 768px. Its separate episode browser shows 50 episodes per selected range and keeps the compact 4→6→8→10→12 grid.
 

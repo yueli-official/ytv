@@ -88,6 +88,8 @@ resolved episode and a recoverable playback session, while YTV itself does not h
   real-source poster grid whose own header contains “换一批资源”. Viewer source selection lives only in the navigation settings
   drawer rather than repeating below search. No control changes
   two modules at once.
+- Continue Watching and Douban use hidden-scrollbar carousel rails with previous/next controls vertically centered at the two
+  sides; touch and trackpad scrolling remain available without browser-native scrollbar chrome.
 - Search form, source controls, result summary, result grid and paging share the same 90rem content axis. The logo is the home
   action, so public navigation does not duplicate it with a “浏览” link.
 - Playback history de-duplicates records by Source Title Locator, keeps the most recent episode, resolves its real source poster

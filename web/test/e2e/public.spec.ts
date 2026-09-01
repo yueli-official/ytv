@@ -113,6 +113,43 @@ test("homepage separates search history, source refresh and Douban discovery", a
   await expect(searchPanel.getByRole("heading", { name: "豆瓣热门" })).toHaveCount(0);
 });
 
+test("homepage carousel rails use side controls without native scrollbars", async ({ page }, testInfo) => {
+  await page.addInitScript(() => {
+    for (let index = 0; index < 6; index += 1) {
+      localStorage.setItem(`ytv-progress-v2:fixture:carousel-${index}:0`, JSON.stringify({
+        titleName: `继续观看 ${index + 1}`,
+        episodeTitle: "第 1 集",
+        position: 60,
+        duration: 600,
+        updatedAt: Date.now() - index,
+        completed: false
+      }));
+    }
+  });
+  await page.goto("/", { waitUntil: "networkidle" });
+
+  const continueRail = page.locator("[data-continue-watching] .continue-rail");
+  const doubanRail = page.locator("[data-douban-grid]");
+  await expect(continueRail).toBeVisible();
+  await expect(doubanRail).toBeVisible();
+  expect(await continueRail.evaluate((element) => getComputedStyle(element).scrollbarWidth)).toBe("none");
+  expect(await doubanRail.evaluate((element) => getComputedStyle(element).scrollbarWidth)).toBe("none");
+
+  if (testInfo.project.name !== "mobile") {
+    const continueNext = page.getByRole("button", { name: "下一组继续观看" });
+    const doubanNext = page.getByRole("button", { name: "下一组豆瓣热门" });
+    await expect(continueNext).toBeVisible();
+    await expect(doubanNext).toBeVisible();
+    const continueBox = await continueRail.boundingBox();
+    const continueButtonBox = await continueNext.boundingBox();
+    expect(continueButtonBox?.x || 0).toBeGreaterThan((continueBox?.x || 0) + (continueBox?.width || 0) - 60);
+    await continueNext.click();
+    await expect.poll(() => continueRail.evaluate((element) => element.scrollLeft)).toBeGreaterThan(0);
+    await expect(page.getByRole("button", { name: "上一组继续观看" })).toBeVisible();
+  }
+  await page.screenshot({ path: testInfo.outputPath("carousel-rails.png"), fullPage: true });
+});
+
 test("portal aligns search and uses compact poster playback records", async ({ page }) => {
   await page.addInitScript(() => {
     localStorage.setItem("ytv-progress-v2:fixture:ring-sea:0", JSON.stringify({

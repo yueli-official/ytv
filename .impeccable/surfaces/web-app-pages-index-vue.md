@@ -23,8 +23,10 @@ related_targets: ["web/app/pages/search.vue", "web/app/components/SearchCommand.
   source discovery paging.
 - Continue Watching: at most six de-duplicated unfinished titles in a 15–16rem horizontal rail, each with resolved source poster,
   episode, remaining time and bottom-edge progress. It must stay under 180px high including its heading.
-- Douban hot: a separate attributed module below source updates. Its movie/series/tag controls and “换一批热门” affect only
+- Douban hot: a separate attributed module before source updates. Its movie/series/tag controls and “换一批热门” affect only
   Douban data; items use a compact 2:3 poster rail with score/new badges and remain search shortcuts.
+- Continue Watching and Douban hide native scrollbars and place carousel previous/next controls at the vertical center of the
+  rail sides. Header actions remain reserved for “全部记录” and “换一批热门”; touch and trackpad scrolling remain available.
 - Poster delivery: Douban cover paths are provider-validated before projection and use the fixed-ID same-origin relay. The relay
   never accepts arbitrary URLs; failed individual covers retain the neutral poster well.
 - Visual world: white YTV plus one sky dot, near-black/cold-blue surfaces, real source posters, no public purple or fabricated media.
