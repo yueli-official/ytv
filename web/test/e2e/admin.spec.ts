@@ -66,7 +66,7 @@ test("administrator probes an installed source without a manual save action", as
   await page.getByRole("button", { name: "本地演示源 的操作" }).click();
   const probeButton = page.getByRole("menuitem", { name: "检测 本地演示源" });
   await probeButton.click();
-  await expect(page.getByText("可用", { exact: true })).toBeVisible();
+  await expect(page.getByText("搜索可用", { exact: true })).toBeVisible();
   await expect(page.getByRole("button", { name: "保存 本地演示源" })).toHaveCount(0);
 });
 

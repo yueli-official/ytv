@@ -220,7 +220,7 @@ async function probeAll() {
   try {
     const results = (await api.probeAllSources()).results;
     for (const item of results) probes[item.source.key] = item.health;
-    probeSummary.value = `${results.filter((item) => item.health.available).length}/${results.length} 个来源可用`;
+    probeSummary.value = `${results.filter((item) => item.health.available).length}/${results.length} 个来源搜索可用`;
   } catch { probeSummary.value = "全部检测失败"; }
   finally { probingAll.value = false; }
 }
@@ -237,7 +237,7 @@ async function reconcileAvailability(mode: "enable" | "disable") {
     })));
     await refresh();
     const changed = updates.filter((result) => result.status === "fulfilled").length;
-    probeSummary.value = mode === "enable" ? `已启用 ${changed} 个可用来源` : `已停用 ${changed} 个不可用来源`;
+    probeSummary.value = mode === "enable" ? `已启用 ${changed} 个搜索可用来源` : `已停用 ${changed} 个搜索不可用来源`;
   } catch { probeSummary.value = "来源工具执行失败，请重试"; }
   finally { toolsPending.value = false; }
 }
@@ -248,7 +248,7 @@ async function probeSelected() {
   results.forEach((result, index) => {
     probes[keys[index]!] = result.status === "fulfilled" ? result.value.health : { available: false, latencyMs: 0, detail: "检测失败" };
   });
-  probeSummary.value = `${results.filter((result) => result.status === "fulfilled" && result.value.health.available).length}/${results.length} 个来源可用`;
+  probeSummary.value = `${results.filter((result) => result.status === "fulfilled" && result.value.health.available).length}/${results.length} 个来源搜索可用`;
   bulkPending.value = false;
 }
 async function updateSelected(patch: "enable" | "disable" | "show" | "hide") {
@@ -340,8 +340,8 @@ const bulkItems = [
 ];
 const sourceToolItems = computed(() => [[
   { label: "检测全部", icon: "i-tabler-heart-rate-monitor", onSelect: () => void probeAll() },
-  { label: "启用可用来源", icon: "i-tabler-circle-check", onSelect: () => void reconcileAvailability("enable") },
-  { label: "停用不可用来源", icon: "i-tabler-circle-x", onSelect: () => void reconcileAvailability("disable") }
+  { label: "启用搜索可用来源", icon: "i-tabler-circle-check", onSelect: () => void reconcileAvailability("enable") },
+  { label: "停用搜索不可用来源", icon: "i-tabler-circle-x", onSelect: () => void reconcileAvailability("disable") }
 ]]);
 </script>
 
@@ -399,7 +399,7 @@ const sourceToolItems = computed(() => [[
           <div v-if="drafts[source.key]" data-source-cell="search" class="flex items-center justify-between gap-3 sm:justify-start">
             <span class="text-xs text-muted sm:sr-only">参与搜索</span>
             <USwitch :model-value="drafts[source.key]!.enabled" :aria-label="`参与搜索 ${source.name}`" @update:model-value="updateEnabled(source.key, Boolean($event))" />
-            <UBadge v-if="probes[source.key]" :color="probes[source.key]?.available ? 'success' : 'error'" variant="subtle">{{ probes[source.key]?.available ? '可用' : '不可用' }}</UBadge>
+            <UBadge v-if="probes[source.key]" :color="probes[source.key]?.available ? 'success' : 'error'" variant="subtle">{{ probes[source.key]?.available ? '搜索可用' : '搜索失败' }}</UBadge>
           </div>
           <div v-if="drafts[source.key]" data-source-cell="home" class="flex items-center justify-between gap-3 sm:justify-start">
             <span class="text-xs text-muted sm:sr-only">首页展示</span>

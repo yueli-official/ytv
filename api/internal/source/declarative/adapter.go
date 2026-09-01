@@ -208,14 +208,18 @@ func (adapter *Adapter) Probe(ctx context.Context, definition source.Definition)
 	started := adapter.clock()
 	plan, err := sourcePlan(definition)
 	if err == nil {
-		_, _, err = adapter.fetch(ctx, definition, plan, rules.RequestPlan{Method: http.MethodGet}, definition.Endpoint)
+		const probeKeyword = "海贼王"
+		requestPlan := plan.Search.Request
+		requestPlan.URL = strings.ReplaceAll(requestPlan.URL, "@keyword", url.QueryEscape(probeKeyword))
+		requestPlan.Body = strings.ReplaceAll(requestPlan.Body, "@keyword", url.QueryEscape(probeKeyword))
+		_, _, err = adapter.fetch(ctx, definition, plan, requestPlan, requestPlan.URL)
 	}
 	health := source.Health{Available: err == nil, CheckedAt: adapter.clock(), Latency: adapter.clock().Sub(started)}
 	if err != nil {
-		health.Detail = "declarative source request failed"
+		health.Detail = "搜索链路检测失败"
 		return health, err
 	}
-	health.Detail = "declarative source responded"
+	health.Detail = "搜索链路可用，播放按具体条目解析"
 	return health, nil
 }
 

@@ -25,7 +25,7 @@ func TestAdapterExecutesSearchTitleAndMediaExtractionPlan(t *testing.T) {
 	server := httptest.NewTLSServer(http.HandlerFunc(func(response http.ResponseWriter, request *http.Request) {
 		switch request.URL.Path {
 		case "/search":
-			if request.URL.Query().Get("q") != "海" {
+			if request.URL.Query().Get("q") == "" {
 				t.Fatalf("query = %q", request.URL.RawQuery)
 			}
 			fmt.Fprint(response, `<ul><li class="result"><a href="/title/sea"><strong>海之环</strong></a></li></ul>`)
@@ -69,6 +69,10 @@ func TestAdapterExecutesSearchTitleAndMediaExtractionPlan(t *testing.T) {
 	_, episode, err := adapter.ResolveEpisode(context.Background(), definition, source.EpisodeLocator{Title: title.Locator, EpisodeKey: title.Episodes[0].Key})
 	if err != nil || episode.PlaybackURL != "https://media.example/sea-1.m3u8" {
 		t.Fatalf("episode = %#v, %v", episode, err)
+	}
+	health, err := adapter.Probe(context.Background(), definition)
+	if err != nil || !health.Available || health.Detail != "搜索链路可用，播放按具体条目解析" {
+		t.Fatalf("probe = %#v, %v", health, err)
 	}
 }
 
