@@ -25,6 +25,7 @@ import (
 	"github.com/yueli-official/ytv/api/internal/server"
 	"github.com/yueli-official/ytv/api/internal/siteprofile"
 	"github.com/yueli-official/ytv/api/internal/source"
+	"github.com/yueli-official/ytv/api/internal/source/browsercapture"
 	"github.com/yueli-official/ytv/api/internal/source/declarative"
 	"github.com/yueli-official/ytv/api/internal/source/fixture"
 	"github.com/yueli-official/ytv/api/internal/source/htmlcatalog"
@@ -91,7 +92,15 @@ func main() {
 	must(err)
 	htmlAdapter, err := htmlcatalog.New(&http.Client{Timeout: 5 * time.Second})
 	must(err)
-	declarativeAdapter, err := declarative.New(&http.Client{Timeout: 5 * time.Second})
+	var captureResolver *browsercapture.ChromeResolver
+	if environment("YTV_BROWSER_CAPTURE_ENABLED", "true") == "true" {
+		captureResolver, err = browsercapture.New(browsercapture.Options{
+			Executable: os.Getenv("YTV_BROWSER_EXECUTABLE"), MaxConcurrent: 2, Timeout: 25 * time.Second,
+		})
+		must(err)
+		defer captureResolver.Close()
+	}
+	declarativeAdapter, err := declarative.NewWithBrowserCapture(&http.Client{Timeout: 5 * time.Second}, captureResolver)
 	must(err)
 	registry, err := source.NewRegistry(definitions, map[source.Kind]source.Adapter{
 		source.KindJSONCatalog: jsonAdapter,

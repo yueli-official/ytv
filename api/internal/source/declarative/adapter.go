@@ -16,6 +16,7 @@ import (
 
 	"github.com/antchfx/htmlquery"
 	"github.com/yueli-official/ytv/api/internal/source"
+	"github.com/yueli-official/ytv/api/internal/source/browsercapture"
 	"github.com/yueli-official/ytv/api/internal/source/rules"
 	"golang.org/x/net/html"
 )
@@ -27,17 +28,22 @@ type Doer interface {
 }
 
 type Adapter struct {
-	client        Doer
-	clock         func() time.Time
-	playbackMu    sync.Mutex
-	playbackCache map[string]cachedPlayback
+	client         Doer
+	clock          func() time.Time
+	playbackMu     sync.Mutex
+	playbackCache  map[string]cachedPlayback
+	browserCapture browsercapture.Resolver
 }
 
 func New(client Doer) (*Adapter, error) {
+	return NewWithBrowserCapture(client, nil)
+}
+
+func NewWithBrowserCapture(client Doer, capture browsercapture.Resolver) (*Adapter, error) {
 	if client == nil {
 		return nil, fmt.Errorf("declarative source adapter requires an HTTP client")
 	}
-	return &Adapter{client: client, clock: time.Now, playbackCache: make(map[string]cachedPlayback)}, nil
+	return &Adapter{client: client, clock: time.Now, playbackCache: make(map[string]cachedPlayback), browserCapture: capture}, nil
 }
 
 func (*Adapter) Browse(context.Context, source.Definition, int) (source.Page, error) {
@@ -174,6 +180,16 @@ func (adapter *Adapter) ResolveEpisode(ctx context.Context, definition source.De
 		return title, episode, nil
 	}
 	if strings.TrimSpace(plan.Playback.MediaXPath) == "" {
+		if plan.Playback.UseWebview && adapter.browserCapture != nil {
+			captured, captureErr := adapter.browserCapture.Resolve(ctx, browsercapture.Request{
+				PageURL: episodeURL, LegacyMode: plan.Playback.UseLegacyParser,
+			})
+			if captureErr != nil {
+				return source.Title{}, source.Episode{}, fmt.Errorf("%w: browser capture failed: %v", source.ErrUnavailable, captureErr)
+			}
+			episode.PlaybackURL = captured.URL
+			return title, episode, nil
+		}
 		return source.Title{}, source.Episode{}, fmt.Errorf("%w: source needs a deployment media extractor", source.ErrUnavailable)
 	}
 	document, finalURL, err := adapter.fetch(ctx, definition, plan, rules.RequestPlan{Method: http.MethodGet}, episodeURL)

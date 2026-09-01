@@ -8,8 +8,18 @@ import (
 	"testing"
 
 	"github.com/yueli-official/ytv/api/internal/source"
+	"github.com/yueli-official/ytv/api/internal/source/browsercapture"
 	"github.com/yueli-official/ytv/api/internal/source/rules"
 )
+
+type captureStub struct {
+	result browsercapture.Result
+	err    error
+}
+
+func (stub captureStub) Resolve(context.Context, browsercapture.Request) (browsercapture.Result, error) {
+	return stub.result, stub.err
+}
 
 func TestAdapterExecutesSearchTitleAndMediaExtractionPlan(t *testing.T) {
 	server := httptest.NewTLSServer(http.HandlerFunc(func(response http.ResponseWriter, request *http.Request) {
@@ -78,6 +88,28 @@ func TestAdapterAllowsDirectMediaEpisodeWithoutExtractor(t *testing.T) {
 	}
 	_, episode, err := adapter.ResolveEpisode(context.Background(), definition, source.EpisodeLocator{Title: locator, EpisodeKey: title.Episodes[0].Key})
 	if err != nil || episode.PlaybackURL != "https://media.example/direct.mp4" {
+		t.Fatalf("episode = %#v, %v", episode, err)
+	}
+}
+
+func TestAdapterFallsBackToBrowserCaptureForWebviewRule(t *testing.T) {
+	server := httptest.NewTLSServer(http.HandlerFunc(func(response http.ResponseWriter, request *http.Request) {
+		fmt.Fprint(response, `<main><a href="/play/1">第01集</a></main>`)
+	}))
+	defer server.Close()
+	adapter, _ := NewWithBrowserCapture(server.Client(), captureStub{result: browsercapture.Result{URL: "https://media.example/episode.m3u8"}})
+	definition := source.Definition{Key: "captured", Endpoint: server.URL, Rule: &rules.Plan{
+		BaseURL:  server.URL,
+		Title:    rules.TitlePlan{RoadsXPath: "//main", EpisodesXPath: "/a"},
+		Playback: rules.PlaybackPlan{UseWebview: true},
+	}}
+	locator := source.TitleLocator{SourceKey: definition.Key, ExternalID: encodeURL(server.URL + "/title")}
+	title, err := adapter.ResolveTitle(context.Background(), definition, locator)
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, episode, err := adapter.ResolveEpisode(context.Background(), definition, source.EpisodeLocator{Title: locator, EpisodeKey: title.Episodes[0].Key})
+	if err != nil || episode.PlaybackURL != "https://media.example/episode.m3u8" {
 		t.Fatalf("episode = %#v, %v", episode, err)
 	}
 }
