@@ -18,13 +18,13 @@ func TestLoadKazumiCompilesCatalogAndSkipsIndividualFailures(t *testing.T) {
 		switch request.URL.Path {
 		case "/" + testRevision + "/index.json":
 			fmt.Fprint(response, `[
-				{"name":"Good","version":"1.2","useNativePlayer":true,"antiCrawlerEnabled":false,"author":"A","lastUpdate":1},
+				{"name":"7sefun","version":"1.2","useNativePlayer":true,"antiCrawlerEnabled":false,"author":"A","lastUpdate":1},
 				{"name":"bad/name","version":"1.0","useNativePlayer":true,"antiCrawlerEnabled":false,"author":"","lastUpdate":1},
 				{"name":"Broken","version":"1.0","useNativePlayer":true,"antiCrawlerEnabled":false,"author":"","lastUpdate":1}
 			]`)
-		case "/" + testRevision + "/Good.json":
+		case "/" + testRevision + "/7sefun.json":
 			fmt.Fprintf(response, `{
-				"api":1,"name":"Good Anime","baseURL":%q,"searchURL":"/search/@keyword",
+				"api":1,"name":"7sefun Anime","baseURL":%q,"searchURL":"/search/@keyword",
 				"searchList":"//li","searchName":"/a/text()","searchResult":"/a/@href",
 				"chapterRoads":"//main","chapterResult":"/a","useNativePlayer":true
 			}`, server.URL)
@@ -46,7 +46,7 @@ func TestLoadKazumiCompilesCatalogAndSkipsIndividualFailures(t *testing.T) {
 		t.Fatalf("result = %#v", result)
 	}
 	definition := result.Definitions[0]
-	if definition.Key != "kazumi-good" || definition.Name != "Good Anime" || definition.Catalog != "Kazumi" || definition.CatalogVersion != "1.2" {
+	if definition.Key != "kazumi-7sefun" || definition.Name != "7sefun Anime" || definition.Catalog != "Kazumi" || definition.CatalogVersion != "1.2" {
 		t.Fatalf("definition = %#v", definition)
 	}
 	if !definition.InitiallyUninstalled || definition.Enabled || len(definition.Compatibility) == 0 || len(definition.PlaybackHosts) != 1 {
@@ -66,8 +66,8 @@ func TestLoadKazumiSnapshotDoesNotRequireNetwork(t *testing.T) {
 	if err != nil {
 		t.Fatalf("LoadKazumiSnapshot() error = %v", err)
 	}
-	if len(result.Definitions) != 15 || len(result.Skipped) != 1 {
-		t.Fatalf("definitions/skipped = %d/%d, want 15/1", len(result.Definitions), len(result.Skipped))
+	if len(result.Definitions) != 6 || len(result.Skipped) != 10 {
+		t.Fatalf("definitions/skipped = %d/%d, want 6/10", len(result.Definitions), len(result.Skipped))
 	}
 	for _, definition := range result.Definitions {
 		if definition.Catalog != "Kazumi" || !definition.InitiallyUninstalled {

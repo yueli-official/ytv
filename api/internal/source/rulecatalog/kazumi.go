@@ -26,8 +26,12 @@ const (
 )
 
 var (
-	commitPattern = regexp.MustCompile(`^[0-9a-f]{40}$`)
-	namePattern   = regexp.MustCompile(`^[A-Za-z0-9_-]{1,80}$`)
+	commitPattern       = regexp.MustCompile(`^[0-9a-f]{40}$`)
+	namePattern         = regexp.MustCompile(`^[A-Za-z0-9_-]{1,80}$`)
+	approvedKazumiRules = map[string]bool{
+		"7sefun": true, "aafun": true, "akianime": true,
+		"moonci": true, "MXdm": true, "xfdmneo": true,
+	}
 )
 
 type Doer interface {
@@ -131,6 +135,9 @@ func loadKazumiRule(ctx context.Context, client Doer, compiler *rulecompiler.Com
 	if !namePattern.MatchString(name) {
 		return compiledEntry{skipped: SkippedRule{Name: name, Reason: "invalid rule name"}}
 	}
+	if !approvedKazumiRules[name] {
+		return compiledEntry{skipped: SkippedRule{Name: name, Reason: "playback contract is not approved for deployment"}}
+	}
 	var document json.RawMessage
 	target := base.ResolveReference(&url.URL{Path: name + ".json"}).String()
 	if err := fetchJSON(ctx, client, target, maxRuleBytes, &document); err != nil {
@@ -143,6 +150,9 @@ func compileKazumiRule(compiler *rulecompiler.Compiler, entry indexEntry, docume
 	name := strings.TrimSpace(entry.Name)
 	if !namePattern.MatchString(name) {
 		return compiledEntry{skipped: SkippedRule{Name: name, Reason: "invalid rule name"}}
+	}
+	if !approvedKazumiRules[name] {
+		return compiledEntry{skipped: SkippedRule{Name: name, Reason: "playback contract is not approved for deployment"}}
 	}
 	compiled, err := compiler.Compile("kazumi", document)
 	if err != nil {

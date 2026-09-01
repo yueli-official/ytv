@@ -84,7 +84,7 @@ func main() {
 		} else {
 			definitions = append(definitions, catalog.Definitions...)
 			if len(catalog.Skipped) > 0 {
-				g.Log().Warningf(ctx, "Kazumi rule catalog skipped %d invalid rules", len(catalog.Skipped))
+				g.Log().Infof(ctx, "Kazumi rule catalog left %d rules outside the deployment allowlist", len(catalog.Skipped))
 			}
 		}
 	}
