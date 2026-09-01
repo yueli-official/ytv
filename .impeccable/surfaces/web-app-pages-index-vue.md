@@ -10,11 +10,11 @@ related_targets: ["web/app/pages/search.vue", "web/app/components/SearchCommand.
 - Scope and mode: public `/` and `/search`; dense Operate mode.
 - Audience and job: viewers search multiple enabled internet catalogs, revisit recent queries, browse admin-selected source updates,
   and use attributed Douban discovery without confusing those tasks.
-- Primary order: compact search panel → Continue Watching when present → source updates → separate Douban hot module.
+- Primary order: compact search panel → Continue Watching when present → Douban hot → source updates.
 - Width contract: `/search` form, source controls, result summary, result grid and paging all use the same 90rem content axis.
 - Navigation contract: the YTV mark owns home navigation; do not add a second “浏览” link.
-- Search panel: search field, local search history and viewer-controlled source toggles only. It does not own source paging or
-  Douban filters.
+- Search panel: search field and local search history only. Viewer source choice belongs exclusively to the navigation settings
+  drawer; the panel does not repeat those controls or own source paging or Douban filters.
 - Search history: local-first, most recent unique queries first, maximum eight, clearable, and never synchronized without a
   separate product decision.
 - Viewer source choice: list only globally enabled Source Definitions; default to all enabled, persist locally, submit selected keys
@@ -36,7 +36,7 @@ THESIS: Discovery tasks are explicit siblings; search, source paging and externa
 
 OWN-WORLD: Cold-blue dark portal, factual source identity, dense portrait posters and one sky interaction signal.
 
-STORY: Search chosen sources or revisit compact poster history, browse operator-selected source updates, then scan Douban's attributed poster rail for the next title to search.
+STORY: Search chosen sources or revisit compact poster history, scan Douban's attributed poster rail, then browse operator-selected source updates.
 
 FIRST VIEWPORT: A slim navigation bar leads to a compact multi-source search panel; real source updates begin immediately after any resume state.
 

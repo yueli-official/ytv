@@ -6,20 +6,18 @@ const props = withDefaults(defineProps<{
   initialValue?: string;
   initialSources?: string[];
   showHistory?: boolean;
-  showSources?: boolean;
 }>(), {
   compact: false,
   initialValue: "",
-  showHistory: true,
-  showSources: true
+  showHistory: true
 });
 
 const draft = ref(props.initialValue);
 const composing = ref(false);
 const history = ref<string[]>([]);
 const hydrated = ref(false);
-const { sources, selected: selectedSources, toggle: toggleSource } = useViewerSourcePreferences();
-const searchEnabled = computed(() => draft.value.trim() !== "" && !composing.value && (!props.showSources || selectedSources.value.length > 0));
+const { selected: selectedSources } = useViewerSourcePreferences();
+const searchEnabled = computed(() => draft.value.trim() !== "" && !composing.value && selectedSources.value.length > 0);
 const routeSources = computed(() => selectedSources.value.join(","));
 
 onMounted(() => {
@@ -86,26 +84,6 @@ function historyTo(query: string) {
       <div class="flex gap-2 overflow-x-auto pb-1">
         <NuxtLink v-for="item in history" :key="item" :to="historyTo(item)" class="shrink-0 rounded-lg bg-[#111a24] px-3 py-2 text-xs text-white/80 no-underline hover:bg-[#162333] hover:text-white">{{ item }}</NuxtLink>
       </div>
-    </section>
-
-    <section v-if="showSources && sources.length" aria-labelledby="search-sources-heading">
-      <div class="mb-2 flex items-center justify-between gap-3">
-        <h2 id="search-sources-heading" class="text-xs font-semibold text-white/60">搜索来源</h2>
-        <span class="text-xs text-white/55">已选 {{ selectedSources.length }} / {{ sources.length }}</span>
-      </div>
-      <div class="flex flex-wrap gap-2">
-        <UButton
-          v-for="source in sources"
-          :key="source.key"
-          :label="source.name"
-          :aria-pressed="selectedSources.includes(source.key)"
-          :color="selectedSources.includes(source.key) ? 'primary' : 'neutral'"
-          :variant="selectedSources.includes(source.key) ? 'soft' : 'outline'"
-          size="sm"
-          @click="toggleSource(source.key)"
-        />
-      </div>
-      <p v-if="hydrated && selectedSources.length === 1" class="mt-2 text-xs text-white/55">至少保留一个搜索来源。</p>
     </section>
   </div>
 </template>

@@ -61,8 +61,8 @@ useSeoMeta({
   <!--
   THESIS: YTV is a dense internet-source film portal, not a cinematic marketing page.
   OWN-WORLD: Near-black ink fields, compact slate panels, portrait posters and one restrained cold-blue focus signal.
-  STORY: Search chosen sources or revisit history, browse operator-selected source updates, then use Douban as an attributed idea list.
-  FIRST VIEWPORT: A slim dark navigation bar leads into multi-source search and history; source updates own the first poster grid.
+  STORY: Search chosen sources or revisit history, scan Douban's attributed ideas, then browse operator-selected source updates.
+  FIRST VIEWPORT: A slim dark navigation bar leads into search and history; Douban hot precedes the source-update grid.
   FORM: User-directed restoration of the legacy YTV portal grammar after seed bd4f323d's cinematic Hero was explicitly rejected.
   FINISH: unreviewed and undocumented is unfinished; this correction ends with Playwright screenshots and updated DESIGN.md.
   -->
@@ -71,25 +71,13 @@ useSeoMeta({
       <section class="space-y-4 rounded-xl border border-sky-400/30 bg-[#0f1720] p-4" aria-labelledby="search-title">
         <div class="flex flex-wrap items-center gap-3">
           <span class="grid size-9 place-items-center rounded-lg bg-sky-400/10 text-sky-300"><UIcon name="i-tabler-movie" class="size-5" /></span>
-          <div class="min-w-0 flex-1"><h1 id="search-title" class="text-xl font-bold tracking-[-0.025em] sm:text-2xl">影视搜索</h1><p class="mt-1 text-xs text-white/55">选择来源，同时搜索多个互联网片库</p></div>
+          <div class="min-w-0 flex-1"><h1 id="search-title" class="text-xl font-bold tracking-[-0.025em] sm:text-2xl">影视搜索</h1><p class="mt-1 text-xs text-white/55">同时搜索已设置的互联网片库</p></div>
         </div>
 
         <SearchCommand compact />
       </section>
 
       <HomeContinueWatching />
-
-      <section class="space-y-5" aria-labelledby="source-updates-title">
-        <div class="flex flex-wrap items-end justify-between gap-3">
-          <div><h2 id="source-updates-title" class="text-xl font-bold sm:text-2xl">来源更新</h2><p class="mt-1 text-xs text-white/45">由管理员选择在首页展示的真实来源条目</p></div>
-          <div class="flex flex-wrap items-center justify-end gap-2"><UBadge v-for="source in activeSources" :key="source.key" :label="source.name" color="neutral" variant="subtle" /><UButton label="换一批资源" icon="i-tabler-refresh" color="neutral" variant="soft" :loading="sourcePending" @click="changeSourceBatch" /></div>
-        </div>
-        <UAlert v-if="sourceError" color="error" variant="subtle" title="来源更新暂时不可用"><template #actions><UButton label="重试" color="error" variant="soft" @click="() => refreshSources()" /></template></UAlert>
-        <UAlert v-else-if="sourceData && !sourceData.complete" color="warning" variant="subtle" title="部分来源没有返回" :description="`${sourceData.succeeded} 个来源可用，${sourceData.failed} 个来源失败。`" />
-        <div v-if="sourcePending" class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6"><USkeleton v-for="item in 12" :key="item" class="aspect-[2/3] rounded-lg bg-white/10" /></div>
-        <PosterGrid v-else-if="sourceData?.groups.length" :groups="sourceData.groups.slice(0, 12)" />
-        <UEmpty v-else-if="!sourceError" icon="i-tabler-database-off" title="当前批次没有来源内容" description="换一批资源，或直接搜索片名。" class="rounded-xl bg-[#0f1720]" />
-      </section>
 
       <section class="space-y-4 rounded-xl border border-white/10 bg-[#0f1720] p-4 sm:p-5" aria-labelledby="douban-hot-title">
         <div class="flex flex-wrap items-center justify-between gap-3">
@@ -113,6 +101,18 @@ useSeoMeta({
           </NuxtLink>
         </div>
         <p v-else-if="trendingError" class="border-t border-white/10 pt-4 text-xs text-white/45">热门列表暂时不可用，来源浏览与搜索不受影响。</p>
+      </section>
+
+      <section class="space-y-5" aria-labelledby="source-updates-title">
+        <div class="flex flex-wrap items-end justify-between gap-3">
+          <div><h2 id="source-updates-title" class="text-xl font-bold sm:text-2xl">来源更新</h2><p class="mt-1 text-xs text-white/45">由管理员选择在首页展示的真实来源条目</p></div>
+          <div class="flex flex-wrap items-center justify-end gap-2"><UBadge v-for="source in activeSources" :key="source.key" :label="source.name" color="neutral" variant="subtle" /><UButton label="换一批资源" icon="i-tabler-refresh" color="neutral" variant="soft" :loading="sourcePending" @click="changeSourceBatch" /></div>
+        </div>
+        <UAlert v-if="sourceError" color="error" variant="subtle" title="来源更新暂时不可用"><template #actions><UButton label="重试" color="error" variant="soft" @click="() => refreshSources()" /></template></UAlert>
+        <UAlert v-else-if="sourceData && !sourceData.complete" color="warning" variant="subtle" title="部分来源没有返回" :description="`${sourceData.succeeded} 个来源可用，${sourceData.failed} 个来源失败。`" />
+        <div v-if="sourcePending" class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6"><USkeleton v-for="item in 12" :key="item" class="aspect-[2/3] rounded-lg bg-white/10" /></div>
+        <PosterGrid v-else-if="sourceData?.groups.length" :groups="sourceData.groups.slice(0, 12)" />
+        <UEmpty v-else-if="!sourceError" icon="i-tabler-database-off" title="当前批次没有来源内容" description="换一批资源，或直接搜索片名。" class="rounded-xl bg-[#0f1720]" />
       </section>
     </div>
   </div>

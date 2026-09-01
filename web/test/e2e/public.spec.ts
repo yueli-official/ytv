@@ -90,7 +90,7 @@ test("watch keeps long-series navigation and a primary play action inside the pl
 
 test("homepage separates search history, source refresh and Douban discovery", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByRole("button", { name: /本地演示源/u })).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByRole("heading", { name: "搜索来源" })).toHaveCount(0);
   const search = page.locator("#main-content").getByLabel("搜索想看的影视");
   await search.fill("环海之门");
   await search.press("Enter");
@@ -105,6 +105,10 @@ test("homepage separates search history, source refresh and Douban discovery", a
   await expect(page.getByRole("button", { name: "换一批资源" })).toBeVisible();
   const hot = page.getByRole("heading", { name: "豆瓣热门" });
   await expect(hot).toBeVisible();
+  const sourceUpdates = page.getByRole("heading", { name: "来源更新" });
+  const hotBox = await hot.boundingBox();
+  const sourceBox = await sourceUpdates.boundingBox();
+  expect(hotBox?.y || 0).toBeLessThan(sourceBox?.y || 0);
   const searchPanel = page.getByRole("heading", { name: "影视搜索" }).locator("xpath=ancestor::section[1]");
   await expect(searchPanel.getByRole("heading", { name: "豆瓣热门" })).toHaveCount(0);
 });

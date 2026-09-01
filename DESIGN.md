@@ -223,7 +223,7 @@ components:
 
 The Cold-Blue Portal is a dense, dark-locked film interface built for finding, selecting, and watching rather than promotion. Near-black canvas, cold slate panels, portrait posters, compact facts, and one sky/cyan interaction signal make the public product feel like a working source portal.
 
-Discovery tasks are explicit siblings. Search owns viewer-local history and source choice; the source-update grid owns its own paging; Douban owns its own filters and paging. Title facts, ranged episode browsing, and complete in-player episode navigation each receive a distinct task region. Administration stays in the shared Yueli console family and inherits its semantic light/dark shell instead of the public dark lock.
+Discovery tasks are explicit siblings. Search owns viewer-local history, while source choice lives in the navigation settings drawer; Douban owns its own filters and paging, and the source-update grid owns its own paging. Title facts, ranged episode browsing, and complete in-player episode navigation each receive a distinct task region. Administration stays in the shared Yueli console family and inherits its semantic light/dark shell instead of the public dark lock.
 
 **Key Characteristics:**
 

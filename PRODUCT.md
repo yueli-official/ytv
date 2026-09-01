@@ -83,9 +83,10 @@ resolved episode and a recoverable playback session, while YTV itself does not h
 - The public visual world follows the user-approved legacy YTV evidence: compact dark panels, portrait-poster density, six columns
   on desktop, two columns on mobile and compact horizontal search-result cards. It must feel like a working film portal, not a
   cinematic marketing landing page.
-- The homepage separates four tasks: multi-source search with local history and viewer source toggles; a compact horizontal
-  Continue Watching rail that resolves real source posters; an admin-selected real-source poster grid whose own header contains
-  “换一批资源”; and a later, separately attributed Douban 2:3 poster rail with independent filters and paging. No control changes
+- The homepage separates four tasks: multi-source search with local history; a compact horizontal Continue Watching rail that
+  resolves real source posters; an attributed Douban 2:3 poster rail with independent filters and paging; and an admin-selected
+  real-source poster grid whose own header contains “换一批资源”. Viewer source selection lives only in the navigation settings
+  drawer rather than repeating below search. No control changes
   two modules at once.
 - Search form, source controls, result summary, result grid and paging share the same 90rem content axis. The logo is the home
   action, so public navigation does not duplicate it with a “浏览” link.
