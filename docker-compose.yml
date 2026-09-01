@@ -1,10 +1,86 @@
+name: ytv
+
 services:
-  ytv:
-    image: ghcr.io/yueli-official/ytv:latest
-    container_name: ytv
-    platform: linux/amd64
-    ports:
-      - "9000:9000"
+  database:
+    image: postgres:17.6-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${YTV_POSTGRES_DB:-ytv}
+      POSTGRES_USER: ${YTV_POSTGRES_USER:-ytv}
+      POSTGRES_PASSWORD: ${YTV_POSTGRES_PASSWORD:?set YTV_POSTGRES_PASSWORD}
     volumes:
-      # 挂载Api配置
-      - ./data:/app/data
+      - ytv-postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${YTV_POSTGRES_USER:-ytv} -d ${YTV_POSTGRES_DB:-ytv}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks: [backend]
+
+  migrate:
+    build: {context: ., target: migrate}
+    command:
+      - -database
+      - postgres://${YTV_POSTGRES_USER:-ytv}:${YTV_POSTGRES_PASSWORD}@database:5432/${YTV_POSTGRES_DB:-ytv}?sslmode=disable
+      - up
+    depends_on:
+      database: {condition: service_healthy}
+    networks: [backend]
+    restart: "no"
+
+  api:
+    build: {context: ., target: api}
+    restart: unless-stopped
+    init: true
+    shm_size: 512mb
+    environment:
+      YTV_DATABASE_URL: postgres://${YTV_POSTGRES_USER:-ytv}:${YTV_POSTGRES_PASSWORD}@database:5432/${YTV_POSTGRES_DB:-ytv}?sslmode=disable
+      YTV_API_ADDRESS: 0.0.0.0:8097
+      YTV_SITE_KEY: ${YTV_SITE_KEY:-ytv-main}
+      YTV_JWKS_URL: ${YTV_JWKS_URL:?set YTV_JWKS_URL}
+      YTV_JWKS_ISSUER: ${YTV_JWKS_ISSUER:?set YTV_JWKS_ISSUER}
+      YTV_JWKS_AUDIENCE: ${YTV_JWKS_AUDIENCE:-ytv-api}
+      YTV_BOOTSTRAP_ADMIN_SUBS: ${YTV_BOOTSTRAP_ADMIN_SUBS:?set YTV_BOOTSTRAP_ADMIN_SUBS}
+      YTV_SOURCE_DEFINITIONS_JSON: ${YTV_SOURCE_DEFINITIONS_JSON:-[]}
+      YTV_KAZUMI_RULES_ENABLED: ${YTV_KAZUMI_RULES_ENABLED:-true}
+      YTV_BROWSER_CAPTURE_ENABLED: ${YTV_BROWSER_CAPTURE_ENABLED:-true}
+      YTV_BROWSER_EXECUTABLE: /usr/bin/chromium
+      YTV_BROWSER_NO_SANDBOX: "true"
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "--silent", "http://127.0.0.1:8097/readyz"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+    networks: [backend]
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: [ALL]
+
+  web:
+    build: {context: ., target: web}
+    restart: unless-stopped
+    environment:
+      NUXT_DOWNSTREAM_BASE: http://api:8097
+      NUXT_IDENTITY_BASE: ${NUXT_IDENTITY_BASE:?set NUXT_IDENTITY_BASE}
+      NUXT_SEAL_SECRET: ${NUXT_SEAL_SECRET:?set NUXT_SEAL_SECRET}
+      NUXT_COOKIE_SECURE: ${NUXT_COOKIE_SECURE:-true}
+      NUXT_PUBLIC_OIDC_CLIENT_ID: ${NUXT_PUBLIC_OIDC_CLIENT_ID:-ytv-main-web}
+      NUXT_PUBLIC_OIDC_ISSUER: ${NUXT_PUBLIC_OIDC_ISSUER:?set NUXT_PUBLIC_OIDC_ISSUER}
+      NUXT_PUBLIC_OIDC_REDIRECT_URI: ${NUXT_PUBLIC_OIDC_REDIRECT_URI:?set NUXT_PUBLIC_OIDC_REDIRECT_URI}
+      NUXT_PUBLIC_OIDC_POST_LOGOUT_REDIRECT_URI: ${NUXT_PUBLIC_OIDC_POST_LOGOUT_REDIRECT_URI:?set NUXT_PUBLIC_OIDC_POST_LOGOUT_REDIRECT_URI}
+      NUXT_PUBLIC_ACCOUNT_URL: ${NUXT_PUBLIC_ACCOUNT_URL:?set NUXT_PUBLIC_ACCOUNT_URL}
+      NUXT_PUBLIC_YTV_BASE: ${NUXT_PUBLIC_YTV_BASE:?set NUXT_PUBLIC_YTV_BASE}
+    depends_on:
+      api: {condition: service_healthy}
+    ports:
+      - "${YTV_HTTP_PORT:-9000}:3000"
+    networks: [backend]
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: [ALL]
+
+volumes:
+  ytv-postgres:
+
+networks:
+  backend:

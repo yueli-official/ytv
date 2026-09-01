@@ -1,77 +1,50 @@
-# ----------------------
-# 前端构建阶段 (Vue)
-# ----------------------
-FROM node:20-alpine AS frontend-builder
-WORKDIR /frontend
+# syntax=docker/dockerfile:1.7
 
-# 接收构建参数（访问 GitHub Packages）
-ARG GH_TOKEN
+FROM golang:1.25.12-bookworm AS api-builder
+WORKDIR /src/api
+COPY api/go.mod api/go.sum ./
+RUN --mount=type=cache,target=/go/pkg/mod go mod download
+COPY api/ ./
+RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache/go-build \
+    CGO_ENABLED=0 GOOS=linux go build -trimpath -ldflags="-s -w" -o /out/ytv-api ./cmd/ytv
 
-# 安装 pnpm
-RUN npm install -g pnpm
+FROM debian:bookworm-slim AS api
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ca-certificates chromium curl fonts-noto-cjk \
+    && rm -rf /var/lib/apt/lists/* \
+    && useradd --create-home --uid 10001 --shell /usr/sbin/nologin ytv
+COPY --from=api-builder /out/ytv-api /usr/local/bin/ytv-api
+ENV YTV_API_ADDRESS=0.0.0.0:8097 \
+    YTV_BROWSER_CAPTURE_ENABLED=true \
+    YTV_BROWSER_EXECUTABLE=/usr/bin/chromium \
+    YTV_BROWSER_NO_SANDBOX=true \
+    HOME=/home/ytv
+USER ytv
+EXPOSE 8097
+ENTRYPOINT ["/usr/local/bin/ytv-api"]
 
-# 复制依赖文件并配置认证
-COPY frontend/package.json frontend/pnpm-lock.yaml ./
-RUN echo "@yuelioi:registry=https://npm.pkg.github.com" > .npmrc && \
-  echo "//npm.pkg.github.com/:_authToken=${GH_TOKEN}" >> .npmrc
-
-# 安装依赖
-RUN pnpm install --frozen-lockfile && pnpm store prune
-
-# 清理 .npmrc
-RUN rm -f .npmrc
-
-# 复制源码并构建
-COPY frontend/ .
+FROM node:24.20-bookworm-slim AS web-builder
+WORKDIR /src/web
+RUN corepack enable
+COPY web/package.json web/pnpm-lock.yaml ./
+RUN --mount=type=cache,target=/pnpm/store pnpm config set store-dir /pnpm/store \
+    && pnpm install --frozen-lockfile
+COPY web/ ./
 RUN pnpm build
 
-# 清理开发文件，只保留 dist
-RUN rm -rf src node_modules public package.json pnpm-lock.yaml vite.config.ts tsconfig*.json eslint.config.ts env.d.ts
-
-# ----------------------
-# 后端构建阶段 (Go)
-# ----------------------
-FROM golang:1.25.1-alpine AS backend-builder
+FROM node:24.20-bookworm-slim AS web
 WORKDIR /app
+COPY --from=web-builder --chown=node:node /src/web/.output ./.output
+ENV NODE_ENV=production HOST=0.0.0.0 PORT=3000
+USER node
+EXPOSE 3000
+CMD ["node", ".output/server/index.mjs"]
 
-# 设置环境变量
-ENV DATABASE_URL=/app/index.db
-ENV APP_MODE=release
+FROM golang:1.25.12-alpine AS migration-builder
+RUN CGO_ENABLED=0 go install -tags postgres github.com/golang-migrate/migrate/v4/cmd/migrate@v4.19.1
 
-# 安装依赖工具
-RUN apk add --no-cache git build-base
-
-# 复制 go.mod / go.sum 并下载依赖
-COPY go.mod go.sum ./
-RUN go mod download
-
-# 复制后端源码
-COPY . .
-
-# 复制前端构建产物 dist
-COPY --from=frontend-builder /frontend/dist ./frontend/dist
-
-# 编译整个 Go 包
-RUN go build -o server .
-
-# ----------------------
-# 运行阶段
-# ----------------------
-FROM alpine:latest
-WORKDIR /app
-
-
-# 复制后端可执行文件
-COPY --from=backend-builder /app/server ./
-
-# 复制前端构建好的静态文件
-COPY --from=backend-builder /app/frontend/dist ./frontend/dist
-
-# 设置数据库环境变量
-ENV DATABASE_URL=/app/index.db
-
-# 暴露端口
-EXPOSE 9000
-
-# 启动服务
-CMD ["./server"]
+FROM alpine:3.22 AS migrate
+RUN apk add --no-cache ca-certificates
+COPY --from=migration-builder /go/bin/migrate /usr/local/bin/migrate
+COPY api/internal/postgres/migrations /migrations
+ENTRYPOINT ["/usr/local/bin/migrate", "-path=/migrations"]

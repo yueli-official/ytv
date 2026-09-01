@@ -96,6 +96,7 @@ func main() {
 	if environment("YTV_BROWSER_CAPTURE_ENABLED", "true") == "true" {
 		captureResolver, err = browsercapture.New(browsercapture.Options{
 			Executable: os.Getenv("YTV_BROWSER_EXECUTABLE"), MaxConcurrent: 2, Timeout: 25 * time.Second,
+			NoSandbox: environment("YTV_BROWSER_NO_SANDBOX", "false") == "true",
 		})
 		must(err)
 		defer captureResolver.Close()

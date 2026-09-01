@@ -40,6 +40,7 @@ type Options struct {
 	Executable    string
 	MaxConcurrent int
 	Timeout       time.Duration
+	NoSandbox     bool
 }
 
 type ChromeResolver struct {
@@ -76,6 +77,9 @@ func New(options Options) (*ChromeResolver, error) {
 		chromedp.WindowSize(1440, 1000),
 		chromedp.UserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/149 Safari/537.36"),
 	)
+	if options.NoSandbox {
+		allocatorOptions = append(allocatorOptions, chromedp.NoSandbox)
+	}
 	allocatorContext, allocatorCancel := chromedp.NewExecAllocator(context.Background(), allocatorOptions...)
 	browserContext, browserCancel := chromedp.NewContext(allocatorContext)
 	if err := chromedp.Run(browserContext); err != nil {

@@ -4,6 +4,8 @@ go 1.25.12
 
 require (
 	github.com/antchfx/htmlquery v1.3.6
+	github.com/chromedp/cdproto v0.0.0-20250724212937-08a3db8b4327
+	github.com/chromedp/chromedp v0.14.2
 	github.com/gogf/gf/v2 v2.10.2
 	github.com/lib/pq v1.10.9
 	github.com/yueli-official/foundation/go v0.2.1
@@ -17,8 +19,6 @@ require (
 	github.com/casbin/casbin/v3 v3.10.0 // indirect
 	github.com/casbin/govaluate v1.3.0 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
-	github.com/chromedp/cdproto v0.0.0-20250724212937-08a3db8b4327 // indirect
-	github.com/chromedp/chromedp v0.14.2 // indirect
 	github.com/chromedp/sysutil v1.1.0 // indirect
 	github.com/clbanning/mxj/v2 v2.7.0 // indirect
 	github.com/emirpasic/gods/v2 v2.0.0-alpha // indirect

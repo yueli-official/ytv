@@ -60,6 +60,10 @@ YTV 是一个现代化的影视播放网站，提供流畅的视频观看体验�
 
 ### Docker 部署（推荐）
 
+> 当前版本使用 Go API、Nuxt Web、PostgreSQL 和 API 镜像内的 headless Chromium；宿主机不需要安装 Chrome。
+> 本节下方的旧版 `data/api.yaml` 示例已不适用于当前重建版本。请按
+> [Docker 部署文档](docs/deployment/docker.md) 和 [环境变量模板](.env.docker.example) 部署。
+
 **1. 克隆项目**
 
 ```bash

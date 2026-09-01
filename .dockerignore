@@ -1,0 +1,14 @@
+.git
+.doctor
+.nuxt
+.output
+.tmp
+node_modules
+test-results
+playwright-report
+web/test
+web/.nuxt
+web/.output
+web/node_modules
+frontend
+preview
