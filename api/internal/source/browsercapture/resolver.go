@@ -75,7 +75,6 @@ func New(options Options) (*ChromeResolver, error) {
 		chromedp.Flag("autoplay-policy", "no-user-gesture-required"),
 		chromedp.Flag("no-first-run", true),
 		chromedp.WindowSize(1440, 1000),
-		chromedp.UserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/149 Safari/537.36"),
 	)
 	if options.NoSandbox {
 		allocatorOptions = append(allocatorOptions, chromedp.NoSandbox)
