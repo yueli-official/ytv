@@ -3,11 +3,14 @@ package httpapi
 import (
 	"context"
 	"errors"
+	"net/http"
+	"net/url"
 	"strings"
 	"time"
 
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/yueli-official/foundation/go/auth"
+	"github.com/yueli-official/foundation/go/traffic"
 	v1 "github.com/yueli-official/ytv/api/api/v1"
 	"github.com/yueli-official/ytv/api/internal/analytics"
 	"github.com/yueli-official/ytv/api/internal/apierr"
@@ -101,7 +104,7 @@ func (controller *Public) Search(ctx context.Context, request *v1.SearchReq) (*v
 		g.Log().Warningf(ctx, "record YTV search analytics: %v", analyticsErr)
 	}
 	if err != nil {
-		return response, apierr.Error(apierr.NotFound)
+		return nil, apierr.Wrap(apierr.CodeSourceUnavailable, err)
 	}
 	return response, nil
 }
@@ -130,17 +133,17 @@ func (controller *Public) Discover(ctx context.Context, request *v1.DiscoverReq)
 		response.Groups = append(response.Groups, view)
 	}
 	if err != nil {
-		return response, apierr.Error(apierr.NotFound)
+		return nil, apierr.Wrap(apierr.CodeSourceUnavailable, err)
 	}
 	return response, nil
 }
 
 func (controller *Public) GetPublicSources(ctx context.Context, _ *v1.GetPublicSourcesReq) (*v1.GetPublicSourcesRes, error) {
 	values := controller.core.sources.List()
-	response := &v1.GetPublicSourcesRes{Sources: make([]v1.PublicSourceView, 0, len(values))}
+	response := &v1.GetPublicSourcesRes{Items: make([]v1.PublicSourceView, 0, len(values))}
 	for _, value := range values {
 		if value.Enabled {
-			response.Sources = append(response.Sources, v1.PublicSourceView{Key: value.Key, Name: value.Name})
+			response.Items = append(response.Items, v1.PublicSourceView{Key: value.Key, Name: value.Name})
 		}
 	}
 	return response, nil
@@ -195,7 +198,7 @@ func (controller *Public) RecordPageView(ctx context.Context, request *v1.Record
 		EventID: request.EventID, ResourceID: request.Path, VisitorID: request.VisitorID, OccurredAt: request.OccurredAt,
 	})
 	if err != nil {
-		return nil, apierr.Error(apierr.Validation)
+		return nil, mapError(err)
 	}
 	return &v1.RecordPageViewRes{Counted: result.Counted, Replay: result.Replay}, nil
 }
@@ -207,7 +210,7 @@ func (controller *Public) RecordPlaybackStart(ctx context.Context, request *v1.R
 		VisitorID:  request.VisitorID, OccurredAt: request.OccurredAt,
 	})
 	if err != nil {
-		return nil, apierr.Error(apierr.Validation)
+		return nil, mapError(err)
 	}
 	return &v1.RecordPlaybackStartRes{Counted: result.Counted, Replay: result.Replay}, nil
 }
@@ -257,7 +260,7 @@ func (controller *Account) ListProgress(ctx context.Context, request *v1.ListPro
 	}
 	items, err := controller.core.progress.List(ctx, userKey, request.Limit)
 	if err != nil {
-		return nil, apierr.Error(apierr.Validation)
+		return nil, mapError(err)
 	}
 	response := &v1.ListProgressRes{Items: make([]v1.PlaybackProgressView, 0, len(items))}
 	for _, item := range items {
@@ -278,7 +281,7 @@ func (controller *Account) SaveProgress(ctx context.Context, request *v1.SavePro
 		Completed: request.Completed, UpdatedAt: request.UpdatedAt,
 	})
 	if err != nil {
-		return nil, apierr.Error(apierr.Validation)
+		return nil, mapError(err)
 	}
 	return &v1.SaveProgressRes{Item: playbackProgressView(result.Record), Applied: result.Applied}, nil
 }
@@ -319,7 +322,7 @@ func (controller *Administrator) GetTrafficOverview(ctx context.Context, request
 	}
 	overview, err := controller.core.traffic.Overview(ctx, request.Days)
 	if err != nil {
-		return nil, apierr.Error(apierr.Validation)
+		return nil, mapError(err)
 	}
 	return &v1.GetTrafficOverviewRes{
 		Days:  overview.Days,
@@ -333,7 +336,7 @@ func (controller *Administrator) GetSearchOverview(ctx context.Context, request 
 	}
 	overview, err := controller.core.searches.Overview(ctx, request.Days, request.Limit)
 	if err != nil {
-		return nil, apierr.Error(apierr.Validation)
+		return nil, mapError(err)
 	}
 	response := &v1.GetSearchOverviewRes{
 		Days: overview.Days,
@@ -366,9 +369,9 @@ func (controller *Administrator) GetSources(ctx context.Context, _ *v1.GetSource
 		return nil, err
 	}
 	values := controller.core.sources.List()
-	response := &v1.GetSourcesRes{Sources: make([]v1.SourceAdminView, 0, len(values))}
+	response := &v1.GetSourcesRes{Items: make([]v1.SourceAdminView, 0, len(values))}
 	for _, value := range values {
-		response.Sources = append(response.Sources, sourceAdminView(value))
+		response.Items = append(response.Items, sourceAdminView(value))
 	}
 	return response, nil
 }
@@ -378,9 +381,9 @@ func (controller *Administrator) GetAvailableSources(ctx context.Context, _ *v1.
 		return nil, err
 	}
 	values := controller.core.sources.Available()
-	response := &v1.GetAvailableSourcesRes{Sources: make([]v1.AvailableSourceView, 0, len(values))}
+	response := &v1.GetAvailableSourcesRes{Items: make([]v1.AvailableSourceView, 0, len(values))}
 	for _, value := range values {
-		response.Sources = append(response.Sources, availableSourceView(value))
+		response.Items = append(response.Items, availableSourceView(value))
 	}
 	return response, nil
 }
@@ -392,6 +395,10 @@ func (controller *Administrator) InstallSource(ctx context.Context, request *v1.
 	installed, err := controller.core.sources.Install(ctx, request.SourceKey, request.Revision)
 	if err != nil {
 		return nil, mapError(err)
+	}
+	if response := g.RequestFromCtx(ctx); response != nil {
+		response.Response.Header().Set("Location", "/api/v1/admin/sources/"+url.PathEscape(installed.Key))
+		response.Response.WriteHeader(http.StatusCreated)
 	}
 	return &v1.InstallSourceRes{Source: sourceAdminView(installed)}, nil
 }
@@ -440,9 +447,9 @@ func (controller *Administrator) ProbeAllSources(ctx context.Context, _ *v1.Prob
 		return nil, err
 	}
 	values := controller.core.sources.ProbeAll(ctx)
-	response := &v1.ProbeAllSourcesRes{Results: make([]v1.ProbeSourceRes, 0, len(values))}
+	response := &v1.ProbeAllSourcesRes{Items: make([]v1.ProbeSourceRes, 0, len(values))}
 	for _, value := range values {
-		response.Results = append(response.Results, v1.ProbeSourceRes{
+		response.Items = append(response.Items, v1.ProbeSourceRes{
 			Source: sourceAdminView(value.Source),
 			Health: v1.SourceHealthView{
 				Available: value.Health.Available, CheckedAt: value.Health.CheckedAt,
@@ -593,23 +600,31 @@ func siteProfileView(value siteprofile.Profile) v1.SiteProfileView {
 }
 
 func mapError(err error) error {
+	var trafficError *traffic.Error
+	if errors.As(err, &trafficError) && trafficError.Kind == traffic.ErrorInvalidInput {
+		return apierr.Wrap(apierr.CodeInvalidInput, err)
+	}
 	switch {
-	case errors.Is(err, discovery.ErrInvalid), errors.Is(err, source.ErrInvalid):
-		return apierr.Error(apierr.Validation)
+	case errors.Is(err, analytics.ErrInvalid), errors.Is(err, progress.ErrInvalid), errors.Is(err, searchanalytics.ErrInvalid), errors.Is(err, siteprofile.ErrInvalid), errors.Is(err, sourcecontrol.ErrInvalid), errors.Is(err, sourcepreference.ErrInvalid), errors.Is(err, discovery.ErrInvalid), errors.Is(err, source.ErrInvalid):
+		return apierr.Wrap(apierr.CodeInvalidInput, err)
 	case errors.Is(err, trending.ErrInvalid):
-		return apierr.Error(apierr.Validation)
+		return apierr.Wrap(apierr.CodeInvalidInput, err)
 	case errors.Is(err, source.ErrNotFound), errors.Is(err, playback.ErrEpisodeNotFound):
-		return apierr.Error(apierr.NotFound)
-	case errors.Is(err, source.ErrUnavailable), errors.Is(err, playback.ErrUnsafeURL), errors.Is(err, discovery.ErrAllSourcesFailed):
-		return apierr.Error(apierr.Conflict)
+		return apierr.Wrap(apierr.CodeNotFound, err)
+	case errors.Is(err, source.ErrUnavailable), errors.Is(err, discovery.ErrAllSourcesFailed):
+		return apierr.Wrap(apierr.CodeSourceUnavailable, err)
+	case errors.Is(err, playback.ErrUnsafeURL):
+		return apierr.Wrap(apierr.CodePlaybackUnsafe, err)
 	case errors.Is(err, sourcecontrol.ErrRevisionConflict):
-		return apierr.Error(apierr.Conflict)
+		return apierr.Wrap(apierr.CodeRevisionConflict, err)
 	case errors.Is(err, sourcepreference.ErrRevisionConflict):
-		return apierr.Error(apierr.Conflict)
-	case errors.Is(err, sourcecontrol.ErrAlreadyInstalled), errors.Is(err, sourcecontrol.ErrNotInstalled):
-		return apierr.Error(apierr.Conflict)
+		return apierr.Wrap(apierr.CodeRevisionConflict, err)
+	case errors.Is(err, sourcecontrol.ErrAlreadyInstalled):
+		return apierr.Wrap(apierr.CodeSourceAlreadyInstalled, err)
+	case errors.Is(err, sourcecontrol.ErrNotInstalled):
+		return apierr.Wrap(apierr.CodeSourceNotInstalled, err)
 	case errors.Is(err, siteprofile.ErrRevisionConflict):
-		return apierr.Error(apierr.Conflict)
+		return apierr.Wrap(apierr.CodeRevisionConflict, err)
 	default:
 		return err
 	}

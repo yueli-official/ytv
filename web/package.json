@@ -29,17 +29,18 @@
   },
   "dependencies": {
     "@nuxt/ui": "4.9.0",
-    "@yueli/http-runtime": "https://github.com/yueli-official/foundation/releases/download/js-v0.5.0/yueli-http-runtime-0.1.1.tgz",
-    "@yueli/identity-nuxt": "https://github.com/yueli-official/identity/releases/download/v0.2.0/yueli-identity-nuxt-0.1.0.tgz",
-    "@yueli/nuxt-runtime": "https://github.com/yueli-official/foundation/releases/download/js-v0.5.0/yueli-nuxt-runtime-0.1.2.tgz",
-    "@yueli/ui": "https://github.com/yueli-official/foundation/releases/download/js-v0.5.0/yueli-ui-0.1.1.tgz",
+    "@yueli/http-runtime": "https://github.com/yueli-official/foundation/releases/download/js-v0.7.2/yueli-http-runtime-0.2.2.tgz",
+    "@yueli/identity-nuxt": "https://github.com/yueli-official/identity/releases/download/v0.3.3/yueli-identity-nuxt-0.2.0.tgz",
+    "@yueli/nuxt-runtime": "https://github.com/yueli-official/foundation/releases/download/js-v0.7.2/yueli-nuxt-runtime-0.1.3.tgz",
+    "@yueli/ui": "https://github.com/yueli-official/foundation/releases/download/js-v0.7.2/yueli-ui-0.3.2.tgz",
     "hls.js": "1.7.1",
     "nuxt": "4.5.1",
     "plyr": "3.8.4",
     "tailwindcss": "4.3.1",
     "vue": "3.5.39",
     "vue-router": "5.1.0",
-    "zod": "4.4.3"
+    "zod": "4.4.3",
+    "@nuxt/icon": "2.4.1"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.12.1",

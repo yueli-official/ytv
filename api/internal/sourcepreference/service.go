@@ -10,6 +10,8 @@ import (
 	"time"
 )
 
+var ErrInvalid = errors.New("invalid sourcepreference input")
+
 var ErrRevisionConflict = errors.New("source preference revision conflict")
 var sourceKeyPattern = regexp.MustCompile(`^[A-Za-z0-9_-]{1,100}$`)
 
@@ -44,7 +46,7 @@ func New(store Store, clock func() time.Time) (*Service, error) {
 func (service *Service) Get(ctx context.Context, userKey string) (Preference, error) {
 	userKey = strings.TrimSpace(userKey)
 	if userKey == "" {
-		return Preference{}, fmt.Errorf("source preference user is required")
+		return Preference{}, fmt.Errorf("%w: source preference user is required", ErrInvalid)
 	}
 	return service.store.Get(ctx, userKey)
 }
@@ -52,7 +54,7 @@ func (service *Service) Get(ctx context.Context, userKey string) (Preference, er
 func (service *Service) Save(ctx context.Context, userKey string, disabled []string, expectedRevision int64) (Preference, error) {
 	userKey = strings.TrimSpace(userKey)
 	if userKey == "" || expectedRevision < 0 {
-		return Preference{}, fmt.Errorf("source preference input is invalid")
+		return Preference{}, fmt.Errorf("%w: source preference input is invalid", ErrInvalid)
 	}
 	seen := map[string]bool{}
 	keys := make([]string, 0, len(disabled))
@@ -64,7 +66,7 @@ func (service *Service) Save(ctx context.Context, userKey string, disabled []str
 		seen[key] = true
 		keys = append(keys, key)
 		if len(keys) > 64 {
-			return Preference{}, fmt.Errorf("source preference has too many disabled sources")
+			return Preference{}, fmt.Errorf("%w: source preference has too many disabled sources", ErrInvalid)
 		}
 	}
 	sort.Strings(keys)

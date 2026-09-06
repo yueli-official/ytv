@@ -9,6 +9,8 @@ import (
 	"unicode/utf8"
 )
 
+var ErrInvalid = errors.New("invalid siteprofile input")
+
 var ErrRevisionConflict = errors.New("site profile revision conflict")
 
 type Profile struct {
@@ -56,7 +58,7 @@ func (service *Service) Update(ctx context.Context, name, description string, ex
 	name = strings.TrimSpace(name)
 	description = strings.TrimSpace(description)
 	if name == "" || utf8.RuneCountInString(name) > 80 || utf8.RuneCountInString(description) > 300 || expectedRevision < 0 {
-		return Profile{}, fmt.Errorf("site profile input is invalid")
+		return Profile{}, fmt.Errorf("%w: site profile input is invalid", ErrInvalid)
 	}
 	current, err := service.Get(ctx)
 	if err != nil {

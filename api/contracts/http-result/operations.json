@@ -1,0 +1,493 @@
+{
+  "schemaVersion": "http.yueli.dev/operations/v1",
+  "namespace": "ytv",
+  "operations": [
+    {
+      "id": "ytv.delete.api.v1.admin.sources.by-sourceKey",
+      "method": "DELETE",
+      "path": "/api/v1/admin/sources/{sourceKey}",
+      "success": {
+        "status": 200,
+        "kind": "resource",
+        "schemaRef": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.DeleteSourceRes"
+      },
+      "errors": [
+        "common.internal",
+        "common.rate_limited",
+        "common.validation_failed",
+        "ytv.forbidden",
+        "ytv.invalid_input",
+        "ytv.not_authenticated",
+        "ytv.not_found",
+        "ytv.revision_conflict",
+        "ytv.source_already_installed",
+        "ytv.source_not_installed"
+      ]
+    },
+    {
+      "id": "ytv.get.api.v1.admin.authorization",
+      "method": "GET",
+      "path": "/api/v1/admin/authorization",
+      "success": {
+        "status": 200,
+        "kind": "resource",
+        "schemaRef": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.GetAuthorizationOverviewRes"
+      },
+      "errors": [
+        "common.internal",
+        "common.rate_limited",
+        "common.validation_failed",
+        "ytv.forbidden",
+        "ytv.not_authenticated"
+      ]
+    },
+    {
+      "id": "ytv.get.api.v1.admin.searches",
+      "method": "GET",
+      "path": "/api/v1/admin/searches",
+      "success": {
+        "status": 200,
+        "kind": "resource",
+        "schemaRef": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.GetSearchOverviewRes"
+      },
+      "errors": [
+        "common.internal",
+        "common.rate_limited",
+        "common.validation_failed",
+        "ytv.forbidden",
+        "ytv.invalid_input",
+        "ytv.not_authenticated",
+        "ytv.not_found",
+        "ytv.source_unavailable"
+      ]
+    },
+    {
+      "id": "ytv.get.api.v1.admin.session",
+      "method": "GET",
+      "path": "/api/v1/admin/session",
+      "success": {
+        "status": 200,
+        "kind": "resource",
+        "schemaRef": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.GetAdminSessionRes"
+      },
+      "errors": [
+        "common.internal",
+        "common.rate_limited",
+        "common.validation_failed",
+        "ytv.forbidden",
+        "ytv.not_authenticated"
+      ]
+    },
+    {
+      "id": "ytv.get.api.v1.admin.site-profile",
+      "method": "GET",
+      "path": "/api/v1/admin/site-profile",
+      "success": {
+        "status": 200,
+        "kind": "resource",
+        "schemaRef": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.GetSiteProfileRes"
+      },
+      "errors": [
+        "common.internal",
+        "common.rate_limited",
+        "common.validation_failed",
+        "ytv.forbidden",
+        "ytv.not_authenticated"
+      ]
+    },
+    {
+      "id": "ytv.get.api.v1.admin.source-catalog",
+      "method": "GET",
+      "path": "/api/v1/admin/source-catalog",
+      "success": {
+        "status": 200,
+        "kind": "collection",
+        "schemaRef": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.GetAvailableSourcesRes"
+      },
+      "errors": [
+        "common.internal",
+        "common.rate_limited",
+        "common.validation_failed",
+        "ytv.forbidden",
+        "ytv.not_authenticated"
+      ]
+    },
+    {
+      "id": "ytv.get.api.v1.admin.sources",
+      "method": "GET",
+      "path": "/api/v1/admin/sources",
+      "success": {
+        "status": 200,
+        "kind": "collection",
+        "schemaRef": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.GetSourcesRes"
+      },
+      "errors": [
+        "common.internal",
+        "common.rate_limited",
+        "common.validation_failed",
+        "ytv.forbidden",
+        "ytv.not_authenticated",
+        "ytv.not_found",
+        "ytv.source_already_installed",
+        "ytv.source_not_installed"
+      ]
+    },
+    {
+      "id": "ytv.get.api.v1.admin.traffic",
+      "method": "GET",
+      "path": "/api/v1/admin/traffic",
+      "success": {
+        "status": 200,
+        "kind": "resource",
+        "schemaRef": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.GetTrafficOverviewRes"
+      },
+      "errors": [
+        "common.internal",
+        "common.rate_limited",
+        "common.validation_failed",
+        "ytv.forbidden",
+        "ytv.invalid_input",
+        "ytv.not_authenticated"
+      ]
+    },
+    {
+      "id": "ytv.get.api.v1.discover",
+      "method": "GET",
+      "path": "/api/v1/discover",
+      "success": {
+        "status": 200,
+        "kind": "resource",
+        "schemaRef": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.SearchRes"
+      },
+      "errors": [
+        "common.internal",
+        "common.rate_limited",
+        "common.validation_failed",
+        "ytv.invalid_input",
+        "ytv.not_authenticated",
+        "ytv.not_found",
+        "ytv.source_unavailable"
+      ]
+    },
+    {
+      "id": "ytv.get.api.v1.meta",
+      "method": "GET",
+      "path": "/api/v1/meta",
+      "success": {
+        "status": 200,
+        "kind": "resource",
+        "schemaRef": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.GetMetaRes"
+      },
+      "errors": [
+        "common.internal",
+        "common.rate_limited",
+        "common.validation_failed",
+        "ytv.not_authenticated"
+      ]
+    },
+    {
+      "id": "ytv.get.api.v1.playback.by-sourceKey.by-externalId.by-episodeKey",
+      "method": "GET",
+      "path": "/api/v1/playback/{sourceKey}/{externalId}/{episodeKey}",
+      "success": {
+        "status": 200,
+        "kind": "resource",
+        "schemaRef": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.ResolvePlaybackRes"
+      },
+      "errors": [
+        "common.internal",
+        "common.rate_limited",
+        "common.validation_failed",
+        "ytv.invalid_input",
+        "ytv.not_authenticated",
+        "ytv.not_found",
+        "ytv.playback_unsafe",
+        "ytv.source_unavailable"
+      ]
+    },
+    {
+      "id": "ytv.get.api.v1.preferences.sources",
+      "method": "GET",
+      "path": "/api/v1/preferences/sources",
+      "success": {
+        "status": 200,
+        "kind": "resource",
+        "schemaRef": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.GetSourcePreferenceRes"
+      },
+      "errors": [
+        "common.internal",
+        "common.rate_limited",
+        "common.validation_failed",
+        "ytv.invalid_input",
+        "ytv.not_authenticated"
+      ]
+    },
+    {
+      "id": "ytv.get.api.v1.progress",
+      "method": "GET",
+      "path": "/api/v1/progress",
+      "success": {
+        "status": 200,
+        "kind": "collection",
+        "schemaRef": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.ListProgressRes"
+      },
+      "errors": [
+        "common.internal",
+        "common.rate_limited",
+        "common.validation_failed",
+        "ytv.invalid_input",
+        "ytv.not_authenticated"
+      ]
+    },
+    {
+      "id": "ytv.get.api.v1.search",
+      "method": "GET",
+      "path": "/api/v1/search",
+      "success": {
+        "status": 200,
+        "kind": "resource",
+        "schemaRef": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.SearchRes"
+      },
+      "errors": [
+        "common.internal",
+        "common.rate_limited",
+        "common.validation_failed",
+        "ytv.invalid_input",
+        "ytv.not_authenticated",
+        "ytv.not_found",
+        "ytv.source_unavailable"
+      ]
+    },
+    {
+      "id": "ytv.get.api.v1.sources",
+      "method": "GET",
+      "path": "/api/v1/sources",
+      "success": {
+        "status": 200,
+        "kind": "collection",
+        "schemaRef": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.GetPublicSourcesRes"
+      },
+      "errors": [
+        "common.internal",
+        "common.rate_limited",
+        "common.validation_failed",
+        "ytv.not_authenticated"
+      ]
+    },
+    {
+      "id": "ytv.get.api.v1.titles.by-sourceKey.by-externalId",
+      "method": "GET",
+      "path": "/api/v1/titles/{sourceKey}/{externalId}",
+      "success": {
+        "status": 200,
+        "kind": "resource",
+        "schemaRef": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.GetTitleRes"
+      },
+      "errors": [
+        "common.internal",
+        "common.rate_limited",
+        "common.validation_failed",
+        "ytv.invalid_input",
+        "ytv.not_authenticated",
+        "ytv.not_found",
+        "ytv.source_unavailable"
+      ]
+    },
+    {
+      "id": "ytv.get.api.v1.trending",
+      "method": "GET",
+      "path": "/api/v1/trending",
+      "success": {
+        "status": 200,
+        "kind": "collection",
+        "schemaRef": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.GetTrendingRes"
+      },
+      "errors": [
+        "common.internal",
+        "common.rate_limited",
+        "common.validation_failed",
+        "ytv.invalid_input",
+        "ytv.not_authenticated",
+        "ytv.not_found",
+        "ytv.source_unavailable"
+      ]
+    },
+    {
+      "id": "ytv.patch.api.v1.admin.sources.by-sourceKey",
+      "method": "PATCH",
+      "path": "/api/v1/admin/sources/{sourceKey}",
+      "success": {
+        "status": 200,
+        "kind": "resource",
+        "schemaRef": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.UpdateSourceRes"
+      },
+      "errors": [
+        "common.internal",
+        "common.rate_limited",
+        "common.validation_failed",
+        "ytv.forbidden",
+        "ytv.invalid_input",
+        "ytv.not_authenticated",
+        "ytv.not_found",
+        "ytv.revision_conflict",
+        "ytv.source_already_installed",
+        "ytv.source_not_installed"
+      ]
+    },
+    {
+      "id": "ytv.post.api.v1.admin.sources",
+      "method": "POST",
+      "path": "/api/v1/admin/sources",
+      "success": {
+        "status": 201,
+        "kind": "resource",
+        "schemaRef": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.InstallSourceRes"
+      },
+      "errors": [
+        "common.internal",
+        "common.rate_limited",
+        "common.validation_failed",
+        "ytv.forbidden",
+        "ytv.invalid_input",
+        "ytv.not_authenticated",
+        "ytv.not_found",
+        "ytv.revision_conflict",
+        "ytv.source_already_installed",
+        "ytv.source_not_installed"
+      ]
+    },
+    {
+      "id": "ytv.post.api.v1.admin.sources.by-sourceKey.probe",
+      "method": "POST",
+      "path": "/api/v1/admin/sources/{sourceKey}/probe",
+      "success": {
+        "status": 200,
+        "kind": "resource",
+        "schemaRef": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.ProbeSourceRes"
+      },
+      "errors": [
+        "common.internal",
+        "common.rate_limited",
+        "common.validation_failed",
+        "ytv.forbidden",
+        "ytv.invalid_input",
+        "ytv.not_authenticated",
+        "ytv.not_found",
+        "ytv.source_already_installed",
+        "ytv.source_not_installed"
+      ]
+    },
+    {
+      "id": "ytv.post.api.v1.admin.sources.probe-all",
+      "method": "POST",
+      "path": "/api/v1/admin/sources/probe-all",
+      "success": {
+        "status": 200,
+        "kind": "collection",
+        "schemaRef": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.ProbeAllSourcesRes"
+      },
+      "errors": [
+        "common.internal",
+        "common.rate_limited",
+        "common.validation_failed",
+        "ytv.forbidden",
+        "ytv.invalid_input",
+        "ytv.not_authenticated",
+        "ytv.not_found",
+        "ytv.source_already_installed",
+        "ytv.source_not_installed"
+      ]
+    },
+    {
+      "id": "ytv.post.api.v1.traffic.playback",
+      "method": "POST",
+      "path": "/api/v1/traffic/playback",
+      "success": {
+        "status": 200,
+        "kind": "resource",
+        "schemaRef": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.RecordPlaybackStartRes"
+      },
+      "errors": [
+        "common.internal",
+        "common.rate_limited",
+        "common.validation_failed",
+        "ytv.invalid_input",
+        "ytv.not_authenticated",
+        "ytv.not_found",
+        "ytv.source_unavailable"
+      ]
+    },
+    {
+      "id": "ytv.post.api.v1.traffic.views",
+      "method": "POST",
+      "path": "/api/v1/traffic/views",
+      "success": {
+        "status": 200,
+        "kind": "resource",
+        "schemaRef": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.RecordPageViewRes"
+      },
+      "errors": [
+        "common.internal",
+        "common.rate_limited",
+        "common.validation_failed",
+        "ytv.invalid_input",
+        "ytv.not_authenticated"
+      ]
+    },
+    {
+      "id": "ytv.put.api.v1.admin.site-profile",
+      "method": "PUT",
+      "path": "/api/v1/admin/site-profile",
+      "success": {
+        "status": 200,
+        "kind": "resource",
+        "schemaRef": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.UpdateSiteProfileRes"
+      },
+      "errors": [
+        "common.internal",
+        "common.rate_limited",
+        "common.validation_failed",
+        "ytv.forbidden",
+        "ytv.invalid_input",
+        "ytv.not_authenticated",
+        "ytv.revision_conflict"
+      ]
+    },
+    {
+      "id": "ytv.put.api.v1.preferences.sources",
+      "method": "PUT",
+      "path": "/api/v1/preferences/sources",
+      "success": {
+        "status": 200,
+        "kind": "resource",
+        "schemaRef": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.SaveSourcePreferenceRes"
+      },
+      "errors": [
+        "common.internal",
+        "common.rate_limited",
+        "common.validation_failed",
+        "ytv.invalid_input",
+        "ytv.not_authenticated",
+        "ytv.revision_conflict"
+      ]
+    },
+    {
+      "id": "ytv.put.api.v1.progress.by-sourceKey.by-externalId.by-episodeKey",
+      "method": "PUT",
+      "path": "/api/v1/progress/{sourceKey}/{externalId}/{episodeKey}",
+      "success": {
+        "status": 200,
+        "kind": "resource",
+        "schemaRef": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.SaveProgressRes"
+      },
+      "errors": [
+        "common.internal",
+        "common.rate_limited",
+        "common.validation_failed",
+        "ytv.invalid_input",
+        "ytv.not_authenticated",
+        "ytv.revision_conflict"
+      ]
+    }
+  ]
+}

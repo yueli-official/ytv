@@ -11,6 +11,8 @@ import (
 	"unicode/utf8"
 )
 
+var ErrInvalid = errors.New("invalid searchanalytics input")
+
 type Event struct {
 	ID                    string
 	Query                 string
@@ -78,10 +80,10 @@ func New(store Store, clock func() time.Time) (*Service, error) {
 func (service *Service) Record(ctx context.Context, event Event) (RecordResult, error) {
 	event.Query = normalizeQuery(event.Query)
 	if event.Query == "" || utf8.RuneCountInString(event.Query) > 100 {
-		return RecordResult{}, fmt.Errorf("search query must contain 1 to 100 characters")
+		return RecordResult{}, fmt.Errorf("%w: search query must contain 1 to 100 characters", ErrInvalid)
 	}
 	if event.ResultCount < 0 || event.SuccessfulSourceCount < 0 || event.FailedSourceCount < 0 || event.Duration < 0 {
-		return RecordResult{}, fmt.Errorf("search outcome counts and duration must not be negative")
+		return RecordResult{}, fmt.Errorf("%w: search outcome counts and duration must not be negative", ErrInvalid)
 	}
 	event.ID = strings.TrimSpace(event.ID)
 	if event.ID == "" {
@@ -92,14 +94,14 @@ func (service *Service) Record(ctx context.Context, event Event) (RecordResult, 
 		}
 	}
 	if len(event.ID) < 16 || len(event.ID) > 200 {
-		return RecordResult{}, fmt.Errorf("search event ID must contain 16 to 200 bytes")
+		return RecordResult{}, fmt.Errorf("%w: search event ID must contain 16 to 200 bytes", ErrInvalid)
 	}
 	if event.OccurredAt.IsZero() {
 		event.OccurredAt = service.clock()
 	}
 	event.OccurredAt = event.OccurredAt.UTC()
 	if event.OccurredAt.After(service.clock().Add(5 * time.Minute)) {
-		return RecordResult{}, fmt.Errorf("search event cannot be in the future")
+		return RecordResult{}, fmt.Errorf("%w: search event cannot be in the future", ErrInvalid)
 	}
 	replay, err := service.store.Record(ctx, event)
 	if err != nil {
@@ -113,13 +115,13 @@ func (service *Service) Overview(ctx context.Context, days, limit int) (Overview
 		days = 14
 	}
 	if days != 7 && days != 14 && days != 30 {
-		return Overview{}, fmt.Errorf("days must be 7, 14, or 30")
+		return Overview{}, fmt.Errorf("%w: days must be 7, 14, or 30", ErrInvalid)
 	}
 	if limit == 0 {
 		limit = 10
 	}
 	if limit < 1 || limit > 50 {
-		return Overview{}, fmt.Errorf("limit must be between 1 and 50")
+		return Overview{}, fmt.Errorf("%w: limit must be between 1 and 50", ErrInvalid)
 	}
 	now := service.clock()
 	location, err := time.LoadLocation("Asia/Shanghai")

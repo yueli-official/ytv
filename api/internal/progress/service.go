@@ -9,6 +9,8 @@ import (
 	"unicode/utf8"
 )
 
+var ErrInvalid = errors.New("invalid progress input")
+
 type Record struct {
 	UserKey         string
 	SourceKey       string
@@ -56,20 +58,20 @@ func (service *Service) Save(ctx context.Context, record Record) (SaveResult, er
 	record.TitleName = strings.TrimSpace(record.TitleName)
 	record.EpisodeTitle = strings.TrimSpace(record.EpisodeTitle)
 	if record.UserKey == "" || record.SourceKey == "" || record.ExternalID == "" || record.EpisodeKey == "" {
-		return SaveResult{}, fmt.Errorf("progress identity and locator are required")
+		return SaveResult{}, fmt.Errorf("%w: progress identity and locator are required", ErrInvalid)
 	}
 	if utf8.RuneCountInString(record.TitleName) > 200 || utf8.RuneCountInString(record.EpisodeTitle) > 200 {
-		return SaveResult{}, fmt.Errorf("progress display metadata is too long")
+		return SaveResult{}, fmt.Errorf("%w: progress display metadata is too long", ErrInvalid)
 	}
 	if record.PositionSeconds < 0 || record.DurationSeconds <= 0 || record.PositionSeconds > record.DurationSeconds+30 {
-		return SaveResult{}, fmt.Errorf("progress position or duration is invalid")
+		return SaveResult{}, fmt.Errorf("%w: progress position or duration is invalid", ErrInvalid)
 	}
 	now := service.clock()
 	if record.UpdatedAt.IsZero() {
 		record.UpdatedAt = now
 	}
 	if record.UpdatedAt.Before(now.Add(-30*24*time.Hour)) || record.UpdatedAt.After(now.Add(5*time.Minute)) {
-		return SaveResult{}, fmt.Errorf("progress timestamp is outside the accepted window")
+		return SaveResult{}, fmt.Errorf("%w: progress timestamp is outside the accepted window", ErrInvalid)
 	}
 	record.UpdatedAt = record.UpdatedAt.UTC()
 	record.Completed = record.Completed || record.PositionSeconds >= record.DurationSeconds-10
@@ -79,13 +81,13 @@ func (service *Service) Save(ctx context.Context, record Record) (SaveResult, er
 func (service *Service) List(ctx context.Context, userKey string, limit int) ([]Record, error) {
 	userKey = strings.TrimSpace(userKey)
 	if userKey == "" {
-		return nil, fmt.Errorf("progress user key is required")
+		return nil, fmt.Errorf("%w: progress user key is required", ErrInvalid)
 	}
 	if limit == 0 {
 		limit = 100
 	}
 	if limit < 1 || limit > 100 {
-		return nil, fmt.Errorf("progress limit must be between 1 and 100")
+		return nil, fmt.Errorf("%w: progress limit must be between 1 and 100", ErrInvalid)
 	}
 	return service.store.List(ctx, userKey, limit)
 }

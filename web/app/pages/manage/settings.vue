@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ytvFailureFeedback } from "~/utils/ytv-failure";
 import type { FormSubmitEvent } from "@nuxt/ui";
 import { z } from "zod";
 import { ManagePage } from "@yueli/ui/admin";
@@ -17,6 +18,8 @@ const schema = z.object({
 });
 const saveFeedback = useActionFeedback();
 const saveError = ref("");
+const fieldErrors = ref<Readonly<Record<string, readonly string[]>>>({});
+const technical = ref<{ code: string; traceId?: string }>();
 
 watch(data, (value) => {
   if (!value?.profile) return;
@@ -27,13 +30,18 @@ watch(data, (value) => {
 
 async function saveProfile(_event?: FormSubmitEvent<z.output<typeof schema>>) {
   saveError.value = "";
+  fieldErrors.value = {};
+  technical.value = undefined;
   try {
     await saveFeedback.run(async () => {
       const result = await api.updateSiteProfile(form);
       form.revision = result.profile.revision;
     });
-  } catch {
-    saveError.value = "保存失败；站点资料可能已被其他管理员更新，请刷新后重试。";
+  } catch (error) {
+    const feedback = ytvFailureFeedback(error, "站点资料没有保存，请稍后重试。", { "/name": "name", "/description": "description" });
+    fieldErrors.value = feedback.fieldErrors;
+    technical.value = feedback.technical;
+    saveError.value = [feedback.message, ...feedback.summary].join(" ");
   }
 }
 </script>
@@ -56,9 +64,10 @@ async function saveProfile(_event?: FormSubmitEvent<z.output<typeof schema>>) {
     <SettingSection title="公开资料">
       <UAlert v-if="error" class="mb-4" color="error" variant="subtle" title="站点资料暂时不可用"><template #actions><UButton label="重试" color="error" variant="soft" @click="() => refresh()" /></template></UAlert>
       <UForm id="ytv-site-profile-form" :schema="schema" :state="form" class="grid gap-4" @submit="saveProfile">
-        <UFormField label="站点名称" name="name"><UInput v-model="form.name" class="w-full" maxlength="80" /></UFormField>
-        <UFormField label="站点简介" name="description"><UTextarea v-model="form.description" class="w-full" :rows="4" maxlength="300" /></UFormField>
+        <UFormField label="站点名称" name="name" :error="fieldErrors.name?.[0]"><UInput v-model="form.name" class="w-full" maxlength="80" /></UFormField>
+        <UFormField label="站点简介" name="description" :error="fieldErrors.description?.[0]"><UTextarea v-model="form.description" class="w-full" :rows="4" maxlength="300" /></UFormField>
         <p v-if="saveError" class="text-sm text-error" role="alert">{{ saveError }}</p>
+      <details v-if="technical" class="text-xs text-muted"><summary>技术详情</summary><code class="break-all select-all">{{ technical.code }} {{ technical.traceId }}</code></details>
       </UForm>
     </SettingSection>
   </ManagePage>

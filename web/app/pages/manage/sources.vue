@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ytvFailureMessage } from "~/utils/ytv-failure";
 import { ManagePage } from "@yueli/ui/admin";
 import { AdminRowActions } from "@yueli/ui/admin";
 import type { AdminRowActionItem } from "@yueli/ui/admin";
@@ -33,6 +34,7 @@ const { data: catalog, refresh: refreshCatalog } = await useAsyncData("ytv-admin
 const drafts = reactive<Record<string, SourceDraft>>({});
 const probes = reactive<Record<string, { available: boolean; latencyMs: number; detail: string }>>({});
 const saveState = reactive<Record<string, "pending" | "success" | "error" | undefined>>({});
+const saveMessages = reactive<Record<string, string>>({});
 const saveRequested = reactive<Record<string, boolean>>({});
 const saving = reactive<Record<string, boolean>>({});
 const probing = reactive<Record<string, boolean>>({});
@@ -166,7 +168,8 @@ async function persist(sourceKey: string) {
         Object.assign(latest, { name: result.source.name, enabled: result.source.enabled, homeVisible: result.source.homeVisible, priority: result.source.priority, revision: result.source.revision });
       }
       saveState[sourceKey] = "success";
-    } catch {
+    } catch (error) {
+      saveMessages[sourceKey] = ytvFailureMessage(error, "自动保存失败，请稍后重试。");
       saveRequested[sourceKey] = false;
       saveState[sourceKey] = "error";
     }
@@ -211,24 +214,24 @@ onBeforeUnmount(() => {
 async function probe(sourceKey: string) {
   probing[sourceKey] = true;
   try { probes[sourceKey] = (await api.probeSource(sourceKey)).health; }
-  catch { probes[sourceKey] = { available: false, latencyMs: 0, detail: "检测请求失败" }; }
+  catch (error) { probes[sourceKey] = { available: false, latencyMs: 0, detail: ytvFailureMessage(error, "检测请求失败") }; }
   finally { probing[sourceKey] = false; }
 }
 async function probeAll() {
   probingAll.value = true;
   probeSummary.value = "";
   try {
-    const results = (await api.probeAllSources()).results;
+    const results = (await api.probeAllSources()).items;
     for (const item of results) probes[item.source.key] = item.health;
     probeSummary.value = `${results.filter((item) => item.health.available).length}/${results.length} 个来源搜索可用`;
-  } catch { probeSummary.value = "全部检测失败"; }
+  } catch (error) { probeSummary.value = ytvFailureMessage(error, "全部检测失败"); }
   finally { probingAll.value = false; }
 }
 async function reconcileAvailability(mode: "enable" | "disable") {
   toolsPending.value = true;
   probeSummary.value = "";
   try {
-    const results = (await api.probeAllSources()).results;
+    const results = (await api.probeAllSources()).items;
     for (const item of results) probes[item.source.key] = item.health;
     const targets = results.filter((item) => mode === "enable" ? item.health.available && !item.source.enabled : !item.health.available && item.source.enabled);
     const updates = await Promise.allSettled(targets.map((item) => api.updateSource(item.source.key, {
@@ -288,7 +291,7 @@ async function installSelected() {
   if (failed === 0) {
     addOpen.value = false;
   } else {
-    operationError.value = `${sources.length - failed} 个添加成功，${failed} 个添加失败，请重试。`;
+    operationError.value = `${sources.length - failed} 个添加成功，${failed} 个添加失败。 ` + results.filter(result => result.status === "rejected").map(result => ytvFailureMessage(result.reason)).join(" ");
     selectedAvailableKeys.value = sources.filter((_source, index) => results[index]?.status === "rejected").map((source) => source.key);
   }
   installing.value = false;
@@ -392,7 +395,7 @@ const sourceToolItems = computed(() => [[
               <p class="mt-1 truncate text-xs text-muted">{{ source.catalog ? `${source.catalog} ${source.catalogVersion}` : source.kind }} · {{ source.key }}</p>
               <p v-if="saveState[source.key] === 'pending'" class="mt-1 text-xs text-muted" role="status">正在保存…</p>
               <p v-else-if="saveState[source.key] === 'success'" class="mt-1 text-xs text-success" role="status">已自动保存</p>
-              <p v-else-if="saveState[source.key] === 'error'" class="mt-1 text-xs text-error" role="alert">自动保存失败，请刷新后重试。</p>
+              <p v-else-if="saveState[source.key] === 'error'" class="mt-1 text-xs text-error" role="alert">{{ saveMessages[source.key] || "请填写来源名称。" }}</p>
               <p v-else-if="probes[source.key]" class="mt-1 truncate text-xs text-dimmed">{{ probes[source.key]?.latencyMs }} ms · {{ probes[source.key]?.detail }}</p>
             </div>
           </div>

@@ -58,7 +58,7 @@ test("shared console shell renders without hydration or component warnings", asy
   await page.goto("/manage", { waitUntil: "networkidle" });
   await expect(page.locator("[data-admin-console]")).toBeVisible();
   await expect(page.locator("[data-admin-console-canvas]")).toBeVisible();
-  await expect(page.locator("[data-admin-trend-chart]")).toHaveCount(2);
+  await expect(page.locator("[data-admin-trend-chart]")).toHaveCount(3);
 
   if ((page.viewportSize()?.width || 0) >= 1024) {
     const sidebar = page.locator("[data-admin-sidebar-appearance]");

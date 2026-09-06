@@ -11,6 +11,8 @@ import (
 	"github.com/yueli-official/ytv/api/internal/source"
 )
 
+var ErrInvalid = errors.New("invalid sourcecontrol input")
+
 var ErrRevisionConflict = errors.New("source setting revision conflict")
 var ErrAlreadyInstalled = errors.New("source is already installed")
 var ErrNotInstalled = errors.New("source is not installed")
@@ -142,7 +144,7 @@ func (service *Service) Update(ctx context.Context, sourceKey string, displayNam
 	sourceKey = strings.TrimSpace(sourceKey)
 	displayName = strings.TrimSpace(displayName)
 	if sourceKey == "" || displayName == "" || len([]rune(displayName)) > 80 || priority < 0 || expectedRevision < 0 {
-		return SourceView{}, fmt.Errorf("source setting input is invalid")
+		return SourceView{}, fmt.Errorf("%w: source setting input is invalid", ErrInvalid)
 	}
 	if !enabled {
 		homeVisible = false

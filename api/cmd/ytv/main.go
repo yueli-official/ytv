@@ -38,6 +38,10 @@ import (
 )
 
 func main() {
+	if output := os.Getenv("YTV_OPENAPI_OUTPUT"); output != "" {
+		must(exportOpenAPI(output))
+		return
+	}
 	ctx := context.Background()
 	database, err := sql.Open("postgres", requiredEnvironment("YTV_DATABASE_URL"))
 	must(err)

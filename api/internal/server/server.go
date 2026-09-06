@@ -2,9 +2,12 @@ package server
 
 import (
 	"database/sql"
+	"net/http"
 
 	"github.com/gogf/gf/v2/net/ghttp"
 	foundationauth "github.com/yueli-official/foundation/go/auth"
+	foundationhttp "github.com/yueli-official/foundation/go/goframe/http"
+	"github.com/yueli-official/ytv/api/internal/apierr"
 	"github.com/yueli-official/ytv/api/internal/httpapi"
 	ytvruntime "github.com/yueli-official/ytv/api/internal/runtime"
 )
@@ -18,6 +21,13 @@ type Dependencies struct {
 func Configure(httpServer *ghttp.Server, dependencies Dependencies) {
 	apiMiddleware := ytvruntime.MustAPIMiddleware().Handle
 	httpServer.Use(ytvruntime.TraceRoute)
+	for status, code := range map[int]string{http.StatusNotFound: apierr.CodeNotFound, http.StatusMethodNotAllowed: apierr.CodeMethodNotAllowed} {
+		httpServer.BindStatusHandler(status, func(request *ghttp.Request) {
+			request.Response.ClearBuffer()
+			writer := foundationhttp.MustWriter(foundationhttp.WriterOptions{TraceHeader: ytvruntime.TraceHeader})
+			_, _ = writer.WriteError(request, apierr.Public(code), request.Header.Get(ytvruntime.TraceHeader))
+		})
+	}
 	httpServer.Group("/", func(group *ghttp.RouterGroup) {
 		group.Middleware(apiMiddleware)
 		group.GET("/healthz", func(request *ghttp.Request) {

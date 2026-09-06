@@ -1,0 +1,66 @@
+{
+  "schemaVersion": "errors.yueli.dev/i18n-inventory/v1",
+  "namespace": "ytv",
+  "messages": [
+    {
+      "code": "ytv.conflict",
+      "messageKey": "ytv.errors.conflict"
+    },
+    {
+      "code": "ytv.forbidden",
+      "messageKey": "ytv.errors.forbidden"
+    },
+    {
+      "code": "ytv.gateway_timeout",
+      "messageKey": "ytv.errors.gateway_timeout"
+    },
+    {
+      "code": "ytv.gateway_unavailable",
+      "messageKey": "ytv.errors.gateway_unavailable"
+    },
+    {
+      "code": "ytv.invalid_input",
+      "messageKey": "ytv.errors.invalid_input"
+    },
+    {
+      "code": "ytv.method_not_allowed",
+      "messageKey": "ytv.errors.method_not_allowed"
+    },
+    {
+      "code": "ytv.not_authenticated",
+      "messageKey": "ytv.errors.not_authenticated"
+    },
+    {
+      "code": "ytv.not_found",
+      "messageKey": "ytv.errors.not_found"
+    },
+    {
+      "code": "ytv.playback_unsafe",
+      "messageKey": "ytv.errors.playback_unsafe"
+    },
+    {
+      "code": "ytv.request_body_too_large",
+      "messageKey": "ytv.errors.request_body_too_large"
+    },
+    {
+      "code": "ytv.revision_conflict",
+      "messageKey": "ytv.errors.revision_conflict"
+    },
+    {
+      "code": "ytv.source_already_installed",
+      "messageKey": "ytv.errors.source_already_installed"
+    },
+    {
+      "code": "ytv.source_not_installed",
+      "messageKey": "ytv.errors.source_not_installed"
+    },
+    {
+      "code": "ytv.source_unavailable",
+      "messageKey": "ytv.errors.source_unavailable"
+    },
+    {
+      "code": "ytv.unsupported_media_type",
+      "messageKey": "ytv.errors.unsupported_media_type"
+    }
+  ]
+}

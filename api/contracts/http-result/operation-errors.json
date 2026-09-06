@@ -1,0 +1,233 @@
+{
+  "schemaVersion": "http.yueli.dev/operation-errors/v1",
+  "namespace": "ytv",
+  "operations": {
+    "GET /api/v1/meta": [
+      "common.internal",
+      "common.rate_limited",
+      "common.validation_failed",
+      "ytv.not_authenticated"
+    ],
+    "GET /api/v1/admin/session": [
+      "common.internal",
+      "common.rate_limited",
+      "common.validation_failed",
+      "ytv.forbidden",
+      "ytv.not_authenticated"
+    ],
+    "GET /api/v1/search": [
+      "common.internal",
+      "common.rate_limited",
+      "common.validation_failed",
+      "ytv.invalid_input",
+      "ytv.not_authenticated",
+      "ytv.not_found",
+      "ytv.source_unavailable"
+    ],
+    "GET /api/v1/discover": [
+      "common.internal",
+      "common.rate_limited",
+      "common.validation_failed",
+      "ytv.invalid_input",
+      "ytv.not_authenticated",
+      "ytv.not_found",
+      "ytv.source_unavailable"
+    ],
+    "GET /api/v1/trending": [
+      "common.internal",
+      "common.rate_limited",
+      "common.validation_failed",
+      "ytv.invalid_input",
+      "ytv.not_authenticated",
+      "ytv.not_found",
+      "ytv.source_unavailable"
+    ],
+    "GET /api/v1/sources": [
+      "common.internal",
+      "common.rate_limited",
+      "common.validation_failed",
+      "ytv.not_authenticated"
+    ],
+    "GET /api/v1/titles/{sourceKey}/{externalId}": [
+      "common.internal",
+      "common.rate_limited",
+      "common.validation_failed",
+      "ytv.invalid_input",
+      "ytv.not_authenticated",
+      "ytv.not_found",
+      "ytv.source_unavailable"
+    ],
+    "GET /api/v1/playback/{sourceKey}/{externalId}/{episodeKey}": [
+      "common.internal",
+      "common.rate_limited",
+      "common.validation_failed",
+      "ytv.invalid_input",
+      "ytv.not_authenticated",
+      "ytv.not_found",
+      "ytv.playback_unsafe",
+      "ytv.source_unavailable"
+    ],
+    "POST /api/v1/traffic/views": [
+      "common.internal",
+      "common.rate_limited",
+      "common.validation_failed",
+      "ytv.invalid_input",
+      "ytv.not_authenticated"
+    ],
+    "POST /api/v1/traffic/playback": [
+      "common.internal",
+      "common.rate_limited",
+      "common.validation_failed",
+      "ytv.invalid_input",
+      "ytv.not_authenticated",
+      "ytv.not_found",
+      "ytv.source_unavailable"
+    ],
+    "GET /api/v1/admin/traffic": [
+      "common.internal",
+      "common.rate_limited",
+      "common.validation_failed",
+      "ytv.forbidden",
+      "ytv.invalid_input",
+      "ytv.not_authenticated"
+    ],
+    "GET /api/v1/admin/searches": [
+      "common.internal",
+      "common.rate_limited",
+      "common.validation_failed",
+      "ytv.forbidden",
+      "ytv.invalid_input",
+      "ytv.not_authenticated",
+      "ytv.not_found",
+      "ytv.source_unavailable"
+    ],
+    "GET /api/v1/admin/sources": [
+      "common.internal",
+      "common.rate_limited",
+      "common.validation_failed",
+      "ytv.forbidden",
+      "ytv.not_authenticated",
+      "ytv.not_found",
+      "ytv.source_already_installed",
+      "ytv.source_not_installed"
+    ],
+    "GET /api/v1/admin/source-catalog": [
+      "common.internal",
+      "common.rate_limited",
+      "common.validation_failed",
+      "ytv.forbidden",
+      "ytv.not_authenticated"
+    ],
+    "POST /api/v1/admin/sources": [
+      "common.internal",
+      "common.rate_limited",
+      "common.validation_failed",
+      "ytv.forbidden",
+      "ytv.invalid_input",
+      "ytv.not_authenticated",
+      "ytv.not_found",
+      "ytv.revision_conflict",
+      "ytv.source_already_installed",
+      "ytv.source_not_installed"
+    ],
+    "PATCH /api/v1/admin/sources/{sourceKey}": [
+      "common.internal",
+      "common.rate_limited",
+      "common.validation_failed",
+      "ytv.forbidden",
+      "ytv.invalid_input",
+      "ytv.not_authenticated",
+      "ytv.not_found",
+      "ytv.revision_conflict",
+      "ytv.source_already_installed",
+      "ytv.source_not_installed"
+    ],
+    "DELETE /api/v1/admin/sources/{sourceKey}": [
+      "common.internal",
+      "common.rate_limited",
+      "common.validation_failed",
+      "ytv.forbidden",
+      "ytv.invalid_input",
+      "ytv.not_authenticated",
+      "ytv.not_found",
+      "ytv.revision_conflict",
+      "ytv.source_already_installed",
+      "ytv.source_not_installed"
+    ],
+    "POST /api/v1/admin/sources/{sourceKey}/probe": [
+      "common.internal",
+      "common.rate_limited",
+      "common.validation_failed",
+      "ytv.forbidden",
+      "ytv.invalid_input",
+      "ytv.not_authenticated",
+      "ytv.not_found",
+      "ytv.source_already_installed",
+      "ytv.source_not_installed"
+    ],
+    "POST /api/v1/admin/sources/probe-all": [
+      "common.internal",
+      "common.rate_limited",
+      "common.validation_failed",
+      "ytv.forbidden",
+      "ytv.invalid_input",
+      "ytv.not_authenticated",
+      "ytv.not_found",
+      "ytv.source_already_installed",
+      "ytv.source_not_installed"
+    ],
+    "GET /api/v1/progress": [
+      "common.internal",
+      "common.rate_limited",
+      "common.validation_failed",
+      "ytv.invalid_input",
+      "ytv.not_authenticated"
+    ],
+    "PUT /api/v1/progress/{sourceKey}/{externalId}/{episodeKey}": [
+      "common.internal",
+      "common.rate_limited",
+      "common.validation_failed",
+      "ytv.invalid_input",
+      "ytv.not_authenticated",
+      "ytv.revision_conflict"
+    ],
+    "GET /api/v1/preferences/sources": [
+      "common.internal",
+      "common.rate_limited",
+      "common.validation_failed",
+      "ytv.invalid_input",
+      "ytv.not_authenticated"
+    ],
+    "PUT /api/v1/preferences/sources": [
+      "common.internal",
+      "common.rate_limited",
+      "common.validation_failed",
+      "ytv.invalid_input",
+      "ytv.not_authenticated",
+      "ytv.revision_conflict"
+    ],
+    "GET /api/v1/admin/site-profile": [
+      "common.internal",
+      "common.rate_limited",
+      "common.validation_failed",
+      "ytv.forbidden",
+      "ytv.not_authenticated"
+    ],
+    "PUT /api/v1/admin/site-profile": [
+      "common.internal",
+      "common.rate_limited",
+      "common.validation_failed",
+      "ytv.forbidden",
+      "ytv.invalid_input",
+      "ytv.not_authenticated",
+      "ytv.revision_conflict"
+    ],
+    "GET /api/v1/admin/authorization": [
+      "common.internal",
+      "common.rate_limited",
+      "common.validation_failed",
+      "ytv.forbidden",
+      "ytv.not_authenticated"
+    ]
+  }
+}

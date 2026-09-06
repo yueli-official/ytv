@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "http.yueli.dev/project/v1",
+  "namespace": "ytv",
+  "openapi": {
+    "output": "contracts/openapi/ytv.json",
+    "producer": {
+      "command": [
+        "go",
+        "run",
+        "./cmd/ytv"
+      ],
+      "outputEnv": "YTV_OPENAPI_OUTPUT"
+    }
+  },
+  "errorCatalog": "contracts/http-result/error-catalog.json",
+  "operations": {
+    "output": "contracts/http-result/operations.json",
+    "errorsFile": "contracts/http-result/operation-errors.json"
+  },
+  "generate": {
+    "goOutput": "internal/apierr/catalog_gen.go",
+    "goPackage": "apierr",
+    "tsOutput": "../web/app/generated/ytvFailure.ts",
+    "tsType": "YtvFailure",
+    "i18nOutput": "../web/app/generated/error-i18n-inventory.json"
+  },
+  "allowUnusedErrors": [
+    "ytv.conflict",
+    "ytv.gateway_unavailable",
+    "ytv.gateway_timeout",
+    "ytv.method_not_allowed",
+    "ytv.request_body_too_large",
+    "ytv.unsupported_media_type"
+  ]
+}

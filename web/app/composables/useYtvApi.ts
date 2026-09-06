@@ -4,6 +4,10 @@ import type { AdminSource, AvailableSource, DiscoveryResponse, PlaybackManifest,
 
 export function useYtvApi() {
   const api = useFoundationApi("platform");
+  async function sourceCollection<T>(path: `/${string}`, auth: "required" | "optional") {
+    const result = await api.request<{ items: T[] }>(path, { auth });
+    return { sources: result.items };
+  }
   return {
     meta() {
       return api.request<{ name: string; description: string; siteKey: string; capabilities: string[] }>("/api/v1/meta", { auth: "optional" });
@@ -15,7 +19,7 @@ export function useYtvApi() {
       });
     },
     publicSources() {
-      return api.request<{ sources: PublicSource[] }>("/api/v1/sources", { auth: "optional" });
+      return sourceCollection<PublicSource>("/api/v1/sources", "optional");
     },
     discover(page = 1) {
       return api.request<DiscoveryResponse>("/api/v1/discover", { query: { page }, auth: "optional" });
@@ -54,10 +58,10 @@ export function useYtvApi() {
       });
     },
     adminSources() {
-      return api.request<{ sources: AdminSource[] }>("/api/v1/admin/sources", { auth: "required" });
+      return sourceCollection<AdminSource>("/api/v1/admin/sources", "required");
     },
     availableSources() {
-      return api.request<{ sources: AvailableSource[] }>("/api/v1/admin/source-catalog", { auth: "required" });
+      return sourceCollection<AvailableSource>("/api/v1/admin/source-catalog", "required");
     },
     installSource(sourceKey: string, revision: number) {
       return api.request<{ source: AdminSource }>("/api/v1/admin/sources", {
@@ -80,7 +84,7 @@ export function useYtvApi() {
       });
     },
     probeAllSources() {
-      return api.request<{ results: SourceProbe[] }>("/api/v1/admin/sources/probe-all", {
+      return api.request<{ items: SourceProbe[] }>("/api/v1/admin/sources/probe-all", {
         method: "POST", auth: "required"
       });
     },

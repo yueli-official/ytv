@@ -1,0 +1,70 @@
+name: Platform checks
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  api:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: api
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: api/go.mod
+          cache-dependency-path: api/go.sum
+      - run: go test ./...
+      - run: go vet ./...
+      - name: Verify route-derived OpenAPI
+        env:
+          YTV_OPENAPI_OUTPUT: contracts/openapi/ytv.json
+        run: |
+          go run ./cmd/ytv
+          git diff --exit-code -- contracts/openapi/ytv.json
+      - name: Verify catalog and generated consumers
+        run: |
+          go run github.com/yueli-official/foundation/go/httpcontract/cmd/httpcontract \
+            -errors contracts/http-result/error-catalog.json -operations contracts/http-result/operations.json \
+            -generate-go internal/apierr/catalog_gen.go -package apierr \
+            -generate-ts ../web/app/generated/ytvFailure.ts -ts-type YtvFailure \
+            -generate-i18n ../web/app/generated/error-i18n-inventory.json -check
+      - name: Verify compatibility with the base revision
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+        shell: bash
+        run: |
+          args=()
+          if git cat-file -e "$BASE_SHA:api/contracts/http-result/error-catalog.json" 2>/dev/null; then
+            git show "$BASE_SHA:api/contracts/http-result/error-catalog.json" > "$RUNNER_TEMP/ytv-base-errors.json"
+            args+=(-base-errors "$RUNNER_TEMP/ytv-base-errors.json")
+          fi
+          if git cat-file -e "$BASE_SHA:api/contracts/http-result/operations.json" 2>/dev/null; then
+            git show "$BASE_SHA:api/contracts/http-result/operations.json" > "$RUNNER_TEMP/ytv-base-operations.json"
+            args+=(-base-operations "$RUNNER_TEMP/ytv-base-operations.json")
+          fi
+          go run github.com/yueli-official/foundation/go/httpcontract/cmd/httpcontract -errors contracts/http-result/error-catalog.json -operations contracts/http-result/operations.json "${args[@]}"
+  web:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.18.x
+          cache: pnpm
+          cache-dependency-path: web/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test
+      - run: pnpm typecheck
+      - run: pnpm build

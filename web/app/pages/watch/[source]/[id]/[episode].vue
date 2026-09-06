@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ytvFailureMessage } from "~/utils/ytv-failure";
 import { createBrowserUUID } from "@yueli/nuxt-runtime/runtime";
 import { browserVisitorID } from "~/utils/visitor";
 import type { LocalPlaybackProgress } from "~/utils/local-progress";
@@ -96,7 +97,7 @@ useSeoMeta({ title: () => `${title.value?.title.name || '播放'} · ${episodeKe
         <div class="flex min-w-0 flex-col gap-3">
           <section class="relative grid aspect-video place-items-center overflow-hidden rounded-xl border border-white/10 bg-black shadow-2xl" aria-label="播放器区域">
             <div v-if="pending" class="grid justify-items-center gap-4"><UIcon name="i-tabler-loader-2" class="size-8 animate-spin text-primary" /><p class="text-sm text-white/60">正在解析播放清单</p></div>
-            <UAlert v-else-if="error" color="error" title="当前来源无法播放" description="可以重试当前来源，或返回详情选择其他来源。"><template #actions><UButton label="重试" color="error" variant="soft" @click="retry" /></template></UAlert>
+            <UAlert v-else-if="error" color="error" title="当前来源无法播放" :description="ytvFailureMessage(error, '可以重试当前来源，或返回详情选择其他来源。')"><template #actions><UButton label="重试" color="error" variant="soft" @click="retry" /></template></UAlert>
             <VideoPlayer v-else-if="manifest" :manifest="manifest" :source-key="sourceKey" :external-id="externalId" :title="title?.title.name || '演示内容'" :episode-label="currentEpisodeTitle" :poster="title?.title.imageUrl || '/demo/hero-gate.png'" @started="recordPlaybackStart" @progress="syncProgress" />
           </section>
           <div class="flex items-center justify-between gap-3 rounded-lg border border-white/10 bg-[#10151c] p-2">

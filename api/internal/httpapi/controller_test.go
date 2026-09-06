@@ -65,7 +65,7 @@ func TestPublicDiscoveryBrowsesDeploymentSources(t *testing.T) {
 func TestPublicSourcesExposeOnlyViewerSelectableCatalogs(t *testing.T) {
 	controller := testController(t)
 	response, err := controller.Public().GetPublicSources(context.Background(), &v1.GetPublicSourcesReq{})
-	if err != nil || len(response.Sources) != 1 || response.Sources[0].Key != "fixture" {
+	if err != nil || len(response.Items) != 1 || response.Items[0].Key != "fixture" {
 		t.Fatalf("sources/error = %#v / %v", response, err)
 	}
 }

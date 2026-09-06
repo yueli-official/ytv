@@ -80,7 +80,7 @@ type PublicSourceView struct {
 }
 
 type GetPublicSourcesRes struct {
-	Sources []PublicSourceView `json:"sources"`
+	Items []PublicSourceView `json:"items"`
 }
 
 type SearchCandidateView struct {
@@ -262,7 +262,7 @@ type GetSourcesReq struct {
 }
 
 type GetSourcesRes struct {
-	Sources []SourceAdminView `json:"sources"`
+	Items []SourceAdminView `json:"items"`
 }
 
 type AvailableSourceView struct {
@@ -280,7 +280,7 @@ type GetAvailableSourcesReq struct {
 }
 
 type GetAvailableSourcesRes struct {
-	Sources []AvailableSourceView `json:"sources"`
+	Items []AvailableSourceView `json:"items"`
 }
 
 type InstallSourceReq struct {
@@ -290,6 +290,7 @@ type InstallSourceReq struct {
 }
 
 type InstallSourceRes struct {
+	g.Meta `status:"201"`
 	Source SourceAdminView `json:"source"`
 }
 
@@ -339,7 +340,7 @@ type ProbeAllSourcesReq struct {
 }
 
 type ProbeAllSourcesRes struct {
-	Results []ProbeSourceRes `json:"results"`
+	Items []ProbeSourceRes `json:"items"`
 }
 
 type PlaybackProgressView struct {

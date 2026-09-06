@@ -1,0 +1,111 @@
+{
+  "schemaVersion": "errors.yueli.dev/catalog/v1",
+  "namespace": "ytv",
+  "errors": [
+    {
+      "code": "ytv.not_authenticated",
+      "goName": "NotAuthenticated",
+      "status": 401,
+      "messageKey": "ytv.errors.not_authenticated",
+      "violations": "forbidden"
+    },
+    {
+      "code": "ytv.forbidden",
+      "goName": "Forbidden",
+      "status": 403,
+      "messageKey": "ytv.errors.forbidden",
+      "violations": "forbidden"
+    },
+    {
+      "code": "ytv.not_found",
+      "goName": "NotFound",
+      "status": 404,
+      "messageKey": "ytv.errors.not_found",
+      "violations": "forbidden"
+    },
+    {
+      "code": "ytv.conflict",
+      "goName": "Conflict",
+      "status": 409,
+      "messageKey": "ytv.errors.conflict",
+      "violations": "forbidden"
+    },
+    {
+      "code": "ytv.invalid_input",
+      "goName": "InvalidInput",
+      "status": 400,
+      "messageKey": "ytv.errors.invalid_input",
+      "violations": "optional"
+    },
+    {
+      "code": "ytv.source_unavailable",
+      "goName": "SourceUnavailable",
+      "status": 503,
+      "messageKey": "ytv.errors.source_unavailable",
+      "violations": "forbidden"
+    },
+    {
+      "code": "ytv.playback_unsafe",
+      "goName": "PlaybackUnsafe",
+      "status": 409,
+      "messageKey": "ytv.errors.playback_unsafe",
+      "violations": "forbidden"
+    },
+    {
+      "code": "ytv.revision_conflict",
+      "goName": "RevisionConflict",
+      "status": 409,
+      "messageKey": "ytv.errors.revision_conflict",
+      "violations": "forbidden"
+    },
+    {
+      "code": "ytv.source_already_installed",
+      "goName": "SourceAlreadyInstalled",
+      "status": 409,
+      "messageKey": "ytv.errors.source_already_installed",
+      "violations": "forbidden"
+    },
+    {
+      "code": "ytv.source_not_installed",
+      "goName": "SourceNotInstalled",
+      "status": 409,
+      "messageKey": "ytv.errors.source_not_installed",
+      "violations": "forbidden"
+    },
+    {
+      "code": "ytv.gateway_unavailable",
+      "goName": "GatewayUnavailable",
+      "status": 502,
+      "messageKey": "ytv.errors.gateway_unavailable",
+      "violations": "forbidden"
+    },
+    {
+      "code": "ytv.gateway_timeout",
+      "goName": "GatewayTimeout",
+      "status": 504,
+      "messageKey": "ytv.errors.gateway_timeout",
+      "violations": "forbidden"
+    },
+    {
+      "code": "ytv.method_not_allowed",
+      "goName": "MethodNotAllowed",
+      "status": 405,
+      "messageKey": "ytv.errors.method_not_allowed",
+      "violations": "forbidden"
+    },
+    {
+      "code": "ytv.request_body_too_large",
+      "goName": "RequestBodyTooLarge",
+      "status": 413,
+      "messageKey": "ytv.errors.request_body_too_large",
+      "violations": "forbidden"
+    },
+    {
+      "code": "ytv.unsupported_media_type",
+      "goName": "UnsupportedMediaType",
+      "status": 415,
+      "messageKey": "ytv.errors.unsupported_media_type",
+      "violations": "forbidden"
+    }
+  ]
+}

@@ -1,0 +1,2239 @@
+{
+  "components": {
+    "schemas": {
+      "github.com.yueli-official.ytv.api.api.v1.AvailableSourceView": {
+        "properties": {
+          "catalog": {
+            "format": "string",
+            "type": "string"
+          },
+          "catalogVersion": {
+            "format": "string",
+            "type": "string"
+          },
+          "compatibility": {
+            "format": "[]v1.SourceCompatibilityView",
+            "items": {
+              "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.SourceCompatibilityView",
+              "description": ""
+            },
+            "type": "array"
+          },
+          "key": {
+            "format": "string",
+            "type": "string"
+          },
+          "kind": {
+            "format": "string",
+            "type": "string"
+          },
+          "name": {
+            "format": "string",
+            "type": "string"
+          },
+          "revision": {
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.DeleteSourceReq": {
+        "properties": {
+          "revision": {
+            "format": "int64",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "sourceKey": {
+            "format": "string",
+            "type": "string"
+          }
+        },
+        "required": [
+          "sourceKey"
+        ],
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.DeleteSourceRes": {
+        "properties": {
+          "source": {
+            "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.AvailableSourceView",
+            "description": ""
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.DiscoverReq": {
+        "properties": {
+          "page": {
+            "format": "int",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.EpisodeView": {
+        "properties": {
+          "key": {
+            "format": "string",
+            "type": "string"
+          },
+          "title": {
+            "format": "string",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.GetAdminSessionReq": {
+        "properties": {},
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.GetAdminSessionRes": {
+        "properties": {
+          "allowed": {
+            "format": "bool",
+            "type": "boolean"
+          },
+          "userKey": {
+            "format": "string",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.GetAuthorizationOverviewReq": {
+        "properties": {},
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.GetAuthorizationOverviewRes": {
+        "properties": {
+          "administratorRole": {
+            "format": "string",
+            "type": "string"
+          },
+          "bootstrapMode": {
+            "format": "bool",
+            "type": "boolean"
+          },
+          "capabilities": {
+            "format": "[]string",
+            "items": {
+              "format": "string",
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "currentUserKey": {
+            "format": "string",
+            "type": "string"
+          },
+          "initialClaimAvailable": {
+            "format": "bool",
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.GetAvailableSourcesReq": {
+        "properties": {},
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.GetAvailableSourcesRes": {
+        "properties": {
+          "items": {
+            "format": "[]v1.AvailableSourceView",
+            "items": {
+              "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.AvailableSourceView",
+              "description": ""
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.GetMetaReq": {
+        "properties": {},
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.GetMetaRes": {
+        "properties": {
+          "capabilities": {
+            "format": "[]string",
+            "items": {
+              "format": "string",
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "description": {
+            "format": "string",
+            "type": "string"
+          },
+          "name": {
+            "format": "string",
+            "type": "string"
+          },
+          "siteKey": {
+            "format": "string",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.GetPublicSourcesReq": {
+        "properties": {},
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.GetPublicSourcesRes": {
+        "properties": {
+          "items": {
+            "format": "[]v1.PublicSourceView",
+            "items": {
+              "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.PublicSourceView",
+              "description": ""
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.GetSearchOverviewReq": {
+        "properties": {
+          "days": {
+            "format": "int",
+            "type": "integer"
+          },
+          "limit": {
+            "format": "int",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.GetSearchOverviewRes": {
+        "properties": {
+          "days": {
+            "format": "int",
+            "type": "integer"
+          },
+          "series": {
+            "format": "[]v1.SearchDayStatView",
+            "items": {
+              "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.SearchDayStatView",
+              "description": ""
+            },
+            "type": "array"
+          },
+          "summary": {
+            "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.SearchSummaryView",
+            "description": ""
+          },
+          "topQueries": {
+            "format": "[]v1.SearchQueryStatView",
+            "items": {
+              "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.SearchQueryStatView",
+              "description": ""
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.GetSiteProfileReq": {
+        "properties": {},
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.GetSiteProfileRes": {
+        "properties": {
+          "profile": {
+            "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.SiteProfileView",
+            "description": ""
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.GetSourcePreferenceReq": {
+        "properties": {},
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.GetSourcePreferenceRes": {
+        "properties": {
+          "preference": {
+            "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.SourcePreferenceView",
+            "description": ""
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.GetSourcesReq": {
+        "properties": {},
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.GetSourcesRes": {
+        "properties": {
+          "items": {
+            "format": "[]v1.SourceAdminView",
+            "items": {
+              "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.SourceAdminView",
+              "description": ""
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.GetTitleReq": {
+        "properties": {
+          "externalId": {
+            "format": "string",
+            "type": "string"
+          },
+          "sourceKey": {
+            "format": "string",
+            "type": "string"
+          }
+        },
+        "required": [
+          "sourceKey",
+          "externalId"
+        ],
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.GetTitleRes": {
+        "properties": {
+          "episodes": {
+            "format": "[]v1.EpisodeView",
+            "items": {
+              "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.EpisodeView",
+              "description": ""
+            },
+            "type": "array"
+          },
+          "title": {
+            "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.SearchCandidateView",
+            "description": ""
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.GetTrafficOverviewReq": {
+        "properties": {
+          "days": {
+            "format": "int",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.GetTrafficOverviewRes": {
+        "properties": {
+          "days": {
+            "format": "int",
+            "type": "integer"
+          },
+          "pages": {
+            "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.TrafficChannelView",
+            "description": ""
+          },
+          "playback": {
+            "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.TrafficChannelView",
+            "description": ""
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.GetTrendingReq": {
+        "properties": {
+          "limit": {
+            "format": "int",
+            "type": "integer"
+          },
+          "page": {
+            "format": "int",
+            "type": "integer"
+          },
+          "tag": {
+            "format": "string",
+            "type": "string"
+          },
+          "type": {
+            "format": "string",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.GetTrendingRes": {
+        "properties": {
+          "items": {
+            "format": "[]v1.TrendingItemView",
+            "items": {
+              "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.TrendingItemView",
+              "description": ""
+            },
+            "type": "array"
+          },
+          "page": {
+            "format": "int",
+            "type": "integer"
+          },
+          "tag": {
+            "format": "string",
+            "type": "string"
+          },
+          "type": {
+            "format": "string",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.InstallSourceReq": {
+        "properties": {
+          "revision": {
+            "format": "int64",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "sourceKey": {
+            "format": "string",
+            "type": "string"
+          }
+        },
+        "required": [
+          "sourceKey"
+        ],
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.InstallSourceRes": {
+        "properties": {
+          "source": {
+            "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.SourceAdminView",
+            "description": ""
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.ListProgressReq": {
+        "properties": {
+          "limit": {
+            "format": "int",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.ListProgressRes": {
+        "properties": {
+          "items": {
+            "format": "[]v1.PlaybackProgressView",
+            "items": {
+              "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.PlaybackProgressView",
+              "description": ""
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.PlaybackProgressView": {
+        "properties": {
+          "completed": {
+            "format": "bool",
+            "type": "boolean"
+          },
+          "durationSeconds": {
+            "format": "int",
+            "type": "integer"
+          },
+          "episodeKey": {
+            "format": "string",
+            "type": "string"
+          },
+          "episodeTitle": {
+            "format": "string",
+            "type": "string"
+          },
+          "externalId": {
+            "format": "string",
+            "type": "string"
+          },
+          "positionSeconds": {
+            "format": "int",
+            "type": "integer"
+          },
+          "revision": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "sourceKey": {
+            "format": "string",
+            "type": "string"
+          },
+          "titleName": {
+            "format": "string",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "time.Time",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.ProbeAllSourcesReq": {
+        "properties": {},
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.ProbeAllSourcesRes": {
+        "properties": {
+          "items": {
+            "format": "[]v1.ProbeSourceRes",
+            "items": {
+              "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.ProbeSourceRes",
+              "description": ""
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.ProbeSourceReq": {
+        "properties": {
+          "sourceKey": {
+            "format": "string",
+            "type": "string"
+          }
+        },
+        "required": [
+          "sourceKey"
+        ],
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.ProbeSourceRes": {
+        "properties": {
+          "health": {
+            "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.SourceHealthView",
+            "description": ""
+          },
+          "source": {
+            "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.SourceAdminView",
+            "description": ""
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.PublicSourceView": {
+        "properties": {
+          "key": {
+            "format": "string",
+            "type": "string"
+          },
+          "name": {
+            "format": "string",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.RecordPageViewReq": {
+        "properties": {
+          "eventId": {
+            "format": "string",
+            "maxLength": 200,
+            "minLength": 16,
+            "type": "string"
+          },
+          "occurredAt": {
+            "format": "time.Time",
+            "type": "string"
+          },
+          "path": {
+            "format": "string",
+            "maxLength": 200,
+            "type": "string"
+          },
+          "visitorId": {
+            "format": "string",
+            "maxLength": 128,
+            "type": "string"
+          }
+        },
+        "required": [
+          "eventId",
+          "path"
+        ],
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.RecordPageViewRes": {
+        "properties": {
+          "counted": {
+            "format": "bool",
+            "type": "boolean"
+          },
+          "replay": {
+            "format": "bool",
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.RecordPlaybackStartReq": {
+        "properties": {
+          "episodeKey": {
+            "format": "string",
+            "type": "string"
+          },
+          "eventId": {
+            "format": "string",
+            "maxLength": 200,
+            "minLength": 16,
+            "type": "string"
+          },
+          "externalId": {
+            "format": "string",
+            "type": "string"
+          },
+          "occurredAt": {
+            "format": "time.Time",
+            "type": "string"
+          },
+          "sourceKey": {
+            "format": "string",
+            "type": "string"
+          },
+          "visitorId": {
+            "format": "string",
+            "maxLength": 128,
+            "type": "string"
+          }
+        },
+        "required": [
+          "eventId",
+          "sourceKey",
+          "externalId",
+          "episodeKey"
+        ],
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.RecordPlaybackStartRes": {
+        "properties": {
+          "counted": {
+            "format": "bool",
+            "type": "boolean"
+          },
+          "replay": {
+            "format": "bool",
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.ResolvePlaybackReq": {
+        "properties": {
+          "episodeKey": {
+            "format": "string",
+            "type": "string"
+          },
+          "externalId": {
+            "format": "string",
+            "type": "string"
+          },
+          "sourceKey": {
+            "format": "string",
+            "type": "string"
+          }
+        },
+        "required": [
+          "sourceKey",
+          "externalId",
+          "episodeKey"
+        ],
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.ResolvePlaybackRes": {
+        "properties": {
+          "engine": {
+            "format": "string",
+            "type": "string"
+          },
+          "episodeKey": {
+            "format": "string",
+            "type": "string"
+          },
+          "sourceName": {
+            "format": "string",
+            "type": "string"
+          },
+          "timeline": {
+            "format": "string",
+            "type": "string"
+          },
+          "url": {
+            "format": "string",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.SaveProgressReq": {
+        "properties": {
+          "completed": {
+            "format": "bool",
+            "type": "boolean"
+          },
+          "durationSeconds": {
+            "format": "int",
+            "minimum": 1,
+            "type": "integer"
+          },
+          "episodeKey": {
+            "format": "string",
+            "type": "string"
+          },
+          "episodeTitle": {
+            "format": "string",
+            "maxLength": 200,
+            "type": "string"
+          },
+          "externalId": {
+            "format": "string",
+            "type": "string"
+          },
+          "positionSeconds": {
+            "format": "int",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "sourceKey": {
+            "format": "string",
+            "type": "string"
+          },
+          "titleName": {
+            "format": "string",
+            "maxLength": 200,
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "time.Time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "sourceKey",
+          "externalId",
+          "episodeKey",
+          "durationSeconds"
+        ],
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.SaveProgressRes": {
+        "properties": {
+          "applied": {
+            "format": "bool",
+            "type": "boolean"
+          },
+          "item": {
+            "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.PlaybackProgressView",
+            "description": ""
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.SaveSourcePreferenceReq": {
+        "properties": {
+          "disabledSourceKeys": {
+            "format": "[]string",
+            "items": {
+              "format": "string",
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "revision": {
+            "format": "int64",
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.SaveSourcePreferenceRes": {
+        "properties": {
+          "preference": {
+            "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.SourcePreferenceView",
+            "description": ""
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.SearchCandidateView": {
+        "properties": {
+          "area": {
+            "format": "string",
+            "type": "string"
+          },
+          "category": {
+            "format": "string",
+            "type": "string"
+          },
+          "episodeCount": {
+            "format": "int",
+            "type": "integer"
+          },
+          "externalId": {
+            "format": "string",
+            "type": "string"
+          },
+          "imageUrl": {
+            "format": "string",
+            "type": "string"
+          },
+          "language": {
+            "format": "string",
+            "type": "string"
+          },
+          "name": {
+            "format": "string",
+            "type": "string"
+          },
+          "remarks": {
+            "format": "string",
+            "type": "string"
+          },
+          "score": {
+            "format": "string",
+            "type": "string"
+          },
+          "sourceKey": {
+            "format": "string",
+            "type": "string"
+          },
+          "sourceName": {
+            "format": "string",
+            "type": "string"
+          },
+          "summary": {
+            "format": "string",
+            "type": "string"
+          },
+          "year": {
+            "format": "string",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.SearchDayStatView": {
+        "properties": {
+          "day": {
+            "format": "string",
+            "type": "string"
+          },
+          "searches": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "zeroResultSearches": {
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.SearchGroupView": {
+        "properties": {
+          "candidates": {
+            "format": "[]v1.SearchCandidateView",
+            "items": {
+              "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.SearchCandidateView",
+              "description": ""
+            },
+            "type": "array"
+          },
+          "category": {
+            "format": "string",
+            "type": "string"
+          },
+          "key": {
+            "format": "string",
+            "type": "string"
+          },
+          "title": {
+            "format": "string",
+            "type": "string"
+          },
+          "year": {
+            "format": "string",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.SearchQueryStatView": {
+        "properties": {
+          "averageDurationMs": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "averageResultCount": {
+            "format": "float64",
+            "type": "number"
+          },
+          "lastSearchedAt": {
+            "format": "time.Time",
+            "type": "string"
+          },
+          "query": {
+            "format": "string",
+            "type": "string"
+          },
+          "searches": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "zeroResultSearches": {
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.SearchReq": {
+        "properties": {
+          "eventId": {
+            "format": "string",
+            "maxLength": 200,
+            "type": "string"
+          },
+          "page": {
+            "format": "int",
+            "type": "integer"
+          },
+          "q": {
+            "format": "string",
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string"
+          },
+          "sources": {
+            "format": "string",
+            "maxLength": 1000,
+            "type": "string"
+          }
+        },
+        "required": [
+          "q"
+        ],
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.SearchRes": {
+        "properties": {
+          "attempted": {
+            "format": "int",
+            "type": "integer"
+          },
+          "complete": {
+            "format": "bool",
+            "type": "boolean"
+          },
+          "failed": {
+            "format": "int",
+            "type": "integer"
+          },
+          "groups": {
+            "format": "[]v1.SearchGroupView",
+            "items": {
+              "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.SearchGroupView",
+              "description": ""
+            },
+            "type": "array"
+          },
+          "page": {
+            "format": "int",
+            "type": "integer"
+          },
+          "query": {
+            "format": "string",
+            "type": "string"
+          },
+          "sources": {
+            "format": "[]v1.SourceResultView",
+            "items": {
+              "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.SourceResultView",
+              "description": ""
+            },
+            "type": "array"
+          },
+          "succeeded": {
+            "format": "int",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.SearchSummaryView": {
+        "properties": {
+          "averageDurationMs": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "incompleteSearches": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "searches": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "zeroResultSearches": {
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.SiteProfileView": {
+        "properties": {
+          "description": {
+            "format": "string",
+            "type": "string"
+          },
+          "name": {
+            "format": "string",
+            "type": "string"
+          },
+          "revision": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "siteKey": {
+            "format": "string",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "time.Time",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.SourceAdminView": {
+        "properties": {
+          "catalog": {
+            "format": "string",
+            "type": "string"
+          },
+          "catalogVersion": {
+            "format": "string",
+            "type": "string"
+          },
+          "compatibility": {
+            "format": "[]v1.SourceCompatibilityView",
+            "items": {
+              "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.SourceCompatibilityView",
+              "description": ""
+            },
+            "type": "array"
+          },
+          "enabled": {
+            "format": "bool",
+            "type": "boolean"
+          },
+          "homeVisible": {
+            "format": "bool",
+            "type": "boolean"
+          },
+          "key": {
+            "format": "string",
+            "type": "string"
+          },
+          "kind": {
+            "format": "string",
+            "type": "string"
+          },
+          "name": {
+            "format": "string",
+            "type": "string"
+          },
+          "priority": {
+            "format": "int",
+            "type": "integer"
+          },
+          "revision": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "updatedAt": {
+            "format": "time.Time",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.SourceCompatibilityView": {
+        "properties": {
+          "code": {
+            "format": "string",
+            "type": "string"
+          },
+          "level": {
+            "format": "string",
+            "type": "string"
+          },
+          "message": {
+            "format": "string",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.SourceHealthView": {
+        "properties": {
+          "available": {
+            "format": "bool",
+            "type": "boolean"
+          },
+          "checkedAt": {
+            "format": "time.Time",
+            "type": "string"
+          },
+          "detail": {
+            "format": "string",
+            "type": "string"
+          },
+          "latencyMs": {
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.SourcePreferenceView": {
+        "properties": {
+          "disabledSourceKeys": {
+            "format": "[]string",
+            "items": {
+              "format": "string",
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "exists": {
+            "format": "bool",
+            "type": "boolean"
+          },
+          "revision": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "updatedAt": {
+            "format": "time.Time",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.SourceResultView": {
+        "properties": {
+          "durationMs": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "itemCount": {
+            "format": "int",
+            "type": "integer"
+          },
+          "key": {
+            "format": "string",
+            "type": "string"
+          },
+          "name": {
+            "format": "string",
+            "type": "string"
+          },
+          "outcome": {
+            "format": "string",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.TrafficChannelView": {
+        "properties": {
+          "allTimeUniqueVisitorDays": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "allTimeViews": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "recentUniqueVisitorDays": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "recentViews": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "series": {
+            "format": "[]v1.TrafficPointView",
+            "items": {
+              "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.TrafficPointView",
+              "description": ""
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.TrafficPointView": {
+        "properties": {
+          "day": {
+            "format": "string",
+            "type": "string"
+          },
+          "uniqueVisitorDays": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "views": {
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.TrendingItemView": {
+        "properties": {
+          "coverUrl": {
+            "format": "string",
+            "type": "string"
+          },
+          "id": {
+            "format": "string",
+            "type": "string"
+          },
+          "isNew": {
+            "format": "bool",
+            "type": "boolean"
+          },
+          "score": {
+            "format": "string",
+            "type": "string"
+          },
+          "title": {
+            "format": "string",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.UpdateSiteProfileReq": {
+        "properties": {
+          "description": {
+            "format": "string",
+            "maxLength": 300,
+            "type": "string"
+          },
+          "name": {
+            "format": "string",
+            "maxLength": 80,
+            "minLength": 1,
+            "type": "string"
+          },
+          "revision": {
+            "format": "int64",
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.UpdateSiteProfileRes": {
+        "properties": {
+          "profile": {
+            "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.SiteProfileView",
+            "description": ""
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.UpdateSourceReq": {
+        "properties": {
+          "enabled": {
+            "format": "bool",
+            "type": "boolean"
+          },
+          "homeVisible": {
+            "format": "bool",
+            "type": "boolean"
+          },
+          "name": {
+            "format": "string",
+            "maxLength": 80,
+            "minLength": 1,
+            "type": "string"
+          },
+          "priority": {
+            "format": "int",
+            "maximum": 100000,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "revision": {
+            "format": "int64",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "sourceKey": {
+            "format": "string",
+            "type": "string"
+          }
+        },
+        "required": [
+          "sourceKey",
+          "name"
+        ],
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.UpdateSourceRes": {
+        "properties": {
+          "source": {
+            "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.SourceAdminView",
+            "description": ""
+          }
+        },
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "title": "",
+    "version": ""
+  },
+  "openapi": "3.0.0",
+  "paths": {
+    "/api/v1/admin/authorization": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.GetAuthorizationOverviewRes",
+                  "description": ""
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "summary": "Read YTV authorization bootstrap state",
+        "tags": [
+          "Administration"
+        ]
+      }
+    },
+    "/api/v1/admin/searches": {
+      "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "days",
+            "schema": {
+              "format": "int",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "format": "int",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.GetSearchOverviewRes",
+                  "description": ""
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "summary": "Read search term analytics",
+        "tags": [
+          "Administration"
+        ]
+      }
+    },
+    "/api/v1/admin/session": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.GetAdminSessionRes",
+                  "description": ""
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "summary": "Check administrator access",
+        "tags": [
+          "Administration"
+        ]
+      }
+    },
+    "/api/v1/admin/site-profile": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.GetSiteProfileRes",
+                  "description": ""
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "summary": "Read the public site profile",
+        "tags": [
+          "Administration"
+        ]
+      },
+      "put": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.UpdateSiteProfileReq",
+                "description": ""
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.UpdateSiteProfileRes",
+                  "description": ""
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "summary": "Update the public site profile",
+        "tags": [
+          "Administration"
+        ]
+      }
+    },
+    "/api/v1/admin/source-catalog": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.GetAvailableSourcesRes",
+                  "description": ""
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "summary": "List approved source definitions available to install",
+        "tags": [
+          "Administration"
+        ]
+      }
+    },
+    "/api/v1/admin/sources": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.GetSourcesRes",
+                  "description": ""
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "summary": "List deployment-owned sources and runtime settings",
+        "tags": [
+          "Administration"
+        ]
+      },
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.InstallSourceReq",
+                "description": ""
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.InstallSourceRes",
+                  "description": ""
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "summary": "Install one approved source definition",
+        "tags": [
+          "Administration"
+        ]
+      }
+    },
+    "/api/v1/admin/sources/probe-all": {
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.ProbeAllSourcesReq",
+                "description": ""
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.ProbeAllSourcesRes",
+                  "description": ""
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "summary": "Probe every installed source",
+        "tags": [
+          "Administration"
+        ]
+      }
+    },
+    "/api/v1/admin/sources/{sourceKey}": {
+      "delete": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "sourceKey",
+            "required": true,
+            "schema": {
+              "format": "string",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "revision",
+            "schema": {
+              "format": "int64",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.DeleteSourceRes",
+                  "description": ""
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "summary": "Remove one installed source while keeping its approved definition",
+        "tags": [
+          "Administration"
+        ]
+      },
+      "patch": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "sourceKey",
+            "required": true,
+            "schema": {
+              "format": "string",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "enabled": {
+                    "format": "bool",
+                    "type": "boolean"
+                  },
+                  "homeVisible": {
+                    "format": "bool",
+                    "type": "boolean"
+                  },
+                  "name": {
+                    "format": "string",
+                    "maxLength": 80,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "priority": {
+                    "format": "int",
+                    "maximum": 100000,
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  "revision": {
+                    "format": "int64",
+                    "minimum": 0,
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "name"
+                ],
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.UpdateSourceRes",
+                  "description": ""
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "summary": "Update source runtime settings",
+        "tags": [
+          "Administration"
+        ]
+      }
+    },
+    "/api/v1/admin/sources/{sourceKey}/probe": {
+      "post": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "sourceKey",
+            "required": true,
+            "schema": {
+              "format": "string",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.ProbeSourceRes",
+                  "description": ""
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "summary": "Probe one deployment-owned source",
+        "tags": [
+          "Administration"
+        ]
+      }
+    },
+    "/api/v1/admin/traffic": {
+      "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "days",
+            "schema": {
+              "format": "int",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.GetTrafficOverviewRes",
+                  "description": ""
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "summary": "Read page and playback traffic",
+        "tags": [
+          "Administration"
+        ]
+      }
+    },
+    "/api/v1/discover": {
+      "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "format": "int",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.SearchRes",
+                  "description": ""
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "summary": "Browse current items from enabled source catalogs",
+        "tags": [
+          "Discovery"
+        ]
+      }
+    },
+    "/api/v1/meta": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.GetMetaRes",
+                  "description": ""
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "summary": "Read YTV service metadata",
+        "tags": [
+          "Public"
+        ]
+      }
+    },
+    "/api/v1/playback/{sourceKey}/{externalId}/{episodeKey}": {
+      "get": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "sourceKey",
+            "required": true,
+            "schema": {
+              "format": "string",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "externalId",
+            "required": true,
+            "schema": {
+              "format": "string",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "episodeKey",
+            "required": true,
+            "schema": {
+              "format": "string",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.ResolvePlaybackRes",
+                  "description": ""
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "summary": "Resolve a safe playback manifest",
+        "tags": [
+          "Playback"
+        ]
+      }
+    },
+    "/api/v1/preferences/sources": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.GetSourcePreferenceRes",
+                  "description": ""
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "summary": "Read the signed-in user's source preference",
+        "tags": [
+          "Account"
+        ]
+      },
+      "put": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.SaveSourcePreferenceReq",
+                "description": ""
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.SaveSourcePreferenceRes",
+                  "description": ""
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "summary": "Save the signed-in user's source preference",
+        "tags": [
+          "Account"
+        ]
+      }
+    },
+    "/api/v1/progress": {
+      "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "format": "int",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.ListProgressRes",
+                  "description": ""
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "summary": "List the signed-in user's playback progress",
+        "tags": [
+          "Account"
+        ]
+      }
+    },
+    "/api/v1/progress/{sourceKey}/{externalId}/{episodeKey}": {
+      "put": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "sourceKey",
+            "required": true,
+            "schema": {
+              "format": "string",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "externalId",
+            "required": true,
+            "schema": {
+              "format": "string",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "episodeKey",
+            "required": true,
+            "schema": {
+              "format": "string",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "completed": {
+                    "format": "bool",
+                    "type": "boolean"
+                  },
+                  "durationSeconds": {
+                    "format": "int",
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  "episodeTitle": {
+                    "format": "string",
+                    "maxLength": 200,
+                    "type": "string"
+                  },
+                  "positionSeconds": {
+                    "format": "int",
+                    "minimum": 0,
+                    "type": "integer"
+                  },
+                  "titleName": {
+                    "format": "string",
+                    "maxLength": 200,
+                    "type": "string"
+                  },
+                  "updatedAt": {
+                    "format": "time.Time",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "durationSeconds"
+                ],
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.SaveProgressRes",
+                  "description": ""
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "summary": "Merge playback progress for the signed-in user",
+        "tags": [
+          "Account"
+        ]
+      }
+    },
+    "/api/v1/search": {
+      "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "q",
+            "required": true,
+            "schema": {
+              "format": "string",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "format": "int",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sources",
+            "schema": {
+              "format": "string",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "eventId",
+            "schema": {
+              "format": "string",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.SearchRes",
+                  "description": ""
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "summary": "Search enabled source catalogs",
+        "tags": [
+          "Discovery"
+        ]
+      }
+    },
+    "/api/v1/sources": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.GetPublicSourcesRes",
+                  "description": ""
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "summary": "List enabled source catalogs available to viewers",
+        "tags": [
+          "Discovery"
+        ]
+      }
+    },
+    "/api/v1/titles/{sourceKey}/{externalId}": {
+      "get": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "sourceKey",
+            "required": true,
+            "schema": {
+              "format": "string",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "externalId",
+            "required": true,
+            "schema": {
+              "format": "string",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.GetTitleRes",
+                  "description": ""
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "summary": "Resolve one source title",
+        "tags": [
+          "Discovery"
+        ]
+      }
+    },
+    "/api/v1/traffic/playback": {
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.RecordPlaybackStartReq",
+                "description": ""
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.RecordPlaybackStartRes",
+                  "description": ""
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "summary": "Record one actual playback start",
+        "tags": [
+          "Traffic"
+        ]
+      }
+    },
+    "/api/v1/traffic/views": {
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.RecordPageViewReq",
+                "description": ""
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.RecordPageViewRes",
+                  "description": ""
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "summary": "Record one public page view",
+        "tags": [
+          "Traffic"
+        ]
+      }
+    },
+    "/api/v1/trending": {
+      "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "type",
+            "schema": {
+              "format": "string",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "tag",
+            "schema": {
+              "format": "string",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "format": "int",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "format": "int",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.GetTrendingRes",
+                  "description": ""
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "summary": "Read the current external trending list",
+        "tags": [
+          "Discovery"
+        ]
+      }
+    }
+  }
+}

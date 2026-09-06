@@ -11,6 +11,8 @@ import (
 	"github.com/yueli-official/foundation/go/traffic"
 )
 
+var ErrInvalid = errors.New("invalid analytics input")
+
 const (
 	PageResourceKind     traffic.ResourceKind = "page"
 	PlaybackResourceKind traffic.ResourceKind = "episode"
@@ -80,10 +82,10 @@ func NewTraffic(pages Recorder, pageCatalog *traffic.Catalog, playback Recorder,
 func (service *Traffic) RecordPage(ctx context.Context, input RecordInput) (RecordResult, error) {
 	path := strings.TrimSpace(input.ResourceID)
 	if path == "" || !strings.HasPrefix(path, "/") || strings.HasPrefix(path, "//") || strings.Contains(path, "\\") || len(path) > 200 {
-		return RecordResult{}, fmt.Errorf("page path is invalid")
+		return RecordResult{}, fmt.Errorf("%w: page path is invalid", ErrInvalid)
 	}
 	if strings.HasPrefix(path, "/manage") || strings.HasPrefix(path, "/auth") || strings.HasPrefix(path, "/api/") {
-		return RecordResult{}, fmt.Errorf("page path is not public")
+		return RecordResult{}, fmt.Errorf("%w: page path is not public", ErrInvalid)
 	}
 	return service.record(ctx, service.pages, PageResourceKind, input)
 }
@@ -91,7 +93,7 @@ func (service *Traffic) RecordPage(ctx context.Context, input RecordInput) (Reco
 func (service *Traffic) RecordPlayback(ctx context.Context, input RecordInput) (RecordResult, error) {
 	resourceID := strings.TrimSpace(input.ResourceID)
 	if resourceID == "" || len(resourceID) > 200 || strings.Count(resourceID, ":") < 2 {
-		return RecordResult{}, fmt.Errorf("playback resource is invalid")
+		return RecordResult{}, fmt.Errorf("%w: playback resource is invalid", ErrInvalid)
 	}
 	input.ResourceID = resourceID
 	return service.record(ctx, service.playback, PlaybackResourceKind, input)
@@ -110,7 +112,7 @@ func (service *Traffic) record(ctx context.Context, module Recorder, kind traffi
 	}
 	if visitorID := strings.TrimSpace(input.VisitorID); visitorID != "" {
 		if utf8.RuneCountInString(visitorID) < 16 || utf8.RuneCountInString(visitorID) > 128 {
-			return RecordResult{}, fmt.Errorf("visitor ID must contain 16 to 128 characters")
+			return RecordResult{}, fmt.Errorf("%w: visitor ID must contain 16 to 128 characters", ErrInvalid)
 		}
 		token, err := module.TokenizeVisitor(ctx, occurredAt, []byte("browser\x00"+visitorID))
 		if err != nil {
@@ -131,7 +133,7 @@ func (service *Traffic) Overview(ctx context.Context, days int) (Overview, error
 		days = 14
 	}
 	if days != 7 && days != 14 && days != 30 {
-		return Overview{}, fmt.Errorf("days must be 7, 14, or 30")
+		return Overview{}, fmt.Errorf("%w: days must be 7, 14, or 30", ErrInvalid)
 	}
 	pages, err := service.channelOverview(ctx, service.pages, service.pageCatalog, days)
 	if err != nil {

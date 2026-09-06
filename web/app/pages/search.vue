@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ytvFailureMessage } from "~/utils/ytv-failure";
 import { rememberSearch } from "~/utils/search-preferences";
 
 const route = useRoute();
@@ -44,7 +45,7 @@ useSeoMeta({ title: () => query.value ? `搜索：${query.value}` : "搜索" });
       <div v-if="pending" class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <USkeleton v-for="item in 12" :key="item" class="h-40 rounded-xl bg-white/10" />
       </div>
-      <UAlert v-else-if="error" color="error" title="搜索暂时不可用" description="所有当前来源都没有成功返回。请稍后重试，或换一个关键词。">
+      <UAlert v-else-if="error" color="error" title="搜索暂时不可用" :description="ytvFailureMessage(error, '搜索暂时不可用，请稍后重试。')">
         <template #actions><UButton label="重试" color="error" variant="soft" @click="retry" /></template>
       </UAlert>
       <SearchResultGrid v-else-if="data?.groups.length" :groups="data.groups" />
