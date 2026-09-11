@@ -1,0 +1,18 @@
+{
+  "site": "ytv",
+  "pages": [
+    {
+      "route": "/manage/sources",
+      "width": 390,
+      "pagination": 1,
+      "tools": 1
+    },
+    {
+      "route": "/manage/sources",
+      "width": 1440,
+      "pagination": 1,
+      "tools": 1
+    }
+  ],
+  "errors": []
+}

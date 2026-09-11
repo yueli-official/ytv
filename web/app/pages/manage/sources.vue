@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { CollectionHeaderTools } from "@yueli/ui/collection/pattern";
+
 import { ytvFailureMessage } from "~/utils/ytv-failure";
 import { ManagePage } from "@yueli/ui/admin";
 import { AdminRowActions } from "@yueli/ui/admin";
@@ -350,6 +352,16 @@ const sourceToolItems = computed(() => [[
 
 <template>
   <ManagePage id="ytv-source-settings" title="数据源" icon="i-tabler-plug-connected">
+    <template #tools>
+      <CollectionHeaderTools v-model:search="sourceQuery"
+        label="搜索与筛选"
+        :search-placeholder="messages.searchPlaceholder"
+        :controls="sourceControls.filter(c => c.kind !== 'direction' && !/sort|direction/i.test(c.id))"
+        :sort-controls="sourceControls.filter(c => c.kind === 'direction' || /sort|direction/i.test(c.id))"
+        :filter-count="activeFilterCount"
+        @search="sourceQuery = $event"
+        @control-change="changeControl"></CollectionHeaderTools>
+    </template>
     <template #subtitle>管理已批准的来源，字段修改后自动保存。</template>
     <template #actions>
       <div class="flex flex-wrap items-center justify-end gap-2">
@@ -359,7 +371,7 @@ const sourceToolItems = computed(() => [[
       </div>
     </template>
 
-    <CollectionPanel
+    <CollectionPanel external-controls
       v-model:search="sourceQuery" label="数据源" :items="visibleSources" :item-key="(source) => source.key" :item-label="(source) => source.name"
       :controls="sourceControls" :messages="messages" :state="panelState" error-message="来源设置暂时不可用，请重试。" :total="collection.total"
       :page="page" :page-size="pageSize" :page-sizes="[5, 10, 20]" :active-filter-count="activeFilterCount"
