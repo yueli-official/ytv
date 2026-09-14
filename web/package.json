@@ -30,8 +30,8 @@
   "dependencies": {
     "@nuxt/ui": "4.9.0",
     "@yueli/http-runtime": "https://github.com/yueli-official/foundation/releases/download/js-v0.7.2/yueli-http-runtime-0.2.2.tgz",
-    "@yueli/identity-nuxt": "https://github.com/yueli-official/identity/releases/download/v0.3.3/yueli-identity-nuxt-0.2.0.tgz",
-    "@yueli/nuxt-runtime": "https://github.com/yueli-official/foundation/releases/download/js-v0.7.2/yueli-nuxt-runtime-0.1.3.tgz",
+    "@yueli/identity-nuxt": "https://github.com/yueli-official/identity/releases/download/nuxt-v0.2.1/yueli-identity-nuxt-0.2.1.tgz",
+    "@yueli/nuxt-runtime": "https://github.com/yueli-official/foundation/releases/download/js-v0.7.5/yueli-nuxt-runtime-0.1.4.tgz",
     "@yueli/ui": "https://github.com/yueli-official/foundation/releases/download/js-v0.7.2/yueli-ui-0.3.2.tgz",
     "hls.js": "1.7.1",
     "nuxt": "4.5.1",
