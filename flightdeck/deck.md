@@ -9,3 +9,5 @@
 ## References
 
 - [既有重建 Work](../../workspace/flightdeck/work/2026-08-30-ytv-rebuild/index.md)
+
+- [后台品牌布局](work/2026-09-26-admin-brand-layout/index.md)：共享主题与顶栏接入进行中。

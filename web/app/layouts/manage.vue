@@ -21,6 +21,7 @@ const currentLabel = computed(() => navigation.value.find((item) => item.active)
 
 <template>
   <AdminConsoleLayout
+    class="yueli-admin-branded"
     :navigation="navigation"
     :search-groups="[]"
     :messages="messages"
@@ -34,8 +35,8 @@ const currentLabel = computed(() => navigation.value.find((item) => item.active)
     back-to-top-label="返回顶部"
     data-ytv-admin-shell
   >
-    <template #account="{ collapsed }">
-      <ConsumerManageAccountControl home-to="" show-appearance :trigger-mode="collapsed ? 'collapsed' : 'sidebar'" />
+    <template #topbar-right>
+      <ConsumerManageAccountControl home-to="" show-appearance trigger-mode="inline" />
     </template>
     <slot />
   </AdminConsoleLayout>
