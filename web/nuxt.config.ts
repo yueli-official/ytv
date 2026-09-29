@@ -33,6 +33,11 @@ export default defineNuxtConfig({
   vite: { resolve: { dedupe: ["vue", "vue-router"] } },
   app: {
     head: {
+      link: [
+        { rel: "icon", type: "image/x-icon", href: "/favicon.ico?v=20260929" },
+        { rel: "icon", type: "image/svg+xml", sizes: "any", href: "/favicon.svg?v=20260929" },
+        { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png?v=20260929" },
+      ],
       htmlAttrs: { lang: "zh-CN" },
       titleTemplate: "%s · YTV",
       meta: [
