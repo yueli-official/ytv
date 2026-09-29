@@ -19,3 +19,5 @@ test-results/
 web/test/e2e/results/
 web/test/e2e/.session-rotation-state.json
 playwright-report/
+
+/flightdeck/
