@@ -32,7 +32,7 @@
     "@yueli/http-runtime": "https://github.com/yueli-official/foundation/releases/download/js-v0.7.2/yueli-http-runtime-0.2.2.tgz",
     "@yueli/identity-nuxt": "https://github.com/yueli-official/identity/releases/download/nuxt-v0.2.1/yueli-identity-nuxt-0.2.1.tgz",
     "@yueli/nuxt-runtime": "https://github.com/yueli-official/foundation/releases/download/js-v0.7.5/yueli-nuxt-runtime-0.1.4.tgz",
-    "@yueli/ui": "file:vendor/yueli-ui-0.6.0-preview.20260926.admin-brand.1.tgz",
+    "@yueli/ui": "file:vendor/yueli-ui-0.8.0-preview.20261009.ai-discovery.6.tgz",
     "hls.js": "1.7.1",
     "nuxt": "4.5.1",
     "plyr": "3.8.4",

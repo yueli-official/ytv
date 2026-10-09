@@ -26,13 +26,13 @@ importers:
         version: https://github.com/yueli-official/foundation/releases/download/js-v0.7.2/yueli-http-runtime-0.2.2.tgz
       '@yueli/identity-nuxt':
         specifier: https://github.com/yueli-official/identity/releases/download/nuxt-v0.2.1/yueli-identity-nuxt-0.2.1.tgz
-        version: https://github.com/yueli-official/identity/releases/download/nuxt-v0.2.1/yueli-identity-nuxt-0.2.1.tgz(b5f21a25d5fbf6046a48fd1d75e3da2e)
+        version: https://github.com/yueli-official/identity/releases/download/nuxt-v0.2.1/yueli-identity-nuxt-0.2.1.tgz(174f76d92bce2707379c3492fb3cc131)
       '@yueli/nuxt-runtime':
         specifier: https://github.com/yueli-official/foundation/releases/download/js-v0.7.5/yueli-nuxt-runtime-0.1.4.tgz
         version: https://github.com/yueli-official/foundation/releases/download/js-v0.7.5/yueli-nuxt-runtime-0.1.4.tgz(@yueli/http-runtime@https://github.com/yueli-official/foundation/releases/download/js-v0.7.2/yueli-http-runtime-0.2.2.tgz)(magic-string@1.2.3)(magicast@0.5.4)(nuxt@4.5.1(@babel/plugin-syntax-jsx@7.29.7(@babel/core@7.29.7))(@babel/plugin-syntax-typescript@7.29.7(@babel/core@7.29.7))(@oxc-project/types@0.147.0)(@types/node@24.13.3)(@vue/compiler-sfc@3.5.42)(db0@0.3.4)(esbuild@0.28.2)(ioredis@5.11.1)(lightningcss@1.33.0)(magicast@0.5.4)(rollup-plugin-visualizer@7.1.1(rolldown@1.2.6)(rollup@4.63.1))(rollup@4.63.1)(srvx@0.11.22)(terser@5.51.2)(typescript@6.0.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.0))(vue-tsc@3.3.7(typescript@6.0.3))(yaml@2.9.0))(rolldown@1.2.6)(unplugin@3.3.0(esbuild@0.28.2)(rolldown@1.2.6)(rollup@4.63.1)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.0)))
       '@yueli/ui':
-        specifier: file:vendor/yueli-ui-0.6.0-preview.20260926.admin-brand.1.tgz
-        version: file:vendor/yueli-ui-0.6.0-preview.20260926.admin-brand.1.tgz(34087e2281c6fb2d2147c968a0ae98b4)
+        specifier: file:vendor/yueli-ui-0.8.0-preview.20261009.ai-discovery.6.tgz
+        version: file:vendor/yueli-ui-0.8.0-preview.20261009.ai-discovery.6.tgz(34087e2281c6fb2d2147c968a0ae98b4)
       hls.js:
         specifier: 1.7.1
         version: 1.7.1
@@ -1826,9 +1826,10 @@ packages:
       '@yueli/http-runtime': ^0.1.0
       nuxt: ^4.5.1
 
-  '@yueli/ui@file:vendor/yueli-ui-0.6.0-preview.20260926.admin-brand.1.tgz':
-    resolution: {integrity: sha512-w3rNgwo+D39joQK043Oeu9Q3Rm64ckYS3xheMYjlpctbeRrummYdqyaY1pW92WWvEawrxzVVI15ihCpVpwhZgQ==, tarball: file:vendor/yueli-ui-0.6.0-preview.20260926.admin-brand.1.tgz}
-    version: 0.6.0-preview.20260926.admin-brand.1
+  '@yueli/ui@file:vendor/yueli-ui-0.8.0-preview.20261009.ai-discovery.6.tgz':
+    resolution: {integrity: sha512-BoBu5v+MsWHYhlwv7JZyOAvnZilxLVz7wMNQBHG32DkDCc+9wsil3q8GxSKZjH88w5XjNofGcMP2SmokM1ATmw==, tarball: file:vendor/yueli-ui-0.8.0-preview.20261009.ai-discovery.6.tgz}
+    version: 0.8.0-preview.20261009.ai-discovery.6
+    hasBin: true
     peerDependencies:
       '@iconify-json/tabler': 1.2.35
       '@iconify/vue': ^5.0.1
@@ -6543,12 +6544,12 @@ snapshots:
 
   '@yueli/http-runtime@https://github.com/yueli-official/foundation/releases/download/js-v0.7.2/yueli-http-runtime-0.2.2.tgz': {}
 
-  '@yueli/identity-nuxt@https://github.com/yueli-official/identity/releases/download/nuxt-v0.2.1/yueli-identity-nuxt-0.2.1.tgz(b5f21a25d5fbf6046a48fd1d75e3da2e)':
+  '@yueli/identity-nuxt@https://github.com/yueli-official/identity/releases/download/nuxt-v0.2.1/yueli-identity-nuxt-0.2.1.tgz(174f76d92bce2707379c3492fb3cc131)':
     dependencies:
       '@nuxt/icon': 2.4.1(magic-string@1.2.3)(magicast@0.5.4)(rolldown@1.2.6)(unplugin@3.3.0(esbuild@0.28.2)(rolldown@1.2.6)(rollup@4.63.1)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.0)))(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.0))(vue@3.5.39(typescript@6.0.3))
       '@nuxt/ui': 4.9.0(7be022b67203c661b2342d1ca9f531cf)
       '@yueli/nuxt-runtime': https://github.com/yueli-official/foundation/releases/download/js-v0.7.5/yueli-nuxt-runtime-0.1.4.tgz(@yueli/http-runtime@https://github.com/yueli-official/foundation/releases/download/js-v0.7.2/yueli-http-runtime-0.2.2.tgz)(magic-string@1.2.3)(magicast@0.5.4)(nuxt@4.5.1(@babel/plugin-syntax-jsx@7.29.7(@babel/core@7.29.7))(@babel/plugin-syntax-typescript@7.29.7(@babel/core@7.29.7))(@oxc-project/types@0.147.0)(@types/node@24.13.3)(@vue/compiler-sfc@3.5.42)(db0@0.3.4)(esbuild@0.28.2)(ioredis@5.11.1)(lightningcss@1.33.0)(magicast@0.5.4)(rollup-plugin-visualizer@7.1.1(rolldown@1.2.6)(rollup@4.63.1))(rollup@4.63.1)(srvx@0.11.22)(terser@5.51.2)(typescript@6.0.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.0))(vue-tsc@3.3.7(typescript@6.0.3))(yaml@2.9.0))(rolldown@1.2.6)(unplugin@3.3.0(esbuild@0.28.2)(rolldown@1.2.6)(rollup@4.63.1)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.0)))
-      '@yueli/ui': file:vendor/yueli-ui-0.6.0-preview.20260926.admin-brand.1.tgz(34087e2281c6fb2d2147c968a0ae98b4)
+      '@yueli/ui': file:vendor/yueli-ui-0.8.0-preview.20261009.ai-discovery.6.tgz(34087e2281c6fb2d2147c968a0ae98b4)
       nuxt: 4.5.1(@babel/plugin-syntax-jsx@7.29.7(@babel/core@7.29.7))(@babel/plugin-syntax-typescript@7.29.7(@babel/core@7.29.7))(@oxc-project/types@0.147.0)(@types/node@24.13.3)(@vue/compiler-sfc@3.5.42)(db0@0.3.4)(esbuild@0.28.2)(ioredis@5.11.1)(lightningcss@1.33.0)(magicast@0.5.4)(rollup-plugin-visualizer@7.1.1(rolldown@1.2.6)(rollup@4.63.1))(rollup@4.63.1)(srvx@0.11.22)(terser@5.51.2)(typescript@6.0.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.0))(vue-tsc@3.3.7(typescript@6.0.3))(yaml@2.9.0)
       vue: 3.5.39(typescript@6.0.3)
 
@@ -6565,7 +6566,7 @@ snapshots:
       - rolldown
       - unplugin
 
-  '@yueli/ui@file:vendor/yueli-ui-0.6.0-preview.20260926.admin-brand.1.tgz(34087e2281c6fb2d2147c968a0ae98b4)':
+  '@yueli/ui@file:vendor/yueli-ui-0.8.0-preview.20261009.ai-discovery.6.tgz(34087e2281c6fb2d2147c968a0ae98b4)':
     dependencies:
       '@iconify-json/tabler': 1.2.35
       '@iconify/vue': 5.0.1(vue@3.5.39(typescript@6.0.3))
@@ -6573,8 +6574,10 @@ snapshots:
       '@nuxt/kit': 4.5.2(magic-string@1.2.3)(magicast@0.5.4)(rolldown@1.2.6)(unplugin@3.3.0(esbuild@0.28.2)(rolldown@1.2.6)(rollup@4.63.1)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.0)))
       '@nuxt/ui': 4.9.0(7be022b67203c661b2342d1ca9f531cf)
       nuxt: 4.5.1(@babel/plugin-syntax-jsx@7.29.7(@babel/core@7.29.7))(@babel/plugin-syntax-typescript@7.29.7(@babel/core@7.29.7))(@oxc-project/types@0.147.0)(@types/node@24.13.3)(@vue/compiler-sfc@3.5.42)(db0@0.3.4)(esbuild@0.28.2)(ioredis@5.11.1)(lightningcss@1.33.0)(magicast@0.5.4)(rollup-plugin-visualizer@7.1.1(rolldown@1.2.6)(rollup@4.63.1))(rollup@4.63.1)(srvx@0.11.22)(terser@5.51.2)(typescript@6.0.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.0))(vue-tsc@3.3.7(typescript@6.0.3))(yaml@2.9.0)
+      semver: 7.8.5
       tailwindcss: 4.3.1
       vue: 3.5.39(typescript@6.0.3)
+      yaml: 2.9.0
     optionalDependencies:
       vue-router: 5.1.0(@vue/compiler-sfc@3.5.42)(esbuild@0.28.2)(rolldown@1.2.6)(rollup@4.63.1)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.0))(vue@3.5.39(typescript@6.0.3))
     transitivePeerDependencies:

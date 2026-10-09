@@ -21,3 +21,4 @@ web/test/e2e/.session-rotation-state.json
 playwright-report/
 
 /flightdeck/
+/web/.task/
