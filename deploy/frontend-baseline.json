@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "baselineSha256": "6ef835526d6e357e14a638594c1ae3fc03826d53fff61a05f5fd7c3973892199",
+  "packages": {
+    "@yueli/asset-nuxt": {
+      "repository": "asset",
+      "version": "0.4.0-preview.20261017.styles.2",
+      "sha256": "76d779b12fb8c5eda52269f358cc82873a777d86d2b1e658d569ef7dc39d77c5"
+    },
+    "@yueli/content-nuxt": {
+      "repository": "foundation",
+      "version": "0.3.0-preview.20261017.styles.1",
+      "sha256": "8af49595d6dfaeb493fb08425c1851e1eef6508484d596b662fab215f030bac8"
+    },
+    "@yueli/discovery-nuxt": {
+      "repository": "foundation",
+      "version": "0.1.2",
+      "sha256": "522376c0a1bc1f261a27df6397ae310d36947c67c615d1cb7d48ec67875214ae"
+    },
+    "@yueli/http-runtime": {
+      "repository": "foundation",
+      "version": "0.2.2",
+      "sha256": "41e1d8df0932deab75bac792fcfe887cc79ccc87b3f2655195e47687a3b0b1c1"
+    },
+    "@yueli/identifier": {
+      "repository": "foundation",
+      "version": "0.1.0",
+      "sha256": "fe04a3d00810e6a1c3aeb4fb7732bf655910e86914f4b07c8c673f58860807ce"
+    },
+    "@yueli/identity-nuxt": {
+      "repository": "identity",
+      "version": "0.2.3-preview.20261017.styles.1",
+      "sha256": "e6889245581e9db41aac9be17a4fc0454fbf2b3c21278f5d7ba9a0f12b7310e4"
+    },
+    "@yueli/nuxt-runtime": {
+      "repository": "foundation",
+      "version": "0.1.5-preview.20261016.dependency-baseline.1",
+      "sha256": "d84118a8a780f5297d777eb81fc68aec40998d6de4ca30ff641de7b963bc5a0d"
+    },
+    "@yueli/shortlink-nuxt": {
+      "repository": "shortlink",
+      "version": "0.1.0",
+      "sha256": "edb75010d8de991d5a2069934fd0c64cf5e98123825b074198073470fc013de3"
+    },
+    "@yueli/site-profile": {
+      "repository": "foundation",
+      "version": "0.1.0",
+      "sha256": "dbf0895c0e8b381f0f29482ceb9fe425828cddf348a2417d189124d9b8bba580"
+    },
+    "@yueli/ui": {
+      "repository": "foundation",
+      "version": "0.9.0-preview.20261017.styles.1",
+      "sha256": "61a552cde180732829e2d0711dcd8618ba5af430f8f18cef08abd9552fd3b1eb"
+    }
+  }
+}

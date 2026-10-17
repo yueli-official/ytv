@@ -27,9 +27,11 @@ FROM node:24.20-bookworm-slim AS web-builder
 WORKDIR /src/web
 RUN corepack enable
 COPY web/package.json web/pnpm-lock.yaml ./
+COPY web/vendor ./vendor
 RUN --mount=type=cache,target=/pnpm/store pnpm config set store-dir /pnpm/store \
     && pnpm install --frozen-lockfile
 COPY web/ ./
+COPY api/contracts /src/api/contracts
 RUN pnpm build
 
 FROM node:24.20-bookworm-slim AS web

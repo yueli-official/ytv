@@ -1,5 +1,7 @@
 # Repository instructions
 
+- 生产发布先读取[配套发布合同](../docs/docs/deployment-policy.md)，核对线上实际实现；清单与验收覆盖前后端，当前旧站和未上线新实现使用各自的发布入口。
+
 - When adjacent `../workspace` exists and its `repos.lock.yaml` includes this repository, read and follow
   `../workspace/docs/multi-project-development.md` before cross-repository work or any local process lifecycle action. Product
   sessions treat Workspace contracts and `.doctor/` as read-only, use the Workspace CLI for generated state, use a separate Git

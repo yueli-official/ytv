@@ -25,14 +25,14 @@ importers:
         specifier: file:vendor/yueli-http-runtime-0.2.2.tgz
         version: file:vendor/yueli-http-runtime-0.2.2.tgz
       '@yueli/identity-nuxt':
-        specifier: file:vendor/yueli-identity-nuxt-0.2.1.tgz
-        version: file:vendor/yueli-identity-nuxt-0.2.1.tgz(d4cf1d7277d5872aecec8a493b19ae3d)
+        specifier: file:vendor/yueli-identity-nuxt-0.2.3-preview.20261017.styles.1.tgz
+        version: file:vendor/yueli-identity-nuxt-0.2.3-preview.20261017.styles.1.tgz(7d728a9d539b0bf31629297252732681)
       '@yueli/nuxt-runtime':
-        specifier: file:vendor/yueli-nuxt-runtime-0.1.4.tgz
-        version: file:vendor/yueli-nuxt-runtime-0.1.4.tgz(@yueli/http-runtime@file:vendor/yueli-http-runtime-0.2.2.tgz)(magic-string@1.2.3)(magicast@0.5.4)(nuxt@4.5.1(@babel/plugin-syntax-jsx@7.29.7(@babel/core@7.29.7))(@babel/plugin-syntax-typescript@7.29.7(@babel/core@7.29.7))(@oxc-project/types@0.147.0)(@types/node@24.13.3)(@vue/compiler-sfc@3.5.42)(db0@0.3.4)(esbuild@0.28.2)(ioredis@5.11.1)(lightningcss@1.33.0)(magicast@0.5.4)(rollup-plugin-visualizer@7.1.1(rolldown@1.2.6)(rollup@4.63.1))(rollup@4.63.1)(srvx@0.11.22)(terser@5.51.2)(typescript@6.0.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.0))(vue-tsc@3.3.7(typescript@6.0.3))(yaml@2.9.0))(rolldown@1.2.6)(unplugin@3.3.0(esbuild@0.28.2)(rolldown@1.2.6)(rollup@4.63.1)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.0)))
+        specifier: file:vendor/yueli-nuxt-runtime-0.1.5-preview.20261016.dependency-baseline.1.tgz
+        version: file:vendor/yueli-nuxt-runtime-0.1.5-preview.20261016.dependency-baseline.1.tgz(@yueli/http-runtime@file:vendor/yueli-http-runtime-0.2.2.tgz)(magic-string@1.2.3)(magicast@0.5.4)(nuxt@4.5.1(@babel/plugin-syntax-jsx@7.29.7(@babel/core@7.29.7))(@babel/plugin-syntax-typescript@7.29.7(@babel/core@7.29.7))(@oxc-project/types@0.147.0)(@types/node@24.13.3)(@vue/compiler-sfc@3.5.42)(db0@0.3.4)(esbuild@0.28.2)(ioredis@5.11.1)(lightningcss@1.33.0)(magicast@0.5.4)(rollup-plugin-visualizer@7.1.1(rolldown@1.2.6)(rollup@4.63.1))(rollup@4.63.1)(srvx@0.11.22)(terser@5.51.2)(typescript@6.0.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.0))(vue-tsc@3.3.7(typescript@6.0.3))(yaml@2.9.0))(rolldown@1.2.6)(unplugin@3.3.0(esbuild@0.28.2)(rolldown@1.2.6)(rollup@4.63.1)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.0)))
       '@yueli/ui':
-        specifier: file:vendor/yueli-ui-0.8.0-preview.20261009.ai-discovery.6.tgz
-        version: file:vendor/yueli-ui-0.8.0-preview.20261009.ai-discovery.6.tgz(34087e2281c6fb2d2147c968a0ae98b4)
+        specifier: file:vendor/yueli-ui-0.9.0-preview.20261017.styles.1.tgz
+        version: file:vendor/yueli-ui-0.9.0-preview.20261017.styles.1.tgz(34087e2281c6fb2d2147c968a0ae98b4)
       hls.js:
         specifier: 1.7.1
         version: 1.7.1
@@ -1283,6 +1283,11 @@ packages:
   '@tailwindcss/postcss@4.3.3':
     resolution: {integrity: sha512-JTSZZGQi1AyKirbLN3azmjVzef92tcX7h+iSqPdaeStyFpGpDlKvvpxeOE8njhbUanbRwr3z8DyzhICWnMtQeg==}
 
+  '@tailwindcss/typography@0.5.20':
+    resolution: {integrity: sha512-hwbzQuNUfcPvbegQFatVPl/MY/tcM9KLl963hQ5laJKPh81TEZ1+dNG9PirGvcaDBkp+BCshExAyKVPW91dozw==}
+    peerDependencies:
+      tailwindcss: '>=3.0.0 || >=4.0.0 || insiders'
+
   '@tailwindcss/vite@4.3.3':
     resolution: {integrity: sha512-yYU8cogLeSh/ms2jh8Fj7jaba/EWa7Ja6GoUqYZaraEuCI5YS6ms6ObZgjjedm+jm6XZjdNRWBpPP6Z86oOxcw==}
     peerDependencies:
@@ -1804,36 +1809,36 @@ packages:
       vue: 3.5.39
 
   '@yueli/http-runtime@file:vendor/yueli-http-runtime-0.2.2.tgz':
-    resolution: {integrity: sha512-w7Y6Bzp7uGKfg36ni9tkftN2sbtQCLrHO3DfKBA9TLmAgfrGfgU7ZBhNcDLFSMPejsQuEafc7rNWsk+12U2AJQ==, tarball: file:vendor/yueli-http-runtime-0.2.2.tgz}
+    resolution: {integrity: sha512-FJiANKxrxqCUyIsZZe6x3bbtZCWWzoE4DMl2goYBkccxynLP+wkv8vKYF09wCoUBPp3fgbD3s+UfAMsYX6u6ZQ==, tarball: file:vendor/yueli-http-runtime-0.2.2.tgz}
     version: 0.2.2
 
-  '@yueli/identity-nuxt@file:vendor/yueli-identity-nuxt-0.2.1.tgz':
-    resolution: {integrity: sha512-CzDaaLIlCnwgSUMbiAWksQOvwFsHisRj6G97QWPXR9fugD7H8y52tmZekbLSr1ab5wIpKVh9kKDOe0vufzkiFw==, tarball: file:vendor/yueli-identity-nuxt-0.2.1.tgz}
-    version: 0.2.1
+  '@yueli/identity-nuxt@file:vendor/yueli-identity-nuxt-0.2.3-preview.20261017.styles.1.tgz':
+    resolution: {integrity: sha512-uzaGybG7QY3E1+xctQPQOamEsW+PT3hNVFjL4lvx76yl6tk2L43dtDiXk444xnEx96vuh1VU/PwmmjyeyWVqWg==, tarball: file:vendor/yueli-identity-nuxt-0.2.3-preview.20261017.styles.1.tgz}
+    version: 0.2.3-preview.20261017.styles.1
     engines: {node: 24.18.x, pnpm: 10.28.x}
     peerDependencies:
       '@nuxt/icon': ^2.4.1
       '@nuxt/ui': ^4.9.0
       '@yueli/nuxt-runtime': ^0.1.4
-      '@yueli/ui': ^0.4.0
+      '@yueli/ui': 0.9.0-preview.20261017.styles.1
       nuxt: ^4.5.1
       vue: 3.5.39
 
-  '@yueli/nuxt-runtime@file:vendor/yueli-nuxt-runtime-0.1.4.tgz':
-    resolution: {integrity: sha512-SyGgB+BTOe+C8R1W7RwQqA2TWNsp90eK0HapbwUZnkfioORSWYC9AHKZJkG58rXzd50K1FWtinD/Pnr1E4LWcQ==, tarball: file:vendor/yueli-nuxt-runtime-0.1.4.tgz}
-    version: 0.1.4
+  '@yueli/nuxt-runtime@file:vendor/yueli-nuxt-runtime-0.1.5-preview.20261016.dependency-baseline.1.tgz':
+    resolution: {integrity: sha512-GjKyQziEpPyq4tZd4+w5w+AY5IrwWLh6YkEWoUnp3NSYE8E4AUf7JIzHWTh3NMnzNZq39rL5zsAYzbggmqr4kg==, tarball: file:vendor/yueli-nuxt-runtime-0.1.5-preview.20261016.dependency-baseline.1.tgz}
+    version: 0.1.5-preview.20261016.dependency-baseline.1
     peerDependencies:
-      '@yueli/http-runtime': ^0.1.0
+      '@yueli/http-runtime': '>=0.2.2 <0.3.0'
       nuxt: ^4.5.1
 
-  '@yueli/ui@file:vendor/yueli-ui-0.8.0-preview.20261009.ai-discovery.6.tgz':
-    resolution: {integrity: sha512-BoBu5v+MsWHYhlwv7JZyOAvnZilxLVz7wMNQBHG32DkDCc+9wsil3q8GxSKZjH88w5XjNofGcMP2SmokM1ATmw==, tarball: file:vendor/yueli-ui-0.8.0-preview.20261009.ai-discovery.6.tgz}
-    version: 0.8.0-preview.20261009.ai-discovery.6
+  '@yueli/ui@file:vendor/yueli-ui-0.9.0-preview.20261017.styles.1.tgz':
+    resolution: {integrity: sha512-p/I/Ee3KI1qmw7/c0acSXleB0O+GwQRD2wR2+cux4+jdbWfF9MaVBxAgt9eKRp70vAH0x5L+qYFPDiAhHqHvlA==, tarball: file:vendor/yueli-ui-0.9.0-preview.20261017.styles.1.tgz}
+    version: 0.9.0-preview.20261017.styles.1
     hasBin: true
     peerDependencies:
       '@iconify-json/tabler': 1.2.35
       '@iconify/vue': ^5.0.1
-      '@nuxt/icon': 2.4.1
+      '@nuxt/icon': ^2.4.1
       '@nuxt/ui': ^4.9.0
       nuxt: ^4.5.1
       tailwindcss: ^4.0.0
@@ -3439,6 +3444,10 @@ packages:
     engines: {node: ^22.11.0 || ^24.11.0 || >=26.0}
     peerDependencies:
       postcss: ^8.5.26
+
+  postcss-selector-parser@6.0.10:
+    resolution: {integrity: sha512-IQ7TZdoaqbT+LCpShg46jnZVlhWD2w6iQYAcYXfHARZ7X1t/UGhhceQDs5X0cGqKvYlHNOuv7Oa1xmb0oQuA3w==}
+    engines: {node: '>=4'}
 
   postcss-selector-parser@7.1.5:
     resolution: {integrity: sha512-KvvtD7SrlBP7dlgkBghEE3r84CABm5SmV2aNcG4oCA+qDnJ/tvKonFVvwWAyyWUEwxuNawdfEAZKP9zM3oZ2Uw==}
@@ -5941,6 +5950,11 @@ snapshots:
       postcss: 8.5.26
       tailwindcss: 4.3.3
 
+  '@tailwindcss/typography@0.5.20(tailwindcss@4.3.1)':
+    dependencies:
+      postcss-selector-parser: 6.0.10
+      tailwindcss: 4.3.1
+
   '@tailwindcss/vite@4.3.3(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.0))':
     dependencies:
       '@tailwindcss/node': 4.3.3
@@ -6544,18 +6558,18 @@ snapshots:
 
   '@yueli/http-runtime@file:vendor/yueli-http-runtime-0.2.2.tgz': {}
 
-  '@yueli/identity-nuxt@file:vendor/yueli-identity-nuxt-0.2.1.tgz(d4cf1d7277d5872aecec8a493b19ae3d)':
+  '@yueli/identity-nuxt@file:vendor/yueli-identity-nuxt-0.2.3-preview.20261017.styles.1.tgz(7d728a9d539b0bf31629297252732681)':
     dependencies:
       '@nuxt/icon': 2.4.1(magic-string@1.2.3)(magicast@0.5.4)(rolldown@1.2.6)(unplugin@3.3.0(esbuild@0.28.2)(rolldown@1.2.6)(rollup@4.63.1)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.0)))(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.0))(vue@3.5.39(typescript@6.0.3))
       '@nuxt/ui': 4.9.0(7be022b67203c661b2342d1ca9f531cf)
-      '@yueli/nuxt-runtime': file:vendor/yueli-nuxt-runtime-0.1.4.tgz(@yueli/http-runtime@file:vendor/yueli-http-runtime-0.2.2.tgz)(magic-string@1.2.3)(magicast@0.5.4)(nuxt@4.5.1(@babel/plugin-syntax-jsx@7.29.7(@babel/core@7.29.7))(@babel/plugin-syntax-typescript@7.29.7(@babel/core@7.29.7))(@oxc-project/types@0.147.0)(@types/node@24.13.3)(@vue/compiler-sfc@3.5.42)(db0@0.3.4)(esbuild@0.28.2)(ioredis@5.11.1)(lightningcss@1.33.0)(magicast@0.5.4)(rollup-plugin-visualizer@7.1.1(rolldown@1.2.6)(rollup@4.63.1))(rollup@4.63.1)(srvx@0.11.22)(terser@5.51.2)(typescript@6.0.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.0))(vue-tsc@3.3.7(typescript@6.0.3))(yaml@2.9.0))(rolldown@1.2.6)(unplugin@3.3.0(esbuild@0.28.2)(rolldown@1.2.6)(rollup@4.63.1)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.0)))
-      '@yueli/ui': file:vendor/yueli-ui-0.8.0-preview.20261009.ai-discovery.6.tgz(34087e2281c6fb2d2147c968a0ae98b4)
+      '@yueli/nuxt-runtime': file:vendor/yueli-nuxt-runtime-0.1.5-preview.20261016.dependency-baseline.1.tgz(@yueli/http-runtime@file:vendor/yueli-http-runtime-0.2.2.tgz)(magic-string@1.2.3)(magicast@0.5.4)(nuxt@4.5.1(@babel/plugin-syntax-jsx@7.29.7(@babel/core@7.29.7))(@babel/plugin-syntax-typescript@7.29.7(@babel/core@7.29.7))(@oxc-project/types@0.147.0)(@types/node@24.13.3)(@vue/compiler-sfc@3.5.42)(db0@0.3.4)(esbuild@0.28.2)(ioredis@5.11.1)(lightningcss@1.33.0)(magicast@0.5.4)(rollup-plugin-visualizer@7.1.1(rolldown@1.2.6)(rollup@4.63.1))(rollup@4.63.1)(srvx@0.11.22)(terser@5.51.2)(typescript@6.0.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.0))(vue-tsc@3.3.7(typescript@6.0.3))(yaml@2.9.0))(rolldown@1.2.6)(unplugin@3.3.0(esbuild@0.28.2)(rolldown@1.2.6)(rollup@4.63.1)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.0)))
+      '@yueli/ui': file:vendor/yueli-ui-0.9.0-preview.20261017.styles.1.tgz(34087e2281c6fb2d2147c968a0ae98b4)
       nuxt: 4.5.1(@babel/plugin-syntax-jsx@7.29.7(@babel/core@7.29.7))(@babel/plugin-syntax-typescript@7.29.7(@babel/core@7.29.7))(@oxc-project/types@0.147.0)(@types/node@24.13.3)(@vue/compiler-sfc@3.5.42)(db0@0.3.4)(esbuild@0.28.2)(ioredis@5.11.1)(lightningcss@1.33.0)(magicast@0.5.4)(rollup-plugin-visualizer@7.1.1(rolldown@1.2.6)(rollup@4.63.1))(rollup@4.63.1)(srvx@0.11.22)(terser@5.51.2)(typescript@6.0.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.0))(vue-tsc@3.3.7(typescript@6.0.3))(yaml@2.9.0)
       vue: 3.5.39(typescript@6.0.3)
 
-  '@yueli/nuxt-runtime@file:vendor/yueli-nuxt-runtime-0.1.4.tgz(@yueli/http-runtime@file:vendor/yueli-http-runtime-0.2.2.tgz)(magic-string@1.2.3)(magicast@0.5.4)(nuxt@4.5.1(@babel/plugin-syntax-jsx@7.29.7(@babel/core@7.29.7))(@babel/plugin-syntax-typescript@7.29.7(@babel/core@7.29.7))(@oxc-project/types@0.147.0)(@types/node@24.13.3)(@vue/compiler-sfc@3.5.42)(db0@0.3.4)(esbuild@0.28.2)(ioredis@5.11.1)(lightningcss@1.33.0)(magicast@0.5.4)(rollup-plugin-visualizer@7.1.1(rolldown@1.2.6)(rollup@4.63.1))(rollup@4.63.1)(srvx@0.11.22)(terser@5.51.2)(typescript@6.0.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.0))(vue-tsc@3.3.7(typescript@6.0.3))(yaml@2.9.0))(rolldown@1.2.6)(unplugin@3.3.0(esbuild@0.28.2)(rolldown@1.2.6)(rollup@4.63.1)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.0)))':
+  '@yueli/nuxt-runtime@file:vendor/yueli-nuxt-runtime-0.1.5-preview.20261016.dependency-baseline.1.tgz(@yueli/http-runtime@file:vendor/yueli-http-runtime-0.2.2.tgz)(magic-string@1.2.3)(magicast@0.5.4)(nuxt@4.5.1(@babel/plugin-syntax-jsx@7.29.7(@babel/core@7.29.7))(@babel/plugin-syntax-typescript@7.29.7(@babel/core@7.29.7))(@oxc-project/types@0.147.0)(@types/node@24.13.3)(@vue/compiler-sfc@3.5.42)(db0@0.3.4)(esbuild@0.28.2)(ioredis@5.11.1)(lightningcss@1.33.0)(magicast@0.5.4)(rollup-plugin-visualizer@7.1.1(rolldown@1.2.6)(rollup@4.63.1))(rollup@4.63.1)(srvx@0.11.22)(terser@5.51.2)(typescript@6.0.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.0))(vue-tsc@3.3.7(typescript@6.0.3))(yaml@2.9.0))(rolldown@1.2.6)(unplugin@3.3.0(esbuild@0.28.2)(rolldown@1.2.6)(rollup@4.63.1)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.0)))':
     dependencies:
-      '@nuxt/kit': 4.5.1(magic-string@1.2.3)(magicast@0.5.4)(rolldown@1.2.6)(unplugin@3.3.0(esbuild@0.28.2)(rolldown@1.2.6)(rollup@4.63.1)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.0)))
+      '@nuxt/kit': 4.5.2(magic-string@1.2.3)(magicast@0.5.4)(rolldown@1.2.6)(unplugin@3.3.0(esbuild@0.28.2)(rolldown@1.2.6)(rollup@4.63.1)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.0)))
       '@yueli/http-runtime': file:vendor/yueli-http-runtime-0.2.2.tgz
       h3: 1.15.11
       nuxt: 4.5.1(@babel/plugin-syntax-jsx@7.29.7(@babel/core@7.29.7))(@babel/plugin-syntax-typescript@7.29.7(@babel/core@7.29.7))(@oxc-project/types@0.147.0)(@types/node@24.13.3)(@vue/compiler-sfc@3.5.42)(db0@0.3.4)(esbuild@0.28.2)(ioredis@5.11.1)(lightningcss@1.33.0)(magicast@0.5.4)(rollup-plugin-visualizer@7.1.1(rolldown@1.2.6)(rollup@4.63.1))(rollup@4.63.1)(srvx@0.11.22)(terser@5.51.2)(typescript@6.0.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.0))(vue-tsc@3.3.7(typescript@6.0.3))(yaml@2.9.0)
@@ -6566,13 +6580,14 @@ snapshots:
       - rolldown
       - unplugin
 
-  '@yueli/ui@file:vendor/yueli-ui-0.8.0-preview.20261009.ai-discovery.6.tgz(34087e2281c6fb2d2147c968a0ae98b4)':
+  '@yueli/ui@file:vendor/yueli-ui-0.9.0-preview.20261017.styles.1.tgz(34087e2281c6fb2d2147c968a0ae98b4)':
     dependencies:
       '@iconify-json/tabler': 1.2.35
       '@iconify/vue': 5.0.1(vue@3.5.39(typescript@6.0.3))
       '@nuxt/icon': 2.4.1(magic-string@1.2.3)(magicast@0.5.4)(rolldown@1.2.6)(unplugin@3.3.0(esbuild@0.28.2)(rolldown@1.2.6)(rollup@4.63.1)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.0)))(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.0))(vue@3.5.39(typescript@6.0.3))
       '@nuxt/kit': 4.5.2(magic-string@1.2.3)(magicast@0.5.4)(rolldown@1.2.6)(unplugin@3.3.0(esbuild@0.28.2)(rolldown@1.2.6)(rollup@4.63.1)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.0)))
       '@nuxt/ui': 4.9.0(7be022b67203c661b2342d1ca9f531cf)
+      '@tailwindcss/typography': 0.5.20(tailwindcss@4.3.1)
       nuxt: 4.5.1(@babel/plugin-syntax-jsx@7.29.7(@babel/core@7.29.7))(@babel/plugin-syntax-typescript@7.29.7(@babel/core@7.29.7))(@oxc-project/types@0.147.0)(@types/node@24.13.3)(@vue/compiler-sfc@3.5.42)(db0@0.3.4)(esbuild@0.28.2)(ioredis@5.11.1)(lightningcss@1.33.0)(magicast@0.5.4)(rollup-plugin-visualizer@7.1.1(rolldown@1.2.6)(rollup@4.63.1))(rollup@4.63.1)(srvx@0.11.22)(terser@5.51.2)(typescript@6.0.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.0))(vue-tsc@3.3.7(typescript@6.0.3))(yaml@2.9.0)
       semver: 7.8.5
       tailwindcss: 4.3.1
@@ -8303,6 +8318,11 @@ snapshots:
     dependencies:
       postcss: 8.5.26
       postcss-value-parser: 4.2.0
+
+  postcss-selector-parser@6.0.10:
+    dependencies:
+      cssesc: 3.0.0
+      util-deprecate: 1.0.2
 
   postcss-selector-parser@7.1.5:
     dependencies:
