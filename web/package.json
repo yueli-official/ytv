@@ -24,7 +24,7 @@
     "vue-tsc": "3.3.7"
   },
   "engines": {
-    "node": ">=24.18 <25",
+    "node": ">=24.22.1 <25",
     "pnpm": "10.28.x"
   },
   "name": "@yueli/ytv-web",

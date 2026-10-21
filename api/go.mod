@@ -2,6 +2,8 @@ module github.com/yueli-official/ytv/api
 
 go 1.25.13
 
+toolchain go1.26.10
+
 require (
 	github.com/antchfx/htmlquery v1.3.6
 	github.com/chromedp/cdproto v0.0.0-20250724212937-08a3db8b4327

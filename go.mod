@@ -2,6 +2,8 @@ module tv
 
 go 1.25.1
 
+toolchain go1.26.10
+
 require (
 	github.com/PuerkitoBio/goquery v1.10.3
 	github.com/Yuelioi/gkit v0.0.0-20251007001745-76cc09f759c0

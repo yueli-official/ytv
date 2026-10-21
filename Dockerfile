@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.7
 
-FROM golang:1.25.12-bookworm AS api-builder
+FROM golang:1.26.10-bookworm AS api-builder
 WORKDIR /src/api
 COPY api/go.mod api/go.sum ./
 RUN --mount=type=cache,target=/go/pkg/mod go mod download
@@ -23,7 +23,7 @@ USER ytv
 EXPOSE 8097
 ENTRYPOINT ["/usr/local/bin/ytv-api"]
 
-FROM node:24.20-bookworm-slim AS web-builder
+FROM node:24.22.1-bookworm-slim AS web-builder
 WORKDIR /src/web
 RUN corepack enable
 COPY web/package.json web/pnpm-lock.yaml ./
@@ -34,7 +34,7 @@ COPY web/ ./
 COPY api/contracts /src/api/contracts
 RUN pnpm build
 
-FROM node:24.20-bookworm-slim AS web
+FROM node:24.22.1-bookworm-slim AS web
 WORKDIR /app
 COPY --from=web-builder --chown=node:node /src/web/.output ./.output
 ENV NODE_ENV=production HOST=0.0.0.0 PORT=3000
@@ -42,7 +42,7 @@ USER node
 EXPOSE 3000
 CMD ["node", ".output/server/index.mjs"]
 
-FROM golang:1.25.12-alpine AS migration-builder
+FROM golang:1.26.10-alpine AS migration-builder
 RUN CGO_ENABLED=0 go install -tags postgres github.com/golang-migrate/migrate/v4/cmd/migrate@v4.19.1
 
 FROM alpine:3.22 AS migrate
