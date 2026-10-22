@@ -1,5 +1,7 @@
 # YTV
 
+当前升级实现位于 `api/`（GoFrame）与 `web/`（Nuxt 4）。新网站统一接口与播放器接入见 [播放接入文档](docs/research/playback-integration.md)，产品目标见 [PRODUCT](PRODUCT.md)。下面保留旧版项目说明与历史预览，不能直接作为新版发布入口。
+
 🎬 现代化的影视播放网站
 
 基于 Go + Vue 3 构建的高性能视频播放平台

@@ -63,7 +63,7 @@ export interface DiscoveryResponse {
 
 export interface TitleResponse {
   title: SearchCandidate;
-  episodes: Array<{ key: string; title: string }>;
+  episodes: Array<{ key: string; title: string; lineKey?: string; lineName?: string }>;
 }
 
 export interface PlaybackManifest {
@@ -72,6 +72,7 @@ export interface PlaybackManifest {
   url: string;
   engine: "hls" | "direct";
   timeline: string;
+  mediaType?: string;
 }
 
 export interface SearchAnalyticsOverview {

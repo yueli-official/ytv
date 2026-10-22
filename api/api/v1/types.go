@@ -125,8 +125,10 @@ type GetTitleReq struct {
 }
 
 type EpisodeView struct {
-	Key   string `json:"key"`
-	Title string `json:"title"`
+	Key      string `json:"key"`
+	Title    string `json:"title"`
+	LineKey  string `json:"lineKey"`
+	LineName string `json:"lineName"`
 }
 
 type GetTitleRes struct {
@@ -147,6 +149,7 @@ type ResolvePlaybackRes struct {
 	URL        string `json:"url"`
 	Engine     string `json:"engine"`
 	Timeline   string `json:"timeline"`
+	MediaType  string `json:"mediaType"`
 }
 
 type RecordPageViewReq struct {

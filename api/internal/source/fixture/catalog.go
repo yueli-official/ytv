@@ -22,7 +22,10 @@ func Titles() []source.Title {
 		{
 			Locator: source.TitleLocator{ExternalID: "frost-line"}, Name: "霜线", Year: "2025", Category: "悬疑",
 			Area: "合成地区", Language: "中文", Remarks: "演示内容", ImageURL: "/demo/card-frost.png",
-			Episodes:     []source.Episode{{Key: "0", Title: "第 1 集", PlaybackURL: "/demo/hls/index.m3u8"}},
+			Episodes: []source.Episode{
+				{Key: "0", Title: "正片", PlaybackURL: "/demo/hls/index.m3u8", LineKey: "0", LineName: "主线路"},
+				{Key: "line1-0", Title: "正片", PlaybackURL: "/demo/hls/index.m3u8", LineKey: "1", LineName: "备用线路"},
+			},
 			EpisodeCount: 1,
 		},
 		fixtureTitle("orbit-beyond", "轨道之外", "2026", "科幻", "/demo/card-orbit.png"),

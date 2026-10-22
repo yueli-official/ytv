@@ -15,7 +15,7 @@ function readList(key: string): string[] | null {
 }
 
 function writeList(key: string, values: string[]) {
-  localStorage.setItem(key, JSON.stringify(values));
+  try { localStorage.setItem(key, JSON.stringify(values)); } catch { /* Search remains usable with unavailable storage. */ }
 }
 
 export function readSearchHistory() {
@@ -31,7 +31,7 @@ export function rememberSearch(query: string) {
 }
 
 export function clearSearchHistory() {
-  localStorage.removeItem(historyKey);
+  try { localStorage.removeItem(historyKey); } catch { /* Clearing the visible list still works. */ }
 }
 
 export function readSelectedSources(availableKeys: string[]) {

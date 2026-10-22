@@ -13,12 +13,14 @@ const props = withDefaults(defineProps<{
 });
 
 const draft = ref(props.initialValue);
+watch(() => props.initialValue, value => { draft.value = value; });
 const composing = ref(false);
 const history = ref<string[]>([]);
 const hydrated = ref(false);
 const { selected: selectedSources } = useViewerSourcePreferences();
-const searchEnabled = computed(() => draft.value.trim() !== "" && !composing.value && selectedSources.value.length > 0);
-const routeSources = computed(() => selectedSources.value.join(","));
+const searchEnabled = computed(() => draft.value.trim() !== "" && !composing.value && (props.initialSources !== undefined || selectedSources.value.length > 0));
+const routeSources = computed(() => (props.initialSources ?? selectedSources.value).join(","));
+const historyHeading = useId();
 
 onMounted(() => {
   history.value = readSearchHistory();
@@ -76,9 +78,9 @@ function historyTo(query: string) {
       </UFieldGroup>
     </form>
 
-    <section v-if="showHistory && history.length" aria-labelledby="search-history-heading">
+    <section v-if="showHistory && history.length" :aria-labelledby="historyHeading">
       <div class="mb-2 flex items-center justify-between gap-3">
-        <h2 id="search-history-heading" class="text-xs font-semibold text-white/60">搜索历史</h2>
+        <h2 :id="historyHeading" class="text-xs font-semibold text-white/60">搜索历史</h2>
         <UButton label="清空" color="neutral" variant="link" size="xs" @click="clearHistory" />
       </div>
       <div class="flex gap-2 overflow-x-auto pb-1">

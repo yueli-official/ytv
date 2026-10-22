@@ -24,6 +24,7 @@ const activeSources = computed(() => (sourceData.value?.sources || []).filter((i
 
 function selectType(value: string) {
   trendingType.value = value;
+  trendingTag.value = "热门";
   trendingPage.value = 1;
 }
 
@@ -53,26 +54,19 @@ function failTrendingPoster(id: string) {
 }
 
 useSeoMeta({
-  title: "热门与搜索",
-  description: "浏览豆瓣热门，随后从已启用的互联网来源搜索和播放。"
+  title: "发现好电影",
+  description: "搜索想看的电影，浏览热门影片，接着上次的进度继续观看。"
 });
 </script>
 
 <template>
-  <!--
-  THESIS: YTV is a dense internet-source film portal, not a cinematic marketing page.
-  OWN-WORLD: Near-black ink fields, compact slate panels, portrait posters and one restrained cold-blue focus signal.
-  STORY: Search chosen sources or revisit history, scan Douban's attributed ideas, then browse operator-selected source updates.
-  FIRST VIEWPORT: A slim dark navigation bar leads into search and history; Douban hot precedes the source-update grid.
-  FORM: User-directed restoration of the legacy YTV portal grammar after seed bd4f323d's cinematic Hero was explicitly rejected.
-  FINISH: unreviewed and undocumented is unfinished; this correction ends with Playwright screenshots and updated DESIGN.md.
-  -->
-  <div class="min-h-[calc(100dvh-4rem)] bg-[#070b10] text-white">
-    <div class="mx-auto max-w-[90rem] space-y-7 px-4 py-6 sm:px-6 lg:px-8 lg:py-7">
-      <section class="space-y-4 rounded-xl border border-sky-400/30 bg-[#0f1720] p-4" aria-labelledby="search-title">
-        <div class="flex flex-wrap items-center gap-3">
-          <span class="grid size-9 place-items-center rounded-lg bg-sky-400/10 text-sky-300"><UIcon name="i-tabler-movie" class="size-5" /></span>
-          <div class="min-w-0 flex-1"><h1 id="search-title" class="text-xl font-bold tracking-[-0.025em] sm:text-2xl">影视搜索</h1><p class="mt-1 text-xs text-white/55">同时搜索已设置的互联网片库</p></div>
+  <div class="ytv-discover min-h-[calc(100dvh-4rem)] text-white">
+    <div class="mx-auto max-w-[90rem] space-y-8 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+      <section class="grid gap-5 border-b border-white/10 pb-6 lg:grid-cols-[minmax(13rem,0.6fr)_minmax(0,1fr)] lg:items-center" aria-labelledby="search-title">
+        <div class="space-y-2">
+          <p class="text-[10px] font-semibold tracking-[0.24em] text-sky-300/80">YTV / CINEMA</p>
+          <h1 id="search-title" class="text-2xl font-semibold tracking-tight sm:text-3xl">今晚，想看什么？</h1>
+          <p class="text-xs text-white/45">找到好电影，接着上次的故事。</p>
         </div>
 
         <SearchCommand compact />
@@ -80,15 +74,15 @@ useSeoMeta({
 
       <HomeContinueWatching />
 
-      <section class="space-y-4 rounded-xl border border-white/10 bg-[#0f1720] p-4 sm:p-5" aria-labelledby="douban-hot-title">
+      <section class="space-y-4" aria-labelledby="douban-hot-title">
         <div class="flex flex-wrap items-center justify-between gap-3">
-          <div><h2 id="douban-hot-title" class="text-xl font-bold sm:text-2xl">豆瓣热门</h2><p class="mt-1 text-xs text-white/55">外部热门标题与评分，点击后使用你选择的来源搜索</p></div>
-          <UButton label="换一批热门" icon="i-tabler-refresh" color="neutral" variant="soft" :loading="trendingPending" @click="changeTrendingBatch" />
+          <div class="flex items-center gap-3"><h2 id="douban-hot-title" class="text-lg font-semibold">大家在看</h2><span class="rounded border border-white/10 px-1.5 py-0.5 text-[10px] text-white/40">豆瓣热门</span></div>
+          <UButton label="换一批热门" icon="i-tabler-refresh" color="neutral" variant="ghost" size="sm" :loading="trendingPending" @click="changeTrendingBatch" />
         </div>
         <div class="flex flex-wrap items-center gap-2">
           <UButton label="电影" color="primary" :variant="trendingType === 'movie' ? 'solid' : 'ghost'" size="sm" @click="selectType('movie')" /><UButton label="电视剧" color="neutral" :variant="trendingType === 'tv' ? 'solid' : 'ghost'" size="sm" @click="selectType('tv')" />
           <span class="hidden h-7 w-px bg-white/10 sm:block" aria-hidden="true" />
-          <UButton v-for="item in tags" :key="item" :label="item" :color="trendingTag === item ? 'primary' : 'neutral'" :variant="trendingTag === item ? 'solid' : 'outline'" size="sm" @click="selectTag(item)" />
+          <template v-if="trendingType === 'tv'"><UButton v-for="item in tags" :key="item" :label="item" :color="trendingTag === item ? 'primary' : 'neutral'" :variant="trendingTag === item ? 'soft' : 'ghost'" size="sm" @click="selectTag(item)" /></template>
         </div>
         <div v-if="trendingData?.items.length" class="relative border-t border-white/10 pt-4">
           <UButton v-if="canPreviousTrending" data-carousel-previous icon="i-tabler-chevron-left" aria-label="上一组豆瓣热门" color="neutral" variant="ghost" class="absolute -left-3 top-1/2 z-10 hidden min-h-11 min-w-11 -translate-y-1/2 justify-center rounded-full border border-white/15 bg-[#070b10]/95 text-white shadow-lg hover:bg-[#111a24] sm:inline-flex" @click="previousTrending" />
@@ -110,7 +104,7 @@ useSeoMeta({
 
       <section class="space-y-5" aria-labelledby="source-updates-title">
         <div class="flex flex-wrap items-end justify-between gap-3">
-          <div><h2 id="source-updates-title" class="text-xl font-bold sm:text-2xl">来源更新</h2><p class="mt-1 text-xs text-white/45">由管理员选择在首页展示的真实来源条目</p></div>
+          <div><h2 id="source-updates-title" class="text-lg font-semibold">片库新上架</h2><p class="mt-1 text-xs text-white/40">来自当前片库的最新更新</p></div>
           <div class="flex flex-wrap items-center justify-end gap-2"><UBadge v-for="source in activeSources" :key="source.key" :label="source.name" color="neutral" variant="subtle" /><UButton label="换一批资源" icon="i-tabler-refresh" color="neutral" variant="soft" :loading="sourcePending" @click="changeSourceBatch" /></div>
         </div>
         <UAlert v-if="sourceError" color="error" variant="subtle" title="来源更新暂时不可用"><template #actions><UButton label="重试" color="error" variant="soft" @click="() => refreshSources()" /></template></UAlert>
@@ -124,6 +118,7 @@ useSeoMeta({
 </template>
 
 <style scoped>
+.ytv-discover { background: radial-gradient(ellipse at 85% 0%, #142337 0%, #070b10 45%); }
 .douban-rail {
   scrollbar-width: none;
 }

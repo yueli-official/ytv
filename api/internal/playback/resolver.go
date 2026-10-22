@@ -32,6 +32,7 @@ type Manifest struct {
 	URL        string
 	Engine     Engine
 	Timeline   string
+	MediaType  string
 }
 
 type Catalog interface {
@@ -65,8 +66,22 @@ func (resolver *Resolver) Resolve(ctx context.Context, locator source.EpisodeLoc
 	}
 	return Manifest{
 		Locator: locator, SourceName: title.SourceName, URL: mediaURL.String(), Engine: engine,
-		Timeline: locator.Title.SourceKey + ":" + locator.Title.ExternalID,
+		Timeline:  locator.Title.SourceKey + ":" + locator.Title.ExternalID,
+		MediaType: mediaType(mediaURL, engine),
 	}, nil
+}
+
+func mediaType(target *url.URL, engine Engine) string {
+	if engine == EngineHLS {
+		return "application/vnd.apple.mpegurl"
+	}
+	if strings.HasSuffix(strings.ToLower(target.Path), ".mp4") {
+		return "video/mp4"
+	}
+	if strings.HasSuffix(strings.ToLower(target.Path), ".webm") {
+		return "video/webm"
+	}
+	return ""
 }
 
 func (resolver *Resolver) definition(key string) (source.Definition, bool) {

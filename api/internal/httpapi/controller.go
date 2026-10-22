@@ -175,7 +175,14 @@ func (controller *Public) GetTitle(ctx context.Context, request *v1.GetTitleReq)
 	}
 	episodes := make([]v1.EpisodeView, 0, len(title.Episodes))
 	for _, episode := range title.Episodes {
-		episodes = append(episodes, v1.EpisodeView{Key: episode.Key, Title: episode.Title})
+		lineKey, lineName := episode.LineKey, episode.LineName
+		if lineKey == "" {
+			lineKey = "0"
+		}
+		if lineName == "" {
+			lineName = "默认线路"
+		}
+		episodes = append(episodes, v1.EpisodeView{Key: episode.Key, Title: episode.Title, LineKey: lineKey, LineName: lineName})
 	}
 	return &v1.GetTitleRes{Title: titleView(title), Episodes: episodes}, nil
 }
@@ -189,7 +196,7 @@ func (controller *Public) ResolvePlayback(ctx context.Context, request *v1.Resol
 	}
 	return &v1.ResolvePlaybackRes{
 		SourceName: manifest.SourceName, EpisodeKey: manifest.Locator.EpisodeKey,
-		URL: manifest.URL, Engine: string(manifest.Engine), Timeline: manifest.Timeline,
+		URL: manifest.URL, Engine: string(manifest.Engine), Timeline: manifest.Timeline, MediaType: manifest.MediaType,
 	}, nil
 }
 

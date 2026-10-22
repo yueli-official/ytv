@@ -102,7 +102,8 @@ func (adapter *Adapter) ResolveTitle(ctx context.Context, definition source.Defi
 		return source.Title{}, fmt.Errorf("%w: episode XPath failed: %v", source.ErrUnavailable, err)
 	}
 	episodes := make([]source.Episode, 0, len(episodeNodes))
-	for _, node := range episodeNodes {
+	for _, item := range episodeNodes {
+		node := item.node
 		link := queryValue(node, ".")
 		if href := attribute(node, "href"); href != "" {
 			link = href
@@ -115,12 +116,12 @@ func (adapter *Adapter) ResolveTitle(ctx context.Context, definition source.Defi
 		if label == "" {
 			label = "第 " + strconv.Itoa(len(episodes)+1) + " 集"
 		}
-		episodes = append(episodes, source.Episode{Key: encodeURL(episodeURL), Title: label})
+		episodes = append(episodes, source.Episode{Key: encodeURL(episodeURL), Title: label, LineKey: item.lineKey, LineName: item.lineName})
 	}
 	if len(episodes) == 0 {
 		return source.Title{}, fmt.Errorf("%w: no episodes matched", source.ErrUnavailable)
 	}
-	return source.Title{Locator: locator, SourceName: definition.Name, Name: definition.Name, EpisodeCount: len(episodes), Episodes: episodes}, nil
+	return source.Title{Locator: locator, SourceName: definition.Name, Name: definition.Name, EpisodeCount: source.EpisodeTotal(episodes), Episodes: episodes}, nil
 }
 
 func (adapter *Adapter) ResolveEpisode(ctx context.Context, definition source.Definition, locator source.EpisodeLocator) (source.Title, source.Episode, error) {
@@ -274,21 +275,29 @@ func sourcePlan(definition source.Definition) (*rules.Plan, error) {
 	return definition.Rule, nil
 }
 
-func episodeNodes(document *html.Node, plan rules.TitlePlan) ([]*html.Node, error) {
+type lineEpisodeNode struct {
+	node     *html.Node
+	lineKey  string
+	lineName string
+}
+
+func episodeNodes(document *html.Node, plan rules.TitlePlan) ([]lineEpisodeNode, error) {
 	roads, err := htmlquery.QueryAll(document, plan.RoadsXPath)
 	if err != nil {
 		return nil, err
 	}
 	if len(roads) == 0 {
-		return htmlquery.QueryAll(document, plan.EpisodesXPath)
+		roads = []*html.Node{document}
 	}
-	result := make([]*html.Node, 0)
-	for _, road := range roads {
+	result := make([]lineEpisodeNode, 0)
+	for index, road := range roads {
 		nodes, queryErr := htmlquery.QueryAll(road, scoped(plan.EpisodesXPath))
 		if queryErr != nil {
 			return nil, queryErr
 		}
-		result = append(result, nodes...)
+		for _, node := range nodes {
+			result = append(result, lineEpisodeNode{node: node, lineKey: strconv.Itoa(index), lineName: "线路 " + strconv.Itoa(index+1)})
+		}
 		if !plan.MultipleRoads && len(result) > 0 {
 			break
 		}

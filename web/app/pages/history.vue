@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { PlaybackProgress } from "~/types/ytv";
-import { loadLocalProgress, migrateLegacyProgress, type LocalPlaybackProgress } from "~/utils/local-progress";
+import type { LocalPlaybackProgress } from "~/utils/local-progress";
+import { browserProgress, mergeViewerProgress } from "~/utils/viewer-progress";
+import { watchPath } from "~/utils/title-lines";
 
 useSeoMeta({ title: "播放历史" });
 
@@ -15,19 +17,10 @@ const { data: remote, error, refresh } = await useAsyncData(
 );
 
 onMounted(() => {
-  migrateLegacyProgress(localStorage);
-  localItems.value = loadLocalProgress(localStorage);
+  localItems.value = browserProgress();
 });
 
-const rawItems = computed(() => loggedIn.value
-  ? (remote.value?.items || []).map((item) => ({
-      sourceKey: item.sourceKey, externalId: item.externalId, episodeKey: item.episodeKey,
-      titleName: item.titleName, episodeTitle: item.episodeTitle,
-      position: item.positionSeconds, duration: item.durationSeconds,
-      completed: item.completed, updatedAt: new Date(item.updatedAt).getTime()
-    }))
-  : localItems.value
-);
+const rawItems = computed(() => mergeViewerProgress(localItems.value, loggedIn.value ? remote.value?.items : []));
 
 const items = computed(() => {
   const seen = new Set<string>();
@@ -60,7 +53,7 @@ function failPoster(item: { sourceKey: string; externalId: string }) { failedPos
 <template>
   <div class="mx-auto min-h-[70dvh] max-w-[90rem] space-y-6 px-4 py-7 sm:px-6 lg:px-8">
     <div class="flex flex-wrap items-end justify-between gap-4">
-      <div><h1 class="text-3xl font-bold tracking-[-0.03em] text-highlighted sm:text-4xl">播放历史</h1><p class="mt-2 max-w-2xl text-sm leading-6 text-muted">{{ loggedIn ? '历史已与当前账号合并；同步失败不会阻塞播放。' : '匿名历史只保存在当前浏览器，登录后会在后台合并最近 30 天进度。' }}</p></div>
+      <div><h1 class="text-3xl font-bold tracking-[-0.03em] text-highlighted sm:text-4xl">播放历史</h1><p class="mt-2 max-w-2xl text-sm leading-6 text-muted">{{ loggedIn ? '找到看过的影片，接着上次的进度观看。' : '记录保存在当前浏览器，登录可同步最近 30 天的观看进度。' }}</p></div>
       <UButton v-if="!loggedIn" label="登录并同步" icon="i-tabler-login-2" color="neutral" variant="soft" @click="startLogin" />
     </div>
 
@@ -70,7 +63,7 @@ function failPoster(item: { sourceKey: string; externalId: string }) { failedPos
 
     <ul v-if="items.length" data-history-poster-grid class="grid grid-cols-2 gap-x-3 gap-y-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
       <li v-for="item in items" :key="posterKey(item)" class="min-w-0">
-        <NuxtLink :to="`/watch/${item.sourceKey}/${item.externalId}/${item.episodeKey}`" class="group block text-white no-underline">
+        <NuxtLink :to="watchPath(item.sourceKey, item.externalId, item.episodeKey)" class="group block text-white no-underline">
           <div class="relative aspect-[2/3] overflow-hidden rounded-xl border border-white/10 bg-[#0f1720] shadow-sm transition group-hover:-translate-y-0.5 group-hover:border-sky-400/45">
             <img v-if="posterFor(item)" :src="posterFor(item)" :alt="`${item.titleName || item.externalId} 海报`" loading="lazy" decoding="async" referrerpolicy="no-referrer" class="size-full object-cover" @error="failPoster(item)">
             <span v-else class="grid size-full place-items-center text-white/25"><UIcon name="i-tabler-photo" class="size-9" aria-hidden="true" /></span>
@@ -83,6 +76,6 @@ function failPoster(item: { sourceKey: string; externalId: string }) { failedPos
         </NuxtLink>
       </li>
     </ul>
-    <UEmpty v-else icon="i-tabler-history-off" title="还没有播放记录" description="开始播放后，YTV 会保存有效进度；仅打开页面不会制造历史。" />
+    <UEmpty v-else icon="i-tabler-history-off" title="还没有播放记录" description="看过的影片会出现在这里，方便下次接着看。"><template #actions><UButton to="/" label="去找一部电影" icon="i-tabler-search" /></template></UEmpty>
   </div>
 </template>

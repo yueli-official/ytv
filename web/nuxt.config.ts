@@ -4,6 +4,7 @@ const cookieSecure =
     : process.env.NUXT_COOKIE_SECURE === "true";
 
 export default defineNuxtConfig({
+  vue: { compilerOptions: { isCustomElement: (tag) => ["video-player", "video-neutral-skin", "hlsjs-video", "media-i18n"].includes(tag) } },
   devtools: { enabled: process.env.NUXT_DEVTOOLS === "true" },
   extends: ["@yueli/identity-nuxt"],
   modules: ["@nuxt/ui", "@yueli/ui", "@yueli/nuxt-runtime"],

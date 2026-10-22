@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import type { PlaybackProgress } from "~/types/ytv";
-import { loadLocalProgress, migrateLegacyProgress, type LocalPlaybackProgress } from "~/utils/local-progress";
+import type { LocalPlaybackProgress } from "~/utils/local-progress";
+import { browserProgress, mergeViewerProgress } from "~/utils/viewer-progress";
+import { watchPath } from "~/utils/title-lines";
 
 interface ContinueItem {
   sourceKey: string;
@@ -45,15 +46,6 @@ function fromLocal(values: LocalPlaybackProgress[]) {
   })));
 }
 
-function fromAccount(values: PlaybackProgress[]) {
-  return dedupe(values.filter((item) => !item.completed).map((item) => ({
-    sourceKey: item.sourceKey, externalId: item.externalId, episodeKey: item.episodeKey,
-    title: item.titleName || item.externalId,
-    episode: item.episodeTitle || `第 ${Number(item.episodeKey) + 1} 集`,
-    position: item.positionSeconds, duration: item.durationSeconds, updatedAt: new Date(item.updatedAt).getTime()
-  })));
-}
-
 function posterKey(item: ContinueItem) {
   return `${item.sourceKey}\u0000${item.externalId}`;
 }
@@ -72,14 +64,14 @@ function percent(item: ContinueItem) {
 }
 
 onMounted(async () => {
-  migrateLegacyProgress(localStorage);
-  const local = loadLocalProgress(localStorage);
+  const local = browserProgress();
+  items.value = fromLocal(local);
   if (!loggedIn.value) {
     items.value = fromLocal(local);
     return;
   }
   const account = await api.listProgress().catch(() => null);
-  items.value = account ? fromAccount(account.items) : fromLocal(local);
+  items.value = fromLocal(mergeViewerProgress(local, account?.items));
 });
 </script>
 
@@ -93,7 +85,7 @@ onMounted(async () => {
       <UButton v-if="canPrevious" data-carousel-previous icon="i-tabler-chevron-left" aria-label="上一组继续观看" color="neutral" variant="ghost" class="absolute -left-5 top-1/2 z-10 hidden min-h-11 min-w-11 -translate-y-1/2 justify-center rounded-full border border-white/15 bg-[#070b10]/95 text-white shadow-lg hover:bg-[#111a24] sm:inline-flex" @click="previous" />
       <ul ref="rail" class="continue-rail flex snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain pb-1" aria-label="继续观看列表">
         <li v-for="item in items" :key="posterKey(item)" class="w-[15rem] shrink-0 snap-start sm:w-[16rem]">
-          <NuxtLink :to="`/watch/${item.sourceKey}/${item.externalId}/${item.episodeKey}`" class="group relative flex h-28 overflow-hidden rounded-xl border border-white/10 bg-[#0f1720] text-white no-underline transition hover:border-sky-400/45 hover:bg-[#121d28]">
+          <NuxtLink :to="watchPath(item.sourceKey, item.externalId, item.episodeKey)" class="group relative flex h-28 overflow-hidden rounded-xl border border-white/10 bg-[#0f1720] text-white no-underline transition hover:border-sky-400/45 hover:bg-[#121d28]">
             <div class="grid w-[4.7rem] shrink-0 place-items-center overflow-hidden bg-[#111923] text-white/25">
               <img v-if="posterFor(item)" :src="posterFor(item)" :alt="`${item.title} 海报`" loading="lazy" decoding="async" referrerpolicy="no-referrer" class="size-full object-cover" @error="failPoster(item)">
               <UIcon v-else name="i-tabler-photo" class="size-6" aria-hidden="true" />

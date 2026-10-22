@@ -79,6 +79,14 @@
             "format": "string",
             "type": "string"
           },
+          "lineKey": {
+            "format": "string",
+            "type": "string"
+          },
+          "lineName": {
+            "format": "string",
+            "type": "string"
+          },
           "title": {
             "format": "string",
             "type": "string"
@@ -660,6 +668,10 @@
             "type": "string"
           },
           "episodeKey": {
+            "format": "string",
+            "type": "string"
+          },
+          "mediaType": {
             "format": "string",
             "type": "string"
           },

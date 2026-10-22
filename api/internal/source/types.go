@@ -66,6 +66,8 @@ type Episode struct {
 	Key         string
 	Title       string
 	PlaybackURL string
+	LineKey     string
+	LineName    string
 }
 
 type Title struct {

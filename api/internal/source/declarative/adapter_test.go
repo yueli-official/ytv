@@ -117,3 +117,31 @@ func TestAdapterFallsBackToBrowserCaptureForWebviewRule(t *testing.T) {
 		t.Fatalf("episode = %#v, %v", episode, err)
 	}
 }
+
+func TestAdapterPreservesSeparatePlaybackLines(t *testing.T) {
+	server := httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, `<section class="road"><a href="https://media.example/main.mp4">正片</a></section><section class="road"><a href="https://media.example/backup.mp4">正片</a></section>`)
+	}))
+	defer server.Close()
+	adapter, _ := New(server.Client())
+	definition := source.Definition{Key: "film", Name: "Films", Endpoint: server.URL, Rule: &rules.Plan{
+		BaseURL: server.URL, Title: rules.TitlePlan{RoadsXPath: "//section[@class='road']", EpisodesXPath: "/a", MultipleRoads: true},
+	}}
+	locator := source.TitleLocator{SourceKey: "film", ExternalID: encodeURL(server.URL + "/title")}
+	title, err := adapter.ResolveTitle(context.Background(), definition, locator)
+	if err != nil || len(title.Episodes) != 2 || title.EpisodeCount != 1 {
+		t.Fatalf("title = %#v, %v", title, err)
+	}
+	if title.Episodes[0].LineKey == title.Episodes[1].LineKey {
+		t.Fatal("alternate lines were merged")
+	}
+	for index, want := range []string{"https://media.example/main.mp4", "https://media.example/backup.mp4"} {
+		if title.Episodes[index].Key != encodeURL(want) {
+			t.Fatal("legacy URL keys changed")
+		}
+		_, episode, err := adapter.ResolveEpisode(context.Background(), definition, source.EpisodeLocator{Title: locator, EpisodeKey: title.Episodes[index].Key})
+		if err != nil || episode.PlaybackURL != want {
+			t.Fatalf("playback = %#v, %v", episode, err)
+		}
+	}
+}

@@ -2,6 +2,8 @@
 import type { AccountMenuAction } from "@yueli/ui/account-menu/pattern";
 
 const drawerOpen = ref(false);
+const route = useRoute();
+watch(() => route.fullPath, () => { drawerOpen.value = false; });
 const sourceSettingsOpen = ref(false);
 const api = useYtvApi();
 const { data: siteMeta } = await useAsyncData("ytv-site-meta", () => api.meta());
@@ -29,12 +31,12 @@ function updateSourceSettingsOpen(value: boolean) { if (!value) sourceSettingsOp
 <template>
   <div class="min-h-dvh bg-[#070b10] text-white">
     <header class="sticky top-0 z-30 border-b border-white/10 bg-[#06090d]/95 text-white backdrop-blur-md">
-      <div class="mx-auto flex min-h-16 max-w-[96rem] items-center gap-3 px-4 sm:px-6 lg:px-8">
+      <div class="mx-auto flex min-h-16 max-w-[90rem] items-center gap-3 px-4 sm:px-6 lg:px-8">
         <NuxtLink to="/" class="inline-flex items-center gap-1.5 text-2xl font-black tracking-[-0.04em] text-white no-underline" :aria-label="`${siteName} 首页`"><span>{{ siteName }}</span><span class="size-1.5 rounded-full bg-sky-400" aria-hidden="true" /></NuxtLink>
         <nav class="hidden items-center gap-1 sm:flex" aria-label="主导航">
           <UButton v-for="item in navigation" :key="item.to" :to="item.to" :label="item.label" color="neutral" variant="ghost" />
         </nav>
-        <UButton to="/search" label="搜索" icon="i-tabler-search" color="neutral" variant="ghost" class="ms-auto hidden min-h-11 md:inline-flex" />
+        <UButton to="/search" aria-label="搜索" icon="i-tabler-search" color="neutral" variant="ghost" class="ms-auto min-h-11 min-w-11 shrink-0 justify-center"><span class="hidden md:inline">搜索</span></UButton>
         <button type="button" aria-label="来源设置" class="grid size-11 shrink-0 place-items-center rounded-lg text-white/75 transition hover:bg-white/10 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-300" @click="openSourceSettings"><UIcon name="i-tabler-adjustments-horizontal" class="size-5" /></button>
         <ConsumerAccountControl :context-actions="accountActions" />
         <UButton
@@ -50,6 +52,12 @@ function updateSourceSettingsOpen(value: boolean) { if (!value) sourceSettingsOp
       </div>
     </header>
     <main id="main-content"><slot /></main>
+    <footer class="border-t border-white/8">
+      <div class="mx-auto flex max-w-[90rem] flex-wrap items-center justify-between gap-3 px-4 py-6 text-xs text-white/60 sm:px-6 lg:px-8">
+        <p><span class="font-semibold tracking-wide text-white/65">{{ siteName }}</span><span class="mx-3 text-white/15">/</span>电影与故事，在这里相遇。</p>
+        <div class="flex items-center gap-5"><NuxtLink to="/history" class="text-inherit no-underline hover:text-white">播放历史</NuxtLink><button class="hover:text-white" @click="openSourceSettings">选择来源</button></div>
+      </div>
+    </footer>
     <USlideover :open="sourceSettingsOpen" side="right" title="来源设置" description="选择搜索和热门入口使用的数据源。" :ui="{ content: 'w-full max-w-md bg-[#0c1219] text-white', body: 'p-4 sm:p-5' }" @update:open="updateSourceSettingsOpen">
       <template #body><ViewerSourceSettings /></template>
     </USlideover>

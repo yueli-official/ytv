@@ -29,8 +29,8 @@ test("browse-first homepage exposes recovery without horizontal page overflow", 
   await page.goto("/", { waitUntil: "networkidle" });
   await expect(page.getByRole("link", { name: "YTV 首页" })).toBeVisible();
   await expect(page.locator("#main-content").getByRole("search").getByLabel("搜索想看的影视")).toBeVisible();
-  await expect(page.getByRole("heading", { name: "豆瓣热门" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "来源更新" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "大家在看" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "片库新上架" })).toBeVisible();
   expect(await page.locator("[data-poster-grid] li").count()).toBeGreaterThanOrEqual(6);
 
   const dimensions = await page.evaluate(() => ({ width: document.documentElement.scrollWidth, viewport: window.innerWidth }));
@@ -71,13 +71,13 @@ test("fatal manifest failure stops loading and offers recovery", async ({ page }
   await page.goto("/watch/fixture/ring-sea/0", { waitUntil: "domcontentloaded" });
   const player = page.locator("[data-player-state]");
   await expect(player).toHaveAttribute("data-player-state", "error", { timeout: 30_000 });
-  await expect(player.getByRole("heading", { name: "播放失败" })).toBeVisible();
-  await expect(player.getByRole("button", { name: "重试当前来源" })).toBeVisible();
+  await expect(player.getByRole("heading", { name: "播放暂时中断" })).toBeVisible();
+  await expect(player.getByRole("button", { name: "重新连接" })).toBeVisible();
 });
 
 test("watch keeps long-series navigation and a primary play action inside the player", async ({ page }) => {
   await page.goto("/watch/fixture/long-voyage/61", { waitUntil: "networkidle" });
-  await expect(page.locator("[data-primary-play]")).toBeVisible();
+  await expect(page.locator("video-neutral-skin").getByRole("button", { name: "播放", exact: true }).first()).toBeVisible();
   await expect(page.getByLabel("剧集范围")).toBeVisible();
   const rows = page.locator("[data-player-episode-row]");
   await expect(rows).toHaveCount(50);
@@ -103,14 +103,14 @@ test("homepage separates search history, source refresh and Douban discovery", a
   await expect(page.getByRole("heading", { name: "搜索历史" })).toBeVisible();
   await expect(page.getByRole("link", { name: "环海之门", exact: true })).toBeVisible();
   await expect(page.getByRole("button", { name: "换一批资源" })).toBeVisible();
-  const hot = page.getByRole("heading", { name: "豆瓣热门" });
+  const hot = page.getByRole("heading", { name: "大家在看" });
   await expect(hot).toBeVisible();
-  const sourceUpdates = page.getByRole("heading", { name: "来源更新" });
+  const sourceUpdates = page.getByRole("heading", { name: "片库新上架" });
   const hotBox = await hot.boundingBox();
   const sourceBox = await sourceUpdates.boundingBox();
   expect(hotBox?.y || 0).toBeLessThan(sourceBox?.y || 0);
-  const searchPanel = page.getByRole("heading", { name: "影视搜索" }).locator("xpath=ancestor::section[1]");
-  await expect(searchPanel.getByRole("heading", { name: "豆瓣热门" })).toHaveCount(0);
+  const searchPanel = page.getByRole("heading", { name: "今晚，想看什么？" }).locator("xpath=ancestor::section[1]");
+  await expect(searchPanel.getByRole("heading", { name: "大家在看" })).toHaveCount(0);
 });
 
 test("homepage carousel rails use side controls without native scrollbars", async ({ page }, testInfo) => {

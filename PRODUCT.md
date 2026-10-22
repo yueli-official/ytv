@@ -143,3 +143,7 @@ resolved episode and a recoverable playback session, while YTV itself does not h
   reader noise.
 - CLI Playwright acceptance covers 390, 768, 1024 and 1440 pixel viewports, Chromium/Firefox/WebKit where applicable, and Axe
   serious/critical findings at zero.
+
+## Movie playback upgrade
+
+Film viewing distinguishes a content item from alternative delivery lines. Single-item lines use a feature-film action; series retain episode navigation. The site uses Video.js 10 through a YTV-owned playback session for fresh URL resolution, progress, retry and cleanup. Integration details and current boundaries are documented in [the playback contract](docs/research/playback-integration.md).

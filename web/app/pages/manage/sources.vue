@@ -31,7 +31,7 @@ interface SourceCollectionQuery {
 }
 
 const api = useYtvApi();
-const { data: catalog, refresh: refreshCatalog } = await useAsyncData("ytv-admin-source-catalog", () => api.availableSources());
+const { data: catalog, error: catalogError, pending: catalogPending, refresh: refreshCatalog } = await useAsyncData("ytv-admin-source-catalog", () => api.availableSources());
 const drafts = reactive<Record<string, SourceDraft>>({});
 const probes = reactive<Record<string, { available: boolean; latencyMs: number; detail: string }>>({});
 const saveState = reactive<Record<string, "pending" | "success" | "error" | undefined>>({});
@@ -150,6 +150,7 @@ async function persist(sourceKey: string) {
   const draft = drafts[sourceKey];
   if (!draft) return;
   draft.name = draft.name.trim();
+  saveMessages[sourceKey] = "";
   if (!draft.name) { saveState[sourceKey] = "error"; return; }
   saveRequested[sourceKey] = true;
   if (saving[sourceKey]) return;
@@ -411,6 +412,7 @@ const sourceToolItems = computed(() => [[
             <USwitch :model-value="drafts[source.key]!.homeVisible" :disabled="!drafts[source.key]!.enabled" :aria-label="`在首页展示 ${source.name}`" @update:model-value="updateHomeVisible(source.key, Boolean($event))" />
           </div>
           <div v-if="drafts[source.key]" data-source-cell="priority">
+            <span class="mb-1 block text-xs text-muted xl:hidden">优先级</span>
             <UInput v-model.number="drafts[source.key]!.priority" class="w-full" type="number" min="0" max="100000" :aria-label="`${source.name} 优先级`" @update:model-value="schedulePersist(source.key, true)" />
           </div>
           <AdminRowActions data-source-cell="actions" class="sm:col-span-2 xl:col-span-1" :label="`${source.name} 的操作`" :items="sourceRowActions(source)" presentation="overflow" />
@@ -422,7 +424,9 @@ const sourceToolItems = computed(() => [[
       <template #body>
         <div class="space-y-3">
           <UAlert v-if="operationError" color="error" variant="subtle" title="添加失败" :description="operationError" />
-          <div v-if="availableSources.length" class="max-h-[60vh] divide-y divide-default overflow-y-auto rounded-xl border border-default">
+          <UAlert v-if="catalogError" color="error" variant="subtle" title="来源目录暂时不可用" description="请重试后再添加来源。"><template #actions><UButton label="重试" color="error" variant="soft" :loading="catalogPending" @click="() => refreshCatalog()" /></template></UAlert>
+          <p v-else-if="catalogPending" role="status" class="text-sm text-muted">正在载入来源目录…</p>
+          <div v-else-if="availableSources.length" class="max-h-[60vh] divide-y divide-default overflow-y-auto rounded-xl border border-default">
             <label class="flex cursor-pointer items-center gap-3 bg-elevated/50 px-4 py-3 text-sm font-medium text-highlighted">
               <input type="checkbox" class="size-4 accent-primary" :checked="allAvailableSelected" aria-label="选择全部可添加来源" @change="allAvailableChanged" />
               选择全部
@@ -447,7 +451,7 @@ const sourceToolItems = computed(() => [[
       <template #footer="{ close }">
         <div class="flex w-full justify-end gap-2">
           <UButton label="取消" color="neutral" variant="ghost" :disabled="installing" @click="close" />
-          <UButton :label="selectedAvailableKeys.length ? `添加所选（${selectedAvailableKeys.length}）` : '添加所选'" icon="i-tabler-plus" :loading="installing" :disabled="selectedAvailableKeys.length === 0" @click="installSelected" />
+          <UButton :label="selectedAvailableKeys.length ? `添加所选（${selectedAvailableKeys.length}）` : '添加所选'" icon="i-tabler-plus" :loading="installing" :disabled="selectedAvailableKeys.length === 0 || !!catalogError || catalogPending" @click="installSelected" />
         </div>
       </template>
     </UModal>

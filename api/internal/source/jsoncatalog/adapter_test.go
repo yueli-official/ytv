@@ -58,3 +58,25 @@ func TestAdapterDropsItemsWithoutPlayableEpisodes(t *testing.T) {
 		t.Fatalf("items = %#v", page.Items)
 	}
 }
+
+func TestMultipleLinesResolveIndependentlyAndKeepLegacyKeys(t *testing.T) {
+	client := roundTripFunc(func(*http.Request) (*http.Response, error) {
+		return &http.Response{StatusCode: 200, Body: io.NopCloser(strings.NewReader(`{"list":[{"vod_id":"42","vod_name":"电影","vod_play_from":"主线$$$备用","vod_play_url":"正片$https://media.example/main.m3u8$$$国语$https://media.example/backup.mp4"}]}`))}, nil
+	})
+	adapter, _ := New(client)
+	definition := source.Definition{Key: "test", Endpoint: "https://catalog.example/api"}
+	locator := source.TitleLocator{SourceKey: "test", ExternalID: "42"}
+	title, err := adapter.ResolveTitle(context.Background(), definition, locator)
+	if err != nil || title.EpisodeCount != 1 {
+		t.Fatalf("movie count: %#v, %v", title, err)
+	}
+	for _, want := range []struct{ key, url, line, name string }{
+		{"0", "https://media.example/main.m3u8", "0", "主线"},
+		{"line1-0", "https://media.example/backup.mp4", "1", "备用"},
+	} {
+		_, episode, err := adapter.ResolveEpisode(context.Background(), definition, source.EpisodeLocator{Title: locator, EpisodeKey: want.key})
+		if err != nil || episode.PlaybackURL != want.url || episode.LineKey != want.line || episode.LineName != want.name {
+			t.Fatalf("resolve %s: %#v, %v", want.key, episode, err)
+		}
+	}
+}

@@ -115,12 +115,12 @@ test("signed-in playback progress is merged into account history", async ({ page
 
 test("administrator persists the public site profile", async ({ page }) => {
   await login(page);
-  await page.goto("/manage/settings");
+  await page.goto("/manage/settings", { waitUntil: "networkidle" });
   await expect(page.getByRole("heading", { name: "站点设置" })).toBeVisible();
   const name = page.getByLabel("站点名称");
   await expect(name).toHaveValue(/YTV/u);
   const saveButton = page.getByRole("button", { name: "保存公开资料" });
-  await expect.poll(() => saveButton.evaluate((element: HTMLButtonElement & { __vueParentComponent?: unknown }) => Boolean(element.__vueParentComponent))).toBe(true);
+  await expect(saveButton).toBeEnabled();
   await saveButton.click();
   await expect(page.getByRole("button", { name: "已保存" })).toBeVisible();
 });

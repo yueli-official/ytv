@@ -474,3 +474,7 @@ The recurring media silhouette is a bordered 2:3 poster. Search results preserve
 - Don't add a placeholder access-control page or unsupported user/role workflows to the admin console.
 - Don't add deployment endpoints, adapters, or secrets to source settings.
 - Don't require a redundant per-row Save button for independently editable source fields.
+
+## Movie viewing surfaces
+
+The public portal uses a compact search introduction, attributed discovery rail and source updates. Detail pages separate title information from playback lines. Watch pages keep a 16:9 player, a prominent center play action, a desktop line/episode sidebar and stacked mobile controls. Secondary text must remain readable on dark surfaces. Video.js neutral skin uses the public cold-blue accent variables; account and administration surfaces remain shared Foundation components.

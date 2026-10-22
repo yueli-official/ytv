@@ -193,10 +193,11 @@ type vodItem struct {
 	Summary  string `json:"vod_blurb"`
 	ImageURL string `json:"vod_pic"`
 	PlayURL  string `json:"vod_play_url"`
+	PlayFrom string `json:"vod_play_from"`
 }
 
 func mapTitle(definition source.Definition, item vodItem) source.Title {
-	episodes := parseEpisodes(item.PlayURL)
+	episodes := parseLines(item.PlayURL, item.PlayFrom)
 	return source.Title{
 		Locator:    source.TitleLocator{SourceKey: definition.Key, ExternalID: strings.TrimSpace(string(item.ID))},
 		SourceName: definition.Name,
@@ -204,7 +205,7 @@ func mapTitle(definition source.Definition, item vodItem) source.Title {
 		Category: strings.TrimSpace(item.Category), Area: strings.TrimSpace(item.Area),
 		Language: strings.TrimSpace(item.Language), Score: strings.TrimSpace(string(item.Score)), Remarks: strings.TrimSpace(item.Remarks),
 		Summary: strings.TrimSpace(item.Summary), ImageURL: source.AllowedImageURL(definition, item.ImageURL),
-		EpisodeCount: len(episodes), Episodes: episodes,
+		EpisodeCount: source.EpisodeTotal(episodes), Episodes: episodes,
 	}
 }
 
@@ -229,6 +230,28 @@ func parseEpisodes(raw string) []source.Episode {
 		result = append(result, source.Episode{
 			Key: strconv.Itoa(len(result)), Title: title, PlaybackURL: playbackURL,
 		})
+	}
+	return result
+}
+
+// MacCMS separates lines with $$$, episodes with # and labels with $.
+// Keep the first line's numeric keys so existing links and progress still resolve.
+func parseLines(raw, names string) []source.Episode {
+	result := make([]source.Episode, 0)
+	labels := strings.Split(names, "$$$")
+	for index, line := range strings.Split(raw, "$$$") {
+		key := strconv.Itoa(index)
+		name := "线路 " + strconv.Itoa(index+1)
+		if index < len(labels) && strings.TrimSpace(labels[index]) != "" {
+			name = strings.TrimSpace(labels[index])
+		}
+		for _, episode := range parseEpisodes(line) {
+			if index > 0 {
+				episode.Key = "line" + key + "-" + episode.Key
+			}
+			episode.LineKey, episode.LineName = key, name
+			result = append(result, episode)
+		}
 	}
 	return result
 }
