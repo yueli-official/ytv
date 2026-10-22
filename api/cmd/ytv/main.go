@@ -51,9 +51,6 @@ func main() {
 	authorizationDefinition, err := authorization.Compile(authz.Definition())
 	must(err)
 	bootstrapSubjects := commaSeparated(os.Getenv("YTV_BOOTSTRAP_ADMIN_SUBS"))
-	if len(bootstrapSubjects) == 0 {
-		panic("YTV_BOOTSTRAP_ADMIN_SUBS is required until Foundation publishes initial administrator claim")
-	}
 	protectedSubjects := make([]authorization.SubjectRef, 0, len(bootstrapSubjects))
 	for _, subject := range bootstrapSubjects {
 		protectedSubjects = append(protectedSubjects, authorization.SubjectRef{Kind: authorization.SubjectUser, ID: subject})
@@ -63,6 +60,7 @@ func main() {
 		InstanceKey: "ytv:" + environment("YTV_SITE_KEY", "ytv-main"),
 		Memory: authorization.MemoryOptions{
 			RootScopeID:       authz.RootScopeID,
+			AllowUnclaimed:    len(protectedSubjects) == 0,
 			ProtectedSubjects: protectedSubjects,
 		},
 	})
@@ -156,7 +154,7 @@ func main() {
 	must(err)
 
 	controller, err := httpapi.New(environment("YTV_SITE_KEY", "ytv-main"), httpapi.Dependencies{
-		Authorization: authz.New(authorizationRuntime), Discovery: discoveryModule, Catalog: registry,
+		Authorization: authz.New(authorizationRuntime, len(protectedSubjects) > 0), Discovery: discoveryModule, Catalog: registry,
 		Playback: playbackResolver, Traffic: trafficService, Searches: searchService,
 		Sources: sourceService, Progress: progressService, SourcePreferences: preferenceService, SiteProfile: profileService, Trending: trendingService,
 	})

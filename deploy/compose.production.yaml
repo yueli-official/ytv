@@ -1,0 +1,35 @@
+name: ytv-movie
+services:
+  ytv-api:
+    image: ${YTV_API_IMAGE:?set YTV_API_IMAGE}
+    restart: unless-stopped
+    init: true
+    shm_size: 512mb
+    env_file: [./api.env]
+    networks: [default, core-db]
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: [ALL]
+    healthcheck:
+      test: [CMD, curl, --fail, --silent, "http://127.0.0.1:8097/readyz"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+  ytv-web:
+    image: ${YTV_WEB_IMAGE:?set YTV_WEB_IMAGE}
+    restart: unless-stopped
+    init: true
+    env_file: [./web.env]
+    ports: ["127.0.0.1:13013:3000"]
+    depends_on:
+      ytv-api: {condition: service_healthy}
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: [ALL]
+    healthcheck:
+      test: [CMD, node, -e, "fetch('http://127.0.0.1:3000/healthz').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+networks:
+  core-db:
+    external: true
+    name: yueli-core-db

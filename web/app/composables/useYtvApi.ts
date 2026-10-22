@@ -9,6 +9,12 @@ export function useYtvApi() {
     return { sources: result.items };
   }
   return {
+    setup() {
+      return api.request<{ claimed: boolean; canClaim: boolean }>("/api/v1/authorization/setup", { auth: "optional" });
+    },
+    claim() {
+      return api.request<{ claimed: boolean; created: boolean }>("/api/v1/authorization/setup/claim", { method: "POST", auth: "required", replayAfterReauth: "never" });
+    },
     meta() {
       return api.request<{ name: string; description: string; siteKey: string; capabilities: string[] }>("/api/v1/meta", { auth: "optional" });
     },

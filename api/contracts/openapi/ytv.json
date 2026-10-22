@@ -38,6 +38,23 @@
         },
         "type": "object"
       },
+      "github.com.yueli-official.ytv.api.api.v1.ClaimAdministratorReq": {
+        "properties": {},
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.ClaimAdministratorRes": {
+        "properties": {
+          "claimed": {
+            "format": "bool",
+            "type": "boolean"
+          },
+          "created": {
+            "format": "bool",
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
       "github.com.yueli-official.ytv.api.api.v1.DeleteSourceReq": {
         "properties": {
           "revision": {
@@ -107,6 +124,23 @@
           "userKey": {
             "format": "string",
             "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.GetAdministratorSetupReq": {
+        "properties": {},
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.GetAdministratorSetupRes": {
+        "properties": {
+          "canClaim": {
+            "format": "bool",
+            "type": "boolean"
+          },
+          "claimed": {
+            "format": "bool",
+            "type": "boolean"
           }
         },
         "type": "object"
@@ -1734,6 +1768,58 @@
         "summary": "Read page and playback traffic",
         "tags": [
           "Administration"
+        ]
+      }
+    },
+    "/api/v1/authorization/setup": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.GetAdministratorSetupRes",
+                  "description": ""
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "summary": "Read initial administrator claim status",
+        "tags": [
+          "Authorization"
+        ]
+      }
+    },
+    "/api/v1/authorization/setup/claim": {
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.ClaimAdministratorReq",
+                "description": ""
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.ClaimAdministratorRes",
+                  "description": ""
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "summary": "Claim initial administrator",
+        "tags": [
+          "Authorization"
         ]
       }
     },

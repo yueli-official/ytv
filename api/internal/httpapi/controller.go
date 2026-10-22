@@ -502,7 +502,7 @@ func (controller *Administrator) GetAuthorizationOverview(ctx context.Context, _
 			string(authz.CapabilitySettingsManage), string(authz.CapabilityProgressSync),
 		},
 		InitialClaimAvailable: false,
-		BootstrapMode:         true,
+		BootstrapMode:         controller.core.authz.BootstrapMode(),
 	}, nil
 }
 

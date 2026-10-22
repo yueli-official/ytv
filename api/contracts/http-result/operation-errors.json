@@ -228,6 +228,20 @@
       "common.validation_failed",
       "ytv.forbidden",
       "ytv.not_authenticated"
+    ],
+    "GET /api/v1/authorization/setup": [
+      "common.internal",
+      "common.rate_limited",
+      "common.validation_failed",
+      "ytv.not_authenticated"
+    ],
+    "POST /api/v1/authorization/setup/claim": [
+      "common.internal",
+      "common.rate_limited",
+      "common.validation_failed",
+      "ytv.not_authenticated",
+      "ytv.forbidden",
+      "ytv.conflict"
     ]
   }
 }

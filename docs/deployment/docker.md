@@ -44,3 +44,5 @@ docker compose up -d
 
 Compose 不复制 Identity。YTV_JWKS_URL、YTV_JWKS_ISSUER、NUXT_IDENTITY_BASE 和所有 OIDC 公开地址必须指向已部署的
 中央 Identity/Account。生产环境必须使用稳定的 NUXT_SEAL_SECRET，并保持 NUXT_COOKIE_SECURE=true。
+
+首次上线可不设置 YTV_BOOTSTRAP_ADMIN_SUBS。登录后访问 /manage/setup，显式点击初始化即可成为首位管理员；已认领站点不会重新开放。正式共享服务器使用 [生产发布入口](../../deploy/README.md)。
