@@ -1,4 +1,5 @@
 <script setup lang="ts">
+definePageMeta({ colorMode: "dark" });
 const api = useYtvApi();
 const sourcePage = ref(1);
 const trendingPage = ref(1);

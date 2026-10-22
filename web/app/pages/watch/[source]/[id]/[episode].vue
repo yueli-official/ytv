@@ -1,4 +1,5 @@
 <script setup lang="ts">
+definePageMeta({ colorMode: "dark" });
 import { ytvFailureMessage } from "~/utils/ytv-failure";
 import { createBrowserUUID } from "@yueli/nuxt-runtime/runtime";
 import { browserVisitorID } from "~/utils/visitor";

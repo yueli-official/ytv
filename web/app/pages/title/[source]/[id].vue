@@ -1,4 +1,5 @@
 <script setup lang="ts">
+definePageMeta({ colorMode: "dark" });
 import { isSingleFeature, titleLines, watchPath, searchReturnPath } from "~/utils/title-lines";
 import type { LocalPlaybackProgress } from "~/utils/local-progress";
 import { browserProgress, mergeViewerProgress } from "~/utils/viewer-progress";

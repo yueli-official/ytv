@@ -1,4 +1,5 @@
 <script setup lang="ts">
+definePageMeta({ colorMode: "dark" });
 import { ytvFailureMessage } from "~/utils/ytv-failure";
 import { rememberSearch } from "~/utils/search-preferences";
 
