@@ -14,14 +14,14 @@ function hideBrokenImage(event: Event) {
 </script>
 
 <template>
-  <ul class="grid grid-cols-2 gap-x-3 gap-y-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6" role="list" data-poster-grid>
+  <ul class="ytv-poster-grid" role="list" data-poster-grid>
     <li v-for="group in groups" :key="group.key" class="min-w-0">
       <NuxtLink
         v-if="group.candidates[0]"
         :to="`/title/${group.candidates[0].sourceKey}/${group.candidates[0].externalId}`"
-        class="group block text-inherit no-underline focus-visible:rounded-xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sky-300"
+        class="ytv-poster-card group"
       >
-        <div class="relative aspect-[2/3] overflow-hidden rounded-xl border border-white/10 bg-[#111a24] transition group-hover:border-sky-300/40">
+        <div class="ytv-poster-image">
           <UIcon name="i-tabler-photo-off" class="absolute left-1/2 top-1/2 size-9 -translate-x-1/2 -translate-y-1/2 text-white/20" />
           <img
             v-if="group.candidates[0].imageUrl"
@@ -39,9 +39,9 @@ function hideBrokenImage(event: Event) {
             {{ group.candidates[0].remarks }}
           </span>
         </div>
-        <div class="space-y-1 py-2.5">
+        <div class="space-y-1.5 pt-3">
           <h3 class="truncate text-sm font-semibold text-white group-hover:text-sky-200">{{ group.title }}</h3>
-          <p class="truncate text-xs text-white/60">{{ group.year || '年份未知' }} · {{ group.category || group.candidates[0].sourceName }}</p>
+          <p class="truncate text-[11px] text-white/45">{{ group.year || '年份未知' }} · {{ group.category || group.candidates[0].sourceName }}</p>
         </div>
       </NuxtLink>
     </li>

@@ -59,18 +59,18 @@ useSeoMeta({ title: () => data.value?.title.name || "影片详情", description:
 
 <template>
   <div class="ytv-detail min-h-[calc(100dvh-4rem)] text-white">
-    <div class="mx-auto max-w-[90rem] space-y-7 px-4 py-6 sm:px-6 lg:px-8">
+    <div class="ytv-container space-y-7 py-6">
       <NuxtLink :to="returnTo || '/'" class="inline-flex items-center gap-1.5 py-1 text-xs text-white/60 no-underline hover:text-white"><UIcon name="i-tabler-chevron-left" class="size-4" />{{ returnTo ? '返回搜索结果' : '发现影片' }}</NuxtLink>
       <div v-if="pending" class="grid gap-6 sm:grid-cols-[12rem_1fr]"><USkeleton class="aspect-[2/3] max-w-48 rounded-xl" /><div class="space-y-4"><USkeleton class="h-9 w-2/3" /><USkeleton class="h-24 w-full" /></div></div>
       <UAlert v-else-if="error" color="error" title="影片详情暂时不可用" description="请重试，或返回搜索选择其他来源。"><template #actions><UButton label="重试" @click="() => refresh()" /></template></UAlert>
       <template v-else-if="data">
-        <section class="grid grid-cols-[6rem_minmax(0,1fr)] items-start gap-4 sm:grid-cols-[10rem_minmax(0,1fr)] sm:gap-6 md:grid-cols-[12rem_minmax(0,1fr)] lg:grid-cols-[14rem_minmax(0,1fr)] lg:gap-x-9">
-          <div class="relative aspect-[2/3] w-full overflow-hidden rounded-xl border border-white/10 bg-[#121b26] shadow-2xl sm:row-span-2">
+        <section class="ytv-title-intro">
+          <div class="ytv-title-poster relative aspect-[2/3] w-full overflow-hidden rounded-lg border border-white/10 bg-[#121b26] shadow-2xl sm:row-span-2">
             <img v-if="data.title.imageUrl && !posterFailed" :src="data.title.imageUrl" :alt="`${data.title.name} 海报`" class="size-full object-cover" referrerpolicy="no-referrer" @error="posterFailed = true">
             <div v-else class="grid size-full place-items-center"><UIcon name="i-tabler-movie" class="size-9 text-white/20" /></div>
           </div>
-          <div class="min-w-0 space-y-4 py-1">
-            <div class="flex flex-wrap items-center gap-2 text-xs text-white/60"><span class="rounded-md border border-sky-400/20 bg-sky-400/5 px-2 py-1 text-sky-300">{{ movie ? '单部影片' : '剧集' }}</span><span>{{ data.title.sourceName }}</span><span v-if="data.title.remarks" class="text-white/60">· {{ data.title.remarks }}</span></div>
+          <div class="ytv-title-facts min-w-0 space-y-4 py-1">
+            <div class="flex flex-wrap items-center gap-2 text-xs text-white/60"><span class="rounded-md border border-sky-400/20 bg-sky-400/5 px-2 py-1 text-sky-300">{{ movie ? '电影' : '剧集' }}</span><span>{{ data.title.sourceName }}</span><span v-if="data.title.remarks" class="text-white/60">· {{ data.title.remarks }}</span></div>
             <div><h1 class="break-words text-2xl font-bold leading-tight tracking-tight lg:text-4xl">{{ data.title.name }}</h1><p class="mt-3 text-sm text-white/60">{{ [data.title.year, data.title.category, data.title.area, data.title.language].filter(Boolean).join(' · ') || '影片资料待补充' }}</p></div>
             <div v-if="Number(data.title.score) > 0" class="inline-flex items-center gap-2 text-amber-300"><UIcon name="i-tabler-star-filled" class="size-4" /><span class="text-xl font-semibold tabular-nums">{{ Number(data.title.score).toFixed(1) }}</span><span class="text-xs text-white/60">来源评分</span></div>
             <div class="flex flex-wrap items-center gap-3 pt-1">
@@ -79,14 +79,14 @@ useSeoMeta({ title: () => data.value?.title.name || "影片详情", description:
               <span v-if="resume" class="w-full text-xs text-white/60">{{ resume.episodeTitle || '上次观看' }} · {{ resumeTime }}</span>
             </div>
           </div>
-          <div class="col-span-2 min-w-0 sm:col-span-1 sm:col-start-2">
+          <div class="ytv-title-synopsis min-w-0">
             <h2 class="mb-2 text-xs font-medium text-white/75">剧情简介</h2>
-            <p id="title-synopsis" class="max-w-3xl whitespace-pre-line break-words text-sm leading-7 text-white/60" :class="summaryExpanded ? '' : 'line-clamp-3'">{{ data.title.summary || '当前来源暂未提供剧情简介。' }}</p>
+            <p id="title-synopsis" class="max-w-3xl whitespace-pre-line break-words text-sm leading-7 text-white/60" :class="summaryExpanded || (data.title.summary?.length || 0) <= 100 ? '' : 'line-clamp-3'">{{ data.title.summary || '当前来源暂未提供剧情简介。' }}</p>
             <UButton v-if="data.title.summary?.length > 100" :label="summaryExpanded ? '收起简介' : '展开简介'" :aria-expanded="summaryExpanded" aria-controls="title-synopsis" color="neutral" variant="link" size="sm" class="mt-1 px-0" @click="toggleSummary" />
           </div>
         </section>
-        <section class="overflow-hidden rounded-xl border border-white/10 bg-[#101720]" aria-labelledby="playback-options-title">
-          <div class="flex flex-wrap items-center justify-between gap-3 border-b border-white/8 px-4 py-4 sm:px-5"><h2 id="playback-options-title" class="text-base font-semibold">{{ movie ? '播放线路' : '选择剧集' }}</h2><USelect v-if="ranges.length > 1" v-model="rangeStart" :items="ranges" aria-label="选集范围" class="w-36" /><span v-else class="text-xs text-white/60">{{ lines.length }} 条线路</span></div>
+        <section class="overflow-hidden rounded-xl border border-white/10 bg-[#11161e]" aria-labelledby="playback-options-title">
+          <div class="flex flex-wrap items-center justify-between gap-3 border-b border-white/8 px-4 py-4 sm:px-5"><h2 id="playback-options-title" class="text-base font-semibold">{{ movie ? '选择版本与线路' : '选择剧集' }}</h2><USelect v-if="ranges.length > 1" v-model="rangeStart" :items="ranges" aria-label="选集范围" class="w-36" /><span v-else class="text-xs text-white/60">{{ lines.length }} 条线路</span></div>
           <div class="space-y-4 p-4 sm:p-5">
             <div v-if="lines.length > 1" class="flex flex-wrap gap-2" role="group" aria-label="播放线路"><UButton v-for="item in lines" :key="item.key" :label="item.name" :color="line?.key === item.key ? 'primary' : 'neutral'" :variant="line?.key === item.key ? 'soft' : 'ghost'" :aria-pressed="line?.key === item.key" @click="selectLine(item.key)" /></div>
             <div v-if="episodes.length" class="grid gap-2" :class="movie ? 'sm:grid-cols-3 lg:grid-cols-4' : 'grid-cols-3 sm:grid-cols-5 lg:grid-cols-8'">
@@ -99,6 +99,3 @@ useSeoMeta({ title: () => data.value?.title.name || "影片详情", description:
     </div>
   </div>
 </template>
-<style scoped>
-.ytv-detail { background: radial-gradient(ellipse at 15% 0%, #14283b 0%, #070b10 55%); }
-</style>

@@ -28,24 +28,19 @@ useSeoMeta({ title: () => query.value ? `搜索：${query.value}` : "搜索" });
 </script>
 
 <template>
-  <div class="min-h-[calc(100dvh-4rem)] bg-[#070b10] text-white">
-    <div data-search-workspace class="mx-auto max-w-[90rem] space-y-7 px-4 py-8 sm:px-6 lg:px-8">
-      <div class="space-y-4">
-        <h1 class="text-2xl font-bold tracking-[-0.03em] sm:text-3xl">搜索影视</h1>
+  <div class="min-h-[calc(100dvh-4rem)] text-white">
+    <div data-search-workspace class="ytv-container space-y-7 py-8">
+      <div class="max-w-2xl space-y-5">
+        <div><p class="ytv-eyebrow">FIND YOUR NEXT FILM</p><h1 class="mt-2 text-2xl font-semibold tracking-tight">搜索影视</h1></div>
         <SearchCommand :initial-value="query" :initial-sources="sourceKeys" />
       </div>
 
-      <UAlert v-if="!showLoading && data && !data.complete" color="warning" variant="subtle" title="部分来源暂时不可用" :description="`${data.succeeded} 个来源已返回，${data.failed} 个来源失败；当前结果仍可浏览。`"><template #actions><UButton label="重新搜索" color="warning" variant="soft" @click="retry" /></template></UAlert>
-
-      <div v-if="data && !showLoading" data-search-summary class="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-white/10 bg-[#0e151d] px-4 py-3" role="status" aria-live="polite">
-        <div class="flex items-center gap-3">
-          <span class="grid size-9 place-items-center rounded-lg bg-sky-400/10 text-sky-300"><UIcon name="i-tabler-clipboard-list" /></span>
-          <div><p class="text-xs text-sky-300">搜索结果</p><p class="font-bold">{{ data.groups.length }} 个影片</p></div>
-        </div>
-        <p class="text-sm text-white/50">“{{ query }}” · {{ data.succeeded }} 个来源 · 第 {{ page }} 页</p>
+      <div v-if="data && !showLoading" data-search-summary class="ytv-search-summary" role="status" aria-live="polite">
+        <div><h2>“{{ query }}”<span>的搜索结果</span></h2><p>{{ data.groups.length }} 个影片 · 第 {{ page }} 页</p></div>
+        <p v-if="!data.complete" class="ytv-search-degraded"><UIcon name="i-tabler-info-circle" />部分来源暂时不可用 <button @click="retry">重新搜索</button></p>
       </div>
 
-      <div v-if="showLoading" class="grid gap-4 md:grid-cols-2 xl:grid-cols-4" role="status" aria-label="正在搜索影片">
+      <div v-if="showLoading" class="grid gap-4 md:grid-cols-2 xl:grid-cols-3" role="status" aria-label="正在搜索影片">
         <USkeleton v-for="item in 12" :key="item" class="h-40 rounded-xl bg-white/10" />
       </div>
       <UAlert v-else-if="error" color="error" title="搜索暂时不可用" :description="ytvFailureMessage(error, '搜索暂时不可用，请稍后重试。')">

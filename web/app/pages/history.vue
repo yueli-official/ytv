@@ -52,9 +52,9 @@ function failPoster(item: { sourceKey: string; externalId: string }) { failedPos
 </script>
 
 <template>
-  <div class="mx-auto min-h-[70dvh] max-w-[90rem] space-y-6 px-4 py-7 sm:px-6 lg:px-8">
+  <div class="ytv-container min-h-[70dvh] space-y-6 py-8">
     <div class="flex flex-wrap items-end justify-between gap-4">
-      <div><h1 class="text-3xl font-bold tracking-[-0.03em] text-highlighted sm:text-4xl">播放历史</h1><p class="mt-2 max-w-2xl text-sm leading-6 text-muted">{{ loggedIn ? '找到看过的影片，接着上次的进度观看。' : '记录保存在当前浏览器，登录可同步最近 30 天的观看进度。' }}</p></div>
+      <div><h1 class="text-2xl font-semibold tracking-tight text-highlighted">播放历史</h1><p class="mt-2 max-w-2xl text-sm leading-6 text-muted">{{ loggedIn ? '找到看过的影片，接着上次的进度观看。' : '记录保存在当前浏览器，登录可同步最近 30 天的观看进度。' }}</p></div>
       <UButton v-if="!loggedIn" label="登录并同步" icon="i-tabler-login-2" color="neutral" variant="soft" @click="startLogin" />
     </div>
 
@@ -62,7 +62,7 @@ function failPoster(item: { sourceKey: string; externalId: string }) { failedPos
       <template #actions><UButton label="重试" color="error" variant="soft" @click="() => refresh()" /></template>
     </UAlert>
 
-    <ul v-if="items.length" data-history-poster-grid class="grid grid-cols-2 gap-x-3 gap-y-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+    <ul v-if="items.length" data-history-poster-grid class="ytv-poster-grid">
       <li v-for="item in items" :key="posterKey(item)" class="min-w-0">
         <NuxtLink :to="watchPath(item.sourceKey, item.externalId, item.episodeKey)" class="group block text-white no-underline">
           <div class="relative aspect-[2/3] overflow-hidden rounded-xl border border-white/10 bg-[#0f1720] shadow-sm transition group-hover:-translate-y-0.5 group-hover:border-sky-400/45">

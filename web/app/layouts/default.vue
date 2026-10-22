@@ -14,6 +14,7 @@ const accountActions: readonly AccountMenuAction[] = [
 ];
 
 const navigation = [
+  { label: "发现", to: "/" },
   { label: "播放历史", to: "/history" }
 ];
 
@@ -29,14 +30,14 @@ function updateSourceSettingsOpen(value: boolean) { if (!value) sourceSettingsOp
 </script>
 
 <template>
-  <div class="min-h-dvh bg-[#070b10] text-white">
-    <header class="sticky top-0 z-30 border-b border-white/10 bg-[#06090d]/95 text-white backdrop-blur-md">
-      <div class="mx-auto flex min-h-16 max-w-[90rem] items-center gap-3 px-4 sm:px-6 lg:px-8">
-        <NuxtLink to="/" class="inline-flex items-center gap-1.5 text-2xl font-black tracking-[-0.04em] text-white no-underline" :aria-label="`${siteName} 首页`"><span>{{ siteName }}</span><span class="size-1.5 rounded-full bg-sky-400" aria-hidden="true" /></NuxtLink>
-        <nav class="hidden items-center gap-1 sm:flex" aria-label="主导航">
-          <UButton v-for="item in navigation" :key="item.to" :to="item.to" :label="item.label" color="neutral" variant="ghost" />
+  <div class="ytv-public min-h-dvh text-white">
+    <header class="ytv-header sticky top-0 z-30 text-white">
+      <div class="ytv-container flex min-h-18 items-center gap-3 sm:gap-6">
+        <NuxtLink to="/" class="ytv-wordmark" :aria-label="`${siteName} 首页`"><span class="ytv-brand-icon" aria-hidden="true"><UIcon name="i-tabler-player-play-filled" /></span><span>{{ siteName }}</span></NuxtLink>
+        <nav class="hidden items-center gap-5 md:flex" aria-label="主导航">
+          <NuxtLink v-for="item in navigation" :key="item.to" :to="item.to" class="ytv-nav-link" :class="{ active: route.path === item.to }">{{ item.label }}</NuxtLink>
         </nav>
-        <UButton to="/search" aria-label="搜索" icon="i-tabler-search" color="neutral" variant="ghost" class="ms-auto min-h-11 min-w-11 shrink-0 justify-center"><span class="hidden md:inline">搜索</span></UButton>
+        <UButton to="/search" aria-label="搜索" icon="i-tabler-search" color="neutral" variant="ghost" class="ms-auto min-h-11 min-w-11 shrink-0 justify-center" />
         <button type="button" aria-label="来源设置" class="grid size-11 shrink-0 place-items-center rounded-lg text-white/75 transition hover:bg-white/10 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-300" @click="openSourceSettings"><UIcon name="i-tabler-adjustments-horizontal" class="size-5" /></button>
         <ConsumerAccountControl :context-actions="accountActions" />
         <UButton
@@ -46,14 +47,14 @@ function updateSourceSettingsOpen(value: boolean) { if (!value) sourceSettingsOp
           square
           aria-label="打开导航"
           :aria-expanded="drawerOpen"
-          class="size-11 sm:hidden"
+          class="size-11 md:hidden"
           @click="openDrawer"
         />
       </div>
     </header>
     <main id="main-content"><slot /></main>
     <footer class="border-t border-white/8">
-      <div class="mx-auto flex max-w-[90rem] flex-wrap items-center justify-between gap-3 px-4 py-6 text-xs text-white/60 sm:px-6 lg:px-8">
+      <div class="ytv-container flex flex-wrap items-center justify-between gap-4 py-8 text-xs text-white/45">
         <p><span class="font-semibold tracking-wide text-white/65">{{ siteName }}</span><span class="mx-3 text-white/15">/</span>电影与故事，在这里相遇。</p>
         <div class="flex items-center gap-5"><NuxtLink to="/history" class="text-inherit no-underline hover:text-white">播放历史</NuxtLink><button class="hover:text-white" @click="openSourceSettings">选择来源</button></div>
       </div>

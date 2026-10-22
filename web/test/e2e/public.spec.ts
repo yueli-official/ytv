@@ -49,7 +49,7 @@ test("search query is route state", async ({ page }) => {
   await search.press("Enter");
   await expect(page).toHaveURL(/\/search\?q=%E9%9C%9C%E7%BA%BF/u);
   await expect(page.locator("#main-content").getByRole("heading", { name: "搜索影视", level: 1 })).toBeVisible();
-  await expect(page.locator("#main-content").getByRole("heading", { name: "霜线", level: 2 })).toBeVisible();
+  await expect(page.locator("#main-content").getByRole("heading", { name: "霜线", level: 2, exact: true })).toBeVisible();
 });
 
 test("same-origin fixture manifest reaches the HLS player", async ({ page }) => {
@@ -109,7 +109,7 @@ test("homepage separates search history, source refresh and Douban discovery", a
   const hotBox = await hot.boundingBox();
   const sourceBox = await sourceUpdates.boundingBox();
   expect(hotBox?.y || 0).toBeLessThan(sourceBox?.y || 0);
-  const searchPanel = page.getByRole("heading", { name: "今晚，想看什么？" }).locator("xpath=ancestor::section[1]");
+  const searchPanel = page.locator(".ytv-page-heading");
   await expect(searchPanel.getByRole("heading", { name: "大家在看" })).toHaveCount(0);
 });
 

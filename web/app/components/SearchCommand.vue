@@ -61,8 +61,8 @@ function historyTo(query: string) {
           :ui="{
             root: 'w-full',
             base: compact
-              ? 'min-h-11 bg-default/95 text-highlighted'
-              : 'min-h-16 bg-black/70 text-white placeholder:text-white/60 sm:min-h-18 sm:text-lg'
+              ? 'min-h-10 bg-white/5 text-white ring-white/10 placeholder:text-white/40'
+              : 'min-h-12 bg-white/5 text-white ring-white/15 placeholder:text-white/40'
           }"
           @compositionstart="composing = true"
           @compositionend="composing = false"
@@ -73,7 +73,7 @@ function historyTo(query: string) {
           :size="compact ? 'lg' : 'xl'"
           :aria-label="draft.trim() ? `搜索 ${draft.trim()}` : '开始搜索'"
           :disabled="hydrated ? !searchEnabled : false"
-          class="min-w-12 justify-center sm:min-w-16"
+          class="min-w-11 justify-center"
         />
       </UFieldGroup>
     </form>

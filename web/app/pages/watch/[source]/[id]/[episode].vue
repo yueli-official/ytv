@@ -54,14 +54,14 @@ useSeoMeta({ title: () => data.value ? `${data.value.title.name} · ${currentEpi
 
 <template>
   <div class="ytv-watch min-h-[calc(100dvh-4rem)] text-white">
-    <div class="mx-auto max-w-[90rem] space-y-5 px-4 py-5 sm:px-6 lg:px-8">
+    <div class="ytv-container space-y-5 py-5">
       <div class="flex items-center justify-between gap-3 text-xs text-white/60">
         <NuxtLink :to="titleLink" class="inline-flex items-center gap-1.5 py-2 text-inherit no-underline hover:text-white"><UIcon name="i-tabler-chevron-left" class="size-4" />影片详情</NuxtLink>
         <span v-if="data" class="truncate">{{ data.title.sourceName }}<span class="px-2 text-white/20">/</span>{{ currentLine?.name }}</span>
       </div>
       <div v-if="pending" class="aspect-video max-h-[70vh] animate-pulse rounded-xl bg-white/5" role="status" aria-label="正在载入影片" />
       <UAlert v-else-if="error" color="error" title="影片暂时无法打开" :description="ytvFailureMessage(error, '请重试或返回搜索选择其他来源。')"><template #actions><UButton label="重试" @click="() => refresh()" /></template></UAlert>
-      <div v-else-if="data" class="grid items-start gap-5" :class="theatre ? '' : 'lg:grid-cols-[minmax(0,1fr)_19rem]'">
+      <div v-else-if="data" class="grid items-start gap-5" :class="theatre ? '' : 'lg:grid-cols-[minmax(0,1fr)_17rem]'">
         <div class="min-w-0 space-y-4">
           <section class="relative aspect-video overflow-hidden rounded-xl border border-white/10 bg-black shadow-2xl" aria-label="播放器区域">
             <YtvPlayer v-if="currentEpisode" :source-key="sourceKey" :external-id="externalId" :episode-key="episodeKey" :title="data.title.name" :episode-label="currentEpisodeTitle" :poster="data.title.imageUrl" @started="recordPlaybackStart" @progress="syncProgress" />
@@ -96,6 +96,3 @@ useSeoMeta({ title: () => data.value ? `${data.value.title.name} · ${currentEpi
     </div>
   </div>
 </template>
-<style scoped>
-.ytv-watch { background: radial-gradient(ellipse at 40% 0%, #122030 0%, #070b10 55%); }
-</style>
