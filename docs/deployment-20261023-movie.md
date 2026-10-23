@@ -1,6 +1,20 @@
 # 2026-10-23 电影站升级上线
 
-## 当前前台：电影发现页重新设计
+## 当前发布：手机独立布局与片源改进
+
+用户授权提交和部署后，已发布源码 `784ed7440a80f03a13ed0f6b73fbd22a5d18393d` 到 https://tv.yuelili.com 。本轮提交包含 `07ee3ad` 手机拆分、`491752b` 正式依赖下的点击回调类型修正、`784ed74` 手机电影版本标签修正；没有 Git push。
+
+Web/API 均更新为 `mobile-20261023-10`，因为线上旧 API 尚未包含既有搜索分组、解析和验证状态改进。Web image ID `sha256:2adb3109b118745cea0b0245c14da49374634d5565d3a75894cd2d12b196dc68`；API image ID `sha256:489d9e919a9817b15ab104f0f86213f6d7501de6aabf7b93a426debf3883efd7`。两容器 healthy、restart 0；无关容器 ID 保持不变。
+
+从提交归档独立安装冻结依赖，批准基线与 Workspace 当前 frontendPackages 完全一致。正式依赖校验、Nuxt 类型检查、生产构建、23 项前端单测、Go 全量测试通过。候选和正式 HTTPS 的 105 个 JS 哈希与制品一致；CLI Playwright 验证桌面/手机（含保存浅色偏好）的五页、来源设置、搜索重试、详情版本、选集弹层和登录到 Account。真实来源最大资源的《流浪地球》进入 playing，无失败请求；已亲自查看实际截图。没有生产管理员账号，管理写操作、真机软键盘和 Safari 不计已验收，也不承诺所有上游来源可用。
+
+数据库为 version 9、dirty=false，无新增迁移。原首次发布迁移包的 LF 字节摘要仍匹配已执行清单；Git 快照为 CRLF，归一比对内容相同。本次未执行 SQL、未改写数据库迁移记录，原始迁移包继续保留。公开验证码提交界面仍未接入，内部会话试点不代表完整验证码功能已开放。
+
+发布清单 `/projects/yuelili.com/ytv/deployment-release.json`；制品与检查归档 `/projects/yuelili.com/.deploy/ytv-mobile-20261023-10/`；数据库与配置备份 `/projects/yuelili.com/backups/ytv-mobile-20261023-10/`，dump 已通过 pg_restore --list。源码 SHA256 `e9b8ae572dc3bb348d73b98042406810169dc2d4b4fa2150872697dcbc2a4c21`。本机证据 `D:/coding/yueli-official/task-artifacts/ytv/deploy-mobile-20261023-10/`。
+
+回滚时使用备份中的 `.env`，仅重新创建 `ytv-api` 与 `ytv-web`，核验原镜像 ID、健康和正式 HTTP 后恢复旧配套清单；不自动恢复数据库。旧镜像和备份保留。本次候选容器、服务器镜像组装目录和本地 SSH 隧道已清理。
+
+## 历史发布：电影发现页重新设计
 
 用户要求继续改善正式站视觉后，已发布 `b195391de6f4018a1d443be0517abf31e1f3c93c`。当前 Web 为 `yueli/ytv-web:cinema-20261023-01`，image ID `sha256:61b2a2ead4ebdb76d3263742c56d18ee0fb92a4de7135226c3e77dc661194bce`。API 继续复用 `movie-20261023-01`，源码摘要、二进制摘要和运行镜像 ID 与原始清单一致；API 容器未重启，没有重新迁移数据库、初始化或认领管理员。
 
