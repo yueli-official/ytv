@@ -14,7 +14,7 @@ const { ytvFailureMessage, rememberSearch, route, api, sourceSettingsOpen, query
           <p v-if="data && !showLoading && !data.complete" class="ytv-search-degraded"><UIcon name="i-tabler-info-circle" />部分来源暂时不可用</p>
         </div>
         <div class="flex flex-wrap items-center gap-3">
-        <button class="ytv-source-scope" @click="sourceSettingsOpen = true"><UIcon name="i-tabler-database" />{{ sourceKeys.length ? `已选 ${sourceKeys.length} 个来源` : '全部已启用来源' }}<span class="mx-2 text-white/30">|</span><UIcon name="i-tabler-adjustments-horizontal" />来源设置</button>
+        <button class="ytv-source-scope" @click="() => { sourceSettingsOpen = true; }"><UIcon name="i-tabler-database" />{{ sourceKeys.length ? `已选 ${sourceKeys.length} 个来源` : '全部已启用来源' }}<span class="mx-2 text-white/30">|</span><UIcon name="i-tabler-adjustments-horizontal" />来源设置</button>
         <UButton v-if="query" label="重新搜索" icon="i-tabler-refresh" color="neutral" variant="ghost" size="sm" class="mt-4" :loading="pending" :disabled="pending" @click="retry" />
         </div>
         <SearchCommand v-if="!query" history-only :initial-sources="sourceKeys" />
@@ -41,7 +41,7 @@ const { ytvFailureMessage, rememberSearch, route, api, sourceSettingsOpen, query
       </UAlert>
       <SearchResultGrid v-else-if="data?.groups.length" :groups="data.groups" :return-to="route.fullPath" />
       <UEmpty v-else-if="verificationSources.length" icon="i-tabler-shield-lock" title="部分来源需要验证" description="这些来源尚未返回搜索结果。本站暂不能完成其验证，请选择其他来源继续搜索。" class="rounded-xl bg-[#141e28]">
-        <template #actions><UButton v-if="sourceKeys.length" label="搜索全部来源" icon="i-tabler-search" :to="{ path: '/search', query: { q: query } }" /><UButton label="来源设置" color="neutral" variant="soft" @click="sourceSettingsOpen = true" /></template>
+        <template #actions><UButton v-if="sourceKeys.length" label="搜索全部来源" icon="i-tabler-search" :to="{ path: '/search', query: { q: query } }" /><UButton label="来源设置" color="neutral" variant="soft" @click="() => { sourceSettingsOpen = true; }" /></template>
       </UEmpty>
       <UEmpty v-else-if="query" icon="i-tabler-search-off" :title="page > 1 ? '这一页没有更多结果' : '没有找到相关影片'" :description="page > 1 ? '返回上一页继续挑选，或换一个关键词。' : '试试更短的片名，或搜索全部来源。'" class="rounded-xl bg-[#141e28]">
         <template #actions><UButton v-if="sourceKeys.length" label="搜索全部来源" icon="i-tabler-search" :to="{ path: '/search', query: { q: query } }" /><UButton to="/" label="去首页看看" color="neutral" variant="soft" /></template>

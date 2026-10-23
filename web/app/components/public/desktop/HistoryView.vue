@@ -33,7 +33,7 @@ const { browserProgress, mergeViewerProgress, watchPath, api, loggedIn, login, l
         </ul>
       </section>
     </div>
-    <UEmpty v-else-if="items.length" icon="i-tabler-search-off" title="没有匹配的记录" description="这里只筛选当前加载的观看记录。"><template #actions><UButton label="清除筛选" color="neutral" variant="outline" @click="filter = ''" /></template></UEmpty>
+    <UEmpty v-else-if="items.length" icon="i-tabler-search-off" title="没有匹配的记录" description="这里只筛选当前加载的观看记录。"><template #actions><UButton label="清除筛选" color="neutral" variant="outline" @click="() => { filter = ''; }" /></template></UEmpty>
     <UEmpty v-else icon="i-tabler-history-off" title="还没有播放记录" description="看过的影片会出现在这里，方便下次接着看。"><template #actions><UButton to="/" label="去找一部电影" icon="i-tabler-search" /></template></UEmpty>
   </div>
 </template>

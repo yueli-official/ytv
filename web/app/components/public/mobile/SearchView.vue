@@ -6,7 +6,7 @@ defineProps<{view:ReturnType<typeof useSearchView>}>();
  <div class="mp-page" data-mobile-page="search" data-search-workspace>
   <h1 class="sr-only">搜索影视</h1>
   <SearchCommand compact :show-history="false" :initial-value="view.query" :initial-sources="view.sourceKeys"/>
-  <div class="mp-heading"><UButton label="来源设置" icon="i-tabler-adjustments-horizontal" color="neutral" variant="outline" size="sm" @click="view.sourceSettingsOpen=true"/><UButton v-if="view.query" label="重新搜索" icon="i-tabler-refresh" color="neutral" variant="ghost" size="sm" :loading="view.pending" @click="view.retry"/></div>
+  <div class="mp-heading"><UButton label="来源设置" icon="i-tabler-adjustments-horizontal" color="neutral" variant="outline" size="sm" @click="() => { view.sourceSettingsOpen=true; }"/><UButton v-if="view.query" label="重新搜索" icon="i-tabler-refresh" color="neutral" variant="ghost" size="sm" :loading="view.pending" @click="view.retry"/></div>
   <p v-if="view.query" class="mp-muted" role="status" data-search-summary>{{view.showLoading?'正在搜索…':`本页 ${view.data?.groups.length||0} 个影片`}}</p>
   <details v-if="view.data && !view.data.complete" class="mp-notice"><summary>部分来源未返回结果</summary><ul><li v-for="s in view.data.sources.filter(s=>s.outcome!=='success')" :key="s.key">{{s.name}} · {{s.outcome==='verification_required'?'需要验证':s.outcome==='timeout'?'请求超时':'暂时不可用'}}</li></ul></details>
   <div v-if="view.showLoading" class="space-y-4"><USkeleton v-for="n in 3" :key="n" class="h-28 bg-white/5"/></div>

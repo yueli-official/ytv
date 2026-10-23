@@ -15,7 +15,7 @@ const { api, sourcePage, trendingPage, trendingType, trendingTag, failedFeatureP
           <p class="mt-4 flex items-baseline gap-3"><strong v-if="Number(activeFeature.score) > 0" class="text-3xl font-medium tabular-nums text-amber-300">{{ activeFeature.score }}</strong><span class="text-base text-white/80">{{ Number(activeFeature.score) > 0 ? '豆瓣评分' : '豆瓣热门' }}</span></p>
           <UButton :to="{ path: '/search', query: { q: activeFeature.title } }" label="查找片源" icon="i-tabler-search" color="neutral" variant="ghost" class="ytv-primary mt-6" @click.prevent="searchTrending(activeFeature.title)" />
           <div class="ytv-feature-selectors" role="group" aria-label="切换热门推荐">
-            <button v-for="(item, index) in features" :key="item.id" :aria-pressed="index === activeFeatureIndex" :aria-label="`查看热门：${item.title}`" @click="activeFeatureIndex = index"><span aria-hidden="true">0{{ index + 1 }}</span><strong class="sr-only">{{ item.title }}</strong></button>
+            <button v-for="(item, index) in features" :key="item.id" :aria-pressed="index === activeFeatureIndex" :aria-label="`查看热门：${item.title}`" @click="() => { activeFeatureIndex = index; }"><span aria-hidden="true">0{{ index + 1 }}</span><strong class="sr-only">{{ item.title }}</strong></button>
           </div>
         </div>
         <img v-if="trendingPoster(activeFeature)" :key="activeFeature.id" ref="featureArtwork" :data-id="activeFeature.id" :src="failedFeaturePosters.has(activeFeature.id) ? trendingPoster(activeFeature) : `${trendingPoster(activeFeature)}?size=feature`" :alt="`${activeFeature.title} 海报`" fetchpriority="high" class="ytv-feature-art" @error="failFeaturePoster(activeFeature.id)">
