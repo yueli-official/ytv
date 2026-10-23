@@ -6,7 +6,7 @@ The five-page project adaptation is the current visual direction: charcoal blue 
 
 ### Shared frame
 
-Use a compact horizontal YTV wordmark, discovery/search/history navigation, search, source settings and shared account control. Content uses a 92% desktop container capped at 1600px. Mobile navigation keeps search reachable and exposes history in the navigation drawer. Use Tabler icons, visible keyboard focus, real Nuxt UI controls and documented public slots. Public styles must not affect administration.
+Use a compact horizontal YTV wordmark, discovery/history links, header search, source settings and shared account control on desktop. Content uses a 92% desktop container capped at 1600px. Below 768px, use independent mobile views with discovery/search/history bottom navigation; detail and watch use back navigation without the bottom bar. Use Tabler icons, visible keyboard focus, real Nuxt UI controls and documented public slots. Public styles must not affect administration.
 
 ### Discovery
 
@@ -30,7 +30,7 @@ Deduplicate by source title locator, preserving the latest episode. Show portrai
 
 ### Verification
 
-The user rejected the initial implementation fidelity. For this redesign, stabilize and review desktop pages before any further mobile design. Keep actions compact: desktop primary text is 16px, with 40–44px button height and content-based width. Large generated-reference typography is not a mandate to enlarge ordinary controls. Mobile visual acceptance remains deferred.
+Mobile implementation was authorized after the separate five-page concept. Keep actions compact and content-sized; large generated-reference typography is not a mandate to enlarge ordinary controls. Review actual desktop and mobile screenshots separately; concept approval does not constitute acceptance of the implementation.
 
 Use the real Workspace composition and CLI Playwright for desktop/mobile rendering and interaction, including recovery and long-series behavior. Inspect actual screenshots personally for layout and legibility; automated assertions only verify their stated functional behavior. Respect reduced motion and keep source failure fallbacks legible.
 
@@ -52,3 +52,12 @@ Use the real Workspace composition and CLI Playwright for desktop/mobile renderi
   meaningful choices without making an unprobed source participate in public search.
 - **Site Settings:** One Public Profile section with editable name and description; the page-level save action owns pending, success, and error feedback.
 - **Shared Modules:** Use `ManagePage`, semantic metric cards and charts, `CollectionPanel`, `SettingSection`, and `ActionFeedbackButton`; do not reproduce them locally.
+
+
+### Shared state, independent mobile views
+
+Routes own a single data controller through useHomeView/useSearchView/useTitleView/useHistoryView; components/public/desktop and mobile compose that same state. Keep API, source scope, history, errors and routing shared. Do not mount two request-owning page trees behind CSS visibility.
+
+Mobile prioritizes one continue-watching card, three visible discovery posters, collapsed source candidates, a compact detail introduction and history rows. Auxiliary metadata and notices are disclosed on demand. The watch page retains one player DOM instance across viewport changes; its shared playlist appears beside it on desktop and in a modal bottom sheet on mobile. Selecting an episode closes the sheet.
+
+usePublicLayout owns the 768px switch. SSR starts from the same desktop state as hydration; mobile switches after mount. Search loading timers start after mount so SSR output and hydration agree. New mobile composition styles live in mobile.css rather than accumulating desktop overrides.

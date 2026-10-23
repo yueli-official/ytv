@@ -29,7 +29,7 @@ export default defineNuxtConfig({
       sizeLimitKb: 256
     }
   },
-  css: ["~/assets/css/main.css"],
+  css: ["~/assets/css/main.css", "~/assets/css/mobile.css"],
   colorMode: { preference: "dark", fallback: "dark", storageKey: "ytv-color-mode" },
   vite: { resolve: { dedupe: ["vue", "vue-router"] } },
   app: {
