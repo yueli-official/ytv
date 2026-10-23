@@ -6,38 +6,42 @@ function titleLink(source: string, id: string) {
   return { path: `/title/${encodeURIComponent(source)}/${encodeURIComponent(id)}`, query: props.returnTo ? { from: props.returnTo } : {} };
 }
 
-function hideBrokenImage(event: Event) {
-  (event.currentTarget as HTMLImageElement).hidden = true;
+function sourceCount(group: SearchGroup) { return new Set(group.candidates.map(item => item.sourceKey)).size; }
+function candidateLabel(group: SearchGroup, index: number) {
+ const item = group.candidates[index]!;
+ const siblings = group.candidates.filter(candidate => candidate.sourceKey === item.sourceKey);
+ return siblings.length > 1 ? `${item.sourceName} · 条目 ${siblings.indexOf(item) + 1}` : item.sourceName;
+}
+const failedPosters = ref(new Set<string>());
+function posterFor(group: SearchGroup) {
+  return group.candidates.find(item => item.imageUrl && !failedPosters.value.has(item.imageUrl))?.imageUrl;
+}
+function failPoster(url: string) { failedPosters.value = new Set([...failedPosters.value, url]); }
+function summaryFor(group: SearchGroup) {
+  return group.candidates.map(item => item.summary?.trim()).find(value => value && value !== group.title && !['内详', '暂无', '暂无简介'].includes(value));
 }
 </script>
 
 <template>
-  <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-    <article v-for="group in groups" :key="group.key" class="ytv-result-card min-w-0 overflow-hidden">
-      <NuxtLink v-if="group.candidates[0]" :to="titleLink(group.candidates[0].sourceKey, group.candidates[0].externalId)" class="flex min-h-40 text-inherit no-underline focus-visible:outline-2 focus-visible:outline-inset focus-visible:outline-primary">
-        <div class="relative w-28 shrink-0 overflow-hidden bg-[#171d28]">
-          <UIcon name="i-tabler-photo-off" class="absolute left-1/2 top-1/2 size-7 -translate-x-1/2 -translate-y-1/2 text-white/15" />
-          <img v-if="group.candidates[0].imageUrl" :src="group.candidates[0].imageUrl" :alt="`${group.title} 海报`" class="absolute inset-0 size-full object-cover" loading="lazy" referrerpolicy="no-referrer" @error="hideBrokenImage">
-
-        </div>
-        <div class="flex min-w-0 flex-1 flex-col p-4">
-          <h2 class="line-clamp-2 text-base font-semibold leading-6 text-white">{{ group.title }}</h2>
-          <div class="mt-2 flex flex-wrap gap-1.5">
-            <span class="text-xs text-white/45">{{ [group.year, group.category].filter(Boolean).join(' · ') }}</span>
-          </div>
-          <div class="mt-auto space-y-1.5 pt-3 text-xs text-white/60">
-            <p class="flex items-center gap-1.5">
-              <UIcon name="i-tabler-clock" />
-              {{ group.candidates[0].remarks || (group.candidates[0].episodeCount === 1 ? '正片' : group.candidates[0].episodeCount > 1 ? `${group.candidates[0].episodeCount} 集` : "查看播放选项") }}
-            </p>
-            <p class="flex items-center gap-1.5"><UIcon name="i-tabler-server" />{{ group.candidates[0].sourceName }}</p>
-          </div>
-        </div>
+  <div class="grid gap-5">
+    <article v-for="group in groups" :key="group.key" class="ytv-result-card">
+      <NuxtLink v-if="group.candidates[0]" :to="titleLink(group.candidates[0].sourceKey, group.candidates[0].externalId)" :aria-label="`查看 ${group.title}`" class="ytv-result-poster">
+        <UIcon name="i-tabler-photo-off" class="absolute left-1/2 top-1/2 size-7 -translate-x-1/2 -translate-y-1/2 text-white/25" />
+        <img v-if="posterFor(group)" :key="posterFor(group)" :src="posterFor(group)" :alt="`${group.title} 海报`" class="absolute inset-0 size-full object-contain" loading="lazy" referrerpolicy="no-referrer" @error="failPoster(posterFor(group)!)">
       </NuxtLink>
-      <details v-if="group.candidates.length > 1" class="border-t border-white/10 px-3 py-2">
-        <summary class="cursor-pointer py-1 text-xs text-sky-300 focus-visible:outline-2 focus-visible:outline-sky-300">选择来源 · {{ group.candidates.length }} 个</summary>
-        <div class="mt-2 flex flex-wrap gap-2" aria-label="影片来源">
-          <UButton v-for="candidate in group.candidates" :key="`${candidate.sourceKey}:${candidate.externalId}`" :label="candidate.sourceName" :to="titleLink(candidate.sourceKey, candidate.externalId)" color="neutral" variant="soft" size="sm" class="max-w-full whitespace-normal text-start" />
+      <div v-if="group.candidates[0]" class="min-w-0 space-y-3">
+        <NuxtLink :to="titleLink(group.candidates[0].sourceKey, group.candidates[0].externalId)" class="text-white no-underline"><h2 class="ytv-result-title break-words text-sm font-semibold sm:text-lg leading-7">{{ group.title }}</h2></NuxtLink>
+        <p class="text-sm leading-6 text-white/70">{{ [group.year, group.category, `${sourceCount(group)} 个来源`].filter(Boolean).join(' · ') }}</p>
+        <p v-if="summaryFor(group)" class="hidden max-w-3xl text-sm leading-6 text-white/60 sm:line-clamp-2">{{ summaryFor(group) }}</p>
+      </div>
+      <details v-if="group.candidates.length" :open="group.candidates.length <= 3" :class="['ytv-result-sources', { 'ytv-result-sources-open': group.candidates.length <= 3 }]">
+        <summary class="mb-3 cursor-pointer text-sm text-primary">选择来源 · {{ sourceCount(group) }} 个</summary>
+        <div class="grid gap-2 xl:grid-cols-3" aria-label="影片来源">
+          <NuxtLink v-for="(candidate, candidateIndex) in group.candidates" :key="`${candidate.sourceKey}:${candidate.externalId}`" :aria-label="candidateLabel(group, candidateIndex)" :to="titleLink(candidate.sourceKey, candidate.externalId)" class="flex min-h-14 items-center gap-3 rounded-lg border border-white/10 bg-white/[0.02] px-3 py-2 text-inherit no-underline hover:border-primary/40 hover:bg-white/5">
+            <UIcon name="i-tabler-file-description" class="size-5 shrink-0 text-white/80" />
+            <span class="min-w-0 flex-1"><strong class="block break-words text-sm font-semibold sm:text-base">{{ candidateLabel(group, candidateIndex) }}</strong><span class="mt-1 block break-words text-xs sm:text-sm text-white/75">{{ candidate.remarks || (candidate.episodeCount === 1 ? '正片' : candidate.episodeCount > 1 ? `${candidate.episodeCount} 集` : '查看播放选项') }}</span></span>
+            <UIcon name="i-tabler-chevron-right" class="size-4 shrink-0 text-white/65" />
+          </NuxtLink>
         </div>
       </details>
     </article>

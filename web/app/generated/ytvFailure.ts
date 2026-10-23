@@ -15,6 +15,7 @@ export type YtvFailureCode =
   | "ytv.source_already_installed"
   | "ytv.source_not_installed"
   | "ytv.source_unavailable"
+  | "ytv.source_verification_required"
   | "ytv.unsupported_media_type"
 
 export type YtvFailure =
@@ -32,6 +33,7 @@ export type YtvFailure =
   | { readonly code: "ytv.source_already_installed"; readonly status: 409; readonly params?: never; readonly violations?: never; readonly traceId: string }
   | { readonly code: "ytv.source_not_installed"; readonly status: 409; readonly params?: never; readonly violations?: never; readonly traceId: string }
   | { readonly code: "ytv.source_unavailable"; readonly status: 503; readonly params?: never; readonly violations?: never; readonly traceId: string }
+  | { readonly code: "ytv.source_verification_required"; readonly status: 409; readonly params?: never; readonly violations?: never; readonly traceId: string }
   | { readonly code: "ytv.unsupported_media_type"; readonly status: 415; readonly params?: never; readonly violations?: never; readonly traceId: string }
 
 export const ytvFailurePresentation = {
@@ -49,5 +51,6 @@ export const ytvFailurePresentation = {
   "ytv.source_already_installed": { messageKey: "ytv.errors.source_already_installed" },
   "ytv.source_not_installed": { messageKey: "ytv.errors.source_not_installed" },
   "ytv.source_unavailable": { messageKey: "ytv.errors.source_unavailable" },
+  "ytv.source_verification_required": { messageKey: "ytv.errors.source_verification_required" },
   "ytv.unsupported_media_type": { messageKey: "ytv.errors.unsupported_media_type" },
 } as const satisfies Record<YtvFailureCode, { readonly messageKey: string; readonly recoveryKey?: string }>

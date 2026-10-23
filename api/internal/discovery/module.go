@@ -13,6 +13,7 @@ import (
 	"unicode/utf8"
 
 	"github.com/yueli-official/ytv/api/internal/source"
+	"github.com/yueli-official/ytv/api/internal/source/verification"
 )
 
 var (
@@ -44,17 +45,19 @@ type Group struct {
 type SourceOutcome string
 
 const (
-	OutcomeSuccess     SourceOutcome = "success"
-	OutcomeTimeout     SourceOutcome = "timeout"
-	OutcomeUnavailable SourceOutcome = "unavailable"
+	OutcomeSuccess      SourceOutcome = "success"
+	OutcomeTimeout      SourceOutcome = "timeout"
+	OutcomeUnavailable  SourceOutcome = "unavailable"
+	OutcomeVerification SourceOutcome = "verification_required"
 )
 
 type SourceResult struct {
-	Key       string
-	Name      string
-	Outcome   SourceOutcome
-	Duration  time.Duration
-	ItemCount int
+	Key              string
+	Name             string
+	Outcome          SourceOutcome
+	Duration         time.Duration
+	ItemCount        int
+	VerificationKind string
 }
 
 type Page struct {
@@ -157,18 +160,30 @@ func (module *Module) discover(ctx context.Context, query Query, search bool) (P
 
 	page := Page{Query: query, Attempted: len(definitions), Sources: make([]SourceResult, 0, len(definitions))}
 	grouped := make(map[string]*Group)
+	seenLocators := make(map[source.TitleLocator]bool)
+	verificationRequired := false
 	for range definitions {
 		result := <-results
 		outcome := OutcomeSuccess
+		verificationKind := ""
 		if result.err != nil {
 			page.Failed++
 			outcome = OutcomeUnavailable
-			if errors.Is(result.err, context.DeadlineExceeded) || errors.Is(result.err, context.Canceled) {
+			var required *verification.Required
+			if errors.As(result.err, &required) {
+				outcome = OutcomeVerification
+				verificationKind = string(required.Kind)
+				verificationRequired = true
+			} else if errors.Is(result.err, context.DeadlineExceeded) || errors.Is(result.err, context.Canceled) {
 				outcome = OutcomeTimeout
 			}
 		} else {
 			page.Succeeded++
 			for ordinal, title := range result.page.Items {
+				if seenLocators[title.Locator] {
+					continue
+				}
+				seenLocators[title.Locator] = true
 				key := displayGroupKey(title)
 				group := grouped[key]
 				if group == nil {
@@ -181,13 +196,15 @@ func (module *Module) discover(ctx context.Context, query Query, search bool) (P
 		page.Sources = append(page.Sources, SourceResult{
 			Key: result.definition.Key, Name: result.definition.Name, Outcome: outcome,
 			Duration: result.duration, ItemCount: len(result.page.Items),
+			VerificationKind: verificationKind,
 		})
 	}
 	page.Complete = page.Failed == 0
-	if page.Succeeded == 0 {
+	if page.Succeeded == 0 && !verificationRequired {
 		return page, ErrAllSourcesFailed
 	}
 
+	grouped = mergeIncompleteGroups(grouped)
 	for _, group := range grouped {
 		slices.SortFunc(group.Candidates, func(left, right Candidate) int {
 			if left.Priority != right.Priority {
@@ -236,4 +253,53 @@ func normalized(value string) string {
 		}
 	}
 	return builder.String()
+}
+
+// Missing metadata is compatible only when it identifies one unambiguous group.
+// Complete conflicting years/categories stay separate, regardless of arrival order.
+func mergeIncompleteGroups(groups map[string]*Group) map[string]*Group {
+	ordered := make([]*Group, 0, len(groups))
+	for _, g := range groups {
+		ordered = append(ordered, g)
+	}
+	specificity := func(g *Group) int {
+		n := 0
+		if normalized(g.Year) != "" {
+			n++
+		}
+		if normalized(g.Category) != "" {
+			n++
+		}
+		return n
+	}
+	slices.SortFunc(ordered, func(a, b *Group) int {
+		if d := specificity(b) - specificity(a); d != 0 {
+			return d
+		}
+		return strings.Compare(a.Key, b.Key)
+	})
+	result := make(map[string]*Group)
+	for _, g := range ordered {
+		var match *Group
+		matches := 0
+		for _, candidate := range result {
+			if normalized(candidate.Title) != normalized(g.Title) || specificity(candidate) <= specificity(g) {
+				continue
+			}
+			if y := normalized(g.Year); y != "" && y != normalized(candidate.Year) {
+				continue
+			}
+			if c := normalized(g.Category); c != "" && c != normalized(candidate.Category) {
+				continue
+			}
+			match = candidate
+			matches++
+		}
+		if matches == 1 {
+			match.Candidates = append(match.Candidates, g.Candidates...)
+		} else {
+			result[g.Key] = g
+		}
+	}
+	return result
 }

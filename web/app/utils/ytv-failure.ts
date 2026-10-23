@@ -8,6 +8,7 @@ const messages: Record<YtvFailureCode, string> = {
   "ytv.conflict": "内容状态已变化，请刷新后重试。",
   "ytv.invalid_input": "填写的信息不符合要求，请检查后重试。",
   "ytv.source_unavailable": "来源暂时不可用，请稍后重试或选择其他来源。",
+  "ytv.source_verification_required": "此来源要求完成验证，本站暂不能代为完成，请选择其他来源。",
   "ytv.playback_unsafe": "此来源返回的播放地址不受支持，请选择其他来源。",
   "ytv.revision_conflict": "设置已被更新，请刷新后再修改。",
   "ytv.source_already_installed": "该来源已添加，请刷新列表。",

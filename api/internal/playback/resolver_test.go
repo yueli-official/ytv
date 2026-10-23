@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/yueli-official/ytv/api/internal/source"
+	"github.com/yueli-official/ytv/api/internal/source/rulecatalog"
 )
 
 type fakeCatalog struct {
@@ -62,4 +63,27 @@ func TestWildcardDoesNotMatchBareRoot(t *testing.T) {
 	if hostMatches("media.example", "*.media.example") {
 		t.Fatal("wildcard unexpectedly matched bare root")
 	}
+}
+
+func Test7sefunReviewedMediaHostDoesNotAllowOtherHosts(t *testing.T) {
+	catalog, err := rulecatalog.LoadKazumiSnapshot("5fea5eb84768a2290ddedb156583ef20d9b43561")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, d := range catalog.Definitions {
+		if d.Key != "kazumi-7sefun" {
+			continue
+		}
+		for _, tc := range []struct {
+			url     string
+			allowed bool
+		}{{"https://v1.adkwai.com/bs2/adVideoLp/episode.mp4", true}, {"https://v2.adkwai.com/episode.mp4", false}, {"https://v1.adkwai.com.attacker.example/episode.mp4", false}, {"http://v1.adkwai.com/episode.mp4", false}} {
+			_, _, err := validateURL(tc.url, d)
+			if (err == nil) != tc.allowed {
+				t.Errorf("%s allowed=%v error=%v", tc.url, tc.allowed, err)
+			}
+		}
+		return
+	}
+	t.Fatal("missing 7sefun")
 }

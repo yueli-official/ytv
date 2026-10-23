@@ -59,6 +59,10 @@
       "messageKey": "ytv.errors.source_unavailable"
     },
     {
+      "code": "ytv.source_verification_required",
+      "messageKey": "ytv.errors.source_verification_required"
+    },
+    {
       "code": "ytv.unsupported_media_type",
       "messageKey": "ytv.errors.unsupported_media_type"
     }

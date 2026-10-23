@@ -22,6 +22,7 @@ export interface PlaybackMedia extends EventTarget {
 }
 export interface PlaybackMount { media: PlaybackMedia; destroy(): void }
 interface Options {
+ describeError?(cause: unknown): string;
   resolve(selection: PlaybackSelection): Promise<PlaybackManifest>;
   loadProgress?(selection: PlaybackSelection): Promise<LocalPlaybackProgress | undefined>;
   mount(manifest: PlaybackManifest): PlaybackMount;
@@ -121,8 +122,8 @@ export function createPlaybackSession(options: Options) {
       removeListeners = () => listeners.forEach(([name, handler]) => media.removeEventListener(name, handler));
       timer = setInterval(save, 10_000);
       state("loading", "正在载入影片");
-    } catch {
-      if (!disposed && request === generation) state("error", "没有取得可播放的地址，请重试或选择其他线路。");
+    } catch (cause) {
+      if (!disposed && request === generation) state("error", options.describeError?.(cause) || "没有取得可播放的地址，请重试或选择其他线路。");
     }
   }
   return {

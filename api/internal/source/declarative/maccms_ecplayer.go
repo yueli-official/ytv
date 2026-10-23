@@ -17,6 +17,7 @@ import (
 
 	"github.com/yueli-official/ytv/api/internal/source"
 	"github.com/yueli-official/ytv/api/internal/source/rules"
+	"github.com/yueli-official/ytv/api/internal/source/verification"
 )
 
 var (
@@ -133,6 +134,9 @@ func (adapter *Adapter) fetchText(ctx context.Context, target, approvedBase, ref
 		return "", fmt.Errorf("%w: special playback request failed: %v", source.ErrUnavailable, err)
 	}
 	defer response.Body.Close()
+	if requirement := (verification.Cloudflare{}).Detect(verification.Response{Header: response.Header}); requirement != nil {
+		return "", requirement
+	}
 	if response.StatusCode < 200 || response.StatusCode >= 300 {
 		return "", fmt.Errorf("%w: special playback upstream status %d", source.ErrUnavailable, response.StatusCode)
 	}

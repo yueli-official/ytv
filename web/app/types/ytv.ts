@@ -54,7 +54,7 @@ export interface DiscoveryResponse {
   query: string;
   page: number;
   groups: SearchGroup[];
-  sources: Array<{ key: string; name: string; outcome: "success" | "timeout" | "unavailable"; durationMs: number; itemCount: number }>;
+  sources: Array<{ key: string; name: string; outcome: "success" | "timeout" | "unavailable" | "verification_required"; verificationKind?: "image" | "browser"; durationMs: number; itemCount: number }>;
   attempted: number;
   succeeded: number;
   failed: number;

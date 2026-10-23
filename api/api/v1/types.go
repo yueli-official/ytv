@@ -63,11 +63,12 @@ type GetTrendingRes struct {
 }
 
 type SourceResultView struct {
-	Key        string `json:"key"`
-	Name       string `json:"name"`
-	Outcome    string `json:"outcome"`
-	DurationMS int64  `json:"durationMs"`
-	ItemCount  int    `json:"itemCount"`
+	Key              string `json:"key"`
+	Name             string `json:"name"`
+	Outcome          string `json:"outcome"`
+	VerificationKind string `json:"verificationKind,omitempty"`
+	DurationMS       int64  `json:"durationMs"`
+	ItemCount        int    `json:"itemCount"`
 }
 
 type GetPublicSourcesReq struct {

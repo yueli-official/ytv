@@ -9,39 +9,41 @@ import (
 )
 
 const (
-	CodeConflict               = "ytv.conflict"
-	CodeForbidden              = "ytv.forbidden"
-	CodeGatewayTimeout         = "ytv.gateway_timeout"
-	CodeGatewayUnavailable     = "ytv.gateway_unavailable"
-	CodeInvalidInput           = "ytv.invalid_input"
-	CodeMethodNotAllowed       = "ytv.method_not_allowed"
-	CodeNotAuthenticated       = "ytv.not_authenticated"
-	CodeNotFound               = "ytv.not_found"
-	CodePlaybackUnsafe         = "ytv.playback_unsafe"
-	CodeRequestBodyTooLarge    = "ytv.request_body_too_large"
-	CodeRevisionConflict       = "ytv.revision_conflict"
-	CodeSourceAlreadyInstalled = "ytv.source_already_installed"
-	CodeSourceNotInstalled     = "ytv.source_not_installed"
-	CodeSourceUnavailable      = "ytv.source_unavailable"
-	CodeUnsupportedMediaType   = "ytv.unsupported_media_type"
+	CodeConflict                   = "ytv.conflict"
+	CodeForbidden                  = "ytv.forbidden"
+	CodeGatewayTimeout             = "ytv.gateway_timeout"
+	CodeGatewayUnavailable         = "ytv.gateway_unavailable"
+	CodeInvalidInput               = "ytv.invalid_input"
+	CodeMethodNotAllowed           = "ytv.method_not_allowed"
+	CodeNotAuthenticated           = "ytv.not_authenticated"
+	CodeNotFound                   = "ytv.not_found"
+	CodePlaybackUnsafe             = "ytv.playback_unsafe"
+	CodeRequestBodyTooLarge        = "ytv.request_body_too_large"
+	CodeRevisionConflict           = "ytv.revision_conflict"
+	CodeSourceAlreadyInstalled     = "ytv.source_already_installed"
+	CodeSourceNotInstalled         = "ytv.source_not_installed"
+	CodeSourceUnavailable          = "ytv.source_unavailable"
+	CodeSourceVerificationRequired = "ytv.source_verification_required"
+	CodeUnsupportedMediaType       = "ytv.unsupported_media_type"
 )
 
 var descriptors = map[string]problem.Descriptor{
-	CodeConflict:               descriptor(CodeConflict, 409),
-	CodeForbidden:              descriptor(CodeForbidden, 403),
-	CodeGatewayTimeout:         descriptor(CodeGatewayTimeout, 504),
-	CodeGatewayUnavailable:     descriptor(CodeGatewayUnavailable, 502),
-	CodeInvalidInput:           descriptor(CodeInvalidInput, 400),
-	CodeMethodNotAllowed:       descriptor(CodeMethodNotAllowed, 405),
-	CodeNotAuthenticated:       descriptor(CodeNotAuthenticated, 401),
-	CodeNotFound:               descriptor(CodeNotFound, 404),
-	CodePlaybackUnsafe:         descriptor(CodePlaybackUnsafe, 409),
-	CodeRequestBodyTooLarge:    descriptor(CodeRequestBodyTooLarge, 413),
-	CodeRevisionConflict:       descriptor(CodeRevisionConflict, 409),
-	CodeSourceAlreadyInstalled: descriptor(CodeSourceAlreadyInstalled, 409),
-	CodeSourceNotInstalled:     descriptor(CodeSourceNotInstalled, 409),
-	CodeSourceUnavailable:      descriptor(CodeSourceUnavailable, 503),
-	CodeUnsupportedMediaType:   descriptor(CodeUnsupportedMediaType, 415),
+	CodeConflict:                   descriptor(CodeConflict, 409),
+	CodeForbidden:                  descriptor(CodeForbidden, 403),
+	CodeGatewayTimeout:             descriptor(CodeGatewayTimeout, 504),
+	CodeGatewayUnavailable:         descriptor(CodeGatewayUnavailable, 502),
+	CodeInvalidInput:               descriptor(CodeInvalidInput, 400),
+	CodeMethodNotAllowed:           descriptor(CodeMethodNotAllowed, 405),
+	CodeNotAuthenticated:           descriptor(CodeNotAuthenticated, 401),
+	CodeNotFound:                   descriptor(CodeNotFound, 404),
+	CodePlaybackUnsafe:             descriptor(CodePlaybackUnsafe, 409),
+	CodeRequestBodyTooLarge:        descriptor(CodeRequestBodyTooLarge, 413),
+	CodeRevisionConflict:           descriptor(CodeRevisionConflict, 409),
+	CodeSourceAlreadyInstalled:     descriptor(CodeSourceAlreadyInstalled, 409),
+	CodeSourceNotInstalled:         descriptor(CodeSourceNotInstalled, 409),
+	CodeSourceUnavailable:          descriptor(CodeSourceUnavailable, 503),
+	CodeSourceVerificationRequired: descriptor(CodeSourceVerificationRequired, 409),
+	CodeUnsupportedMediaType:       descriptor(CodeUnsupportedMediaType, 415),
 }
 
 func descriptor(code string, status int) problem.Descriptor {

@@ -18,6 +18,7 @@ import (
 	"github.com/yueli-official/ytv/api/internal/source"
 	"github.com/yueli-official/ytv/api/internal/source/browsercapture"
 	"github.com/yueli-official/ytv/api/internal/source/rules"
+	"github.com/yueli-official/ytv/api/internal/source/verification"
 	"golang.org/x/net/html"
 )
 
@@ -102,6 +103,7 @@ func (adapter *Adapter) ResolveTitle(ctx context.Context, definition source.Defi
 		return source.Title{}, fmt.Errorf("%w: episode XPath failed: %v", source.ErrUnavailable, err)
 	}
 	episodes := make([]source.Episode, 0, len(episodeNodes))
+	lineNames := make(map[string]string)
 	for _, item := range episodeNodes {
 		node := item.node
 		link := queryValue(node, ".")
@@ -116,12 +118,21 @@ func (adapter *Adapter) ResolveTitle(ctx context.Context, definition source.Defi
 		if label == "" {
 			label = "第 " + strconv.Itoa(len(episodes)+1) + " 集"
 		}
-		episodes = append(episodes, source.Episode{Key: encodeURL(episodeURL), Title: label, LineKey: item.lineKey, LineName: item.lineName})
+		if _, ok := lineNames[item.lineKey]; !ok {
+			lineNames[item.lineKey] = "线路 " + strconv.Itoa(len(lineNames)+1)
+		}
+		episodes = append(episodes, source.Episode{Key: encodeURL(episodeURL), Title: label, LineKey: item.lineKey, LineName: lineNames[item.lineKey]})
 	}
 	if len(episodes) == 0 {
 		return source.Title{}, fmt.Errorf("%w: no episodes matched", source.ErrUnavailable)
 	}
-	return source.Title{Locator: locator, SourceName: definition.Name, Name: definition.Name, EpisodeCount: source.EpisodeTotal(episodes), Episodes: episodes}, nil
+	name := definition.Name
+	if plan.Title.NameXPath != "" {
+		if extracted := queryValue(document, plan.Title.NameXPath); extracted != "" {
+			name = extracted
+		}
+	}
+	return source.Title{Locator: locator, SourceName: definition.Name, Name: name, EpisodeCount: source.EpisodeTotal(episodes), Episodes: episodes}, nil
 }
 
 func (adapter *Adapter) ResolveEpisode(ctx context.Context, definition source.Definition, locator source.EpisodeLocator) (source.Title, source.Episode, error) {
@@ -251,15 +262,23 @@ func (adapter *Adapter) fetch(ctx context.Context, definition source.Definition,
 		return nil, "", fmt.Errorf("%w: declarative request failed: %v", source.ErrUnavailable, err)
 	}
 	defer response.Body.Close()
-	if response.StatusCode < 200 || response.StatusCode >= 300 {
-		return nil, "", fmt.Errorf("%w: upstream status %d", source.ErrUnavailable, response.StatusCode)
-	}
 	if response.Request != nil && response.Request.URL != nil && !sameHost(definition.Endpoint, response.Request.URL.String()) {
 		return nil, "", fmt.Errorf("%w: redirect left deployment host", source.ErrInvalid)
 	}
+	if requirement := (verification.Cloudflare{}).Detect(verification.Response{Header: response.Header}); requirement != nil {
+		return nil, "", requirement
+	}
+	// Inspect bounded HTML even on non-2xx responses, before treating it as a
+	// status failure. A verified challenge must not become an empty result.
 	document, err := htmlquery.Parse(io.LimitReader(response.Body, maxResponseBytes+1))
 	if err != nil {
 		return nil, "", fmt.Errorf("%w: parse declarative response", source.ErrUnavailable)
+	}
+	if requirement := (verification.DOM{Kind: verification.Image, All: plan.VerificationXPath}).Detect(verification.Response{Document: document}); requirement != nil {
+		return nil, "", requirement
+	}
+	if response.StatusCode < 200 || response.StatusCode >= 300 {
+		return nil, "", fmt.Errorf("%w: upstream status %d", source.ErrUnavailable, response.StatusCode)
 	}
 	finalURL := target
 	if response.Request != nil && response.Request.URL != nil {

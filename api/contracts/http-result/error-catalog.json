@@ -106,6 +106,13 @@
       "status": 415,
       "messageKey": "ytv.errors.unsupported_media_type",
       "violations": "forbidden"
+    },
+    {
+      "code": "ytv.source_verification_required",
+      "goName": "SourceVerificationRequired",
+      "status": 409,
+      "messageKey": "ytv.errors.source_verification_required",
+      "violations": "forbidden"
     }
   ]
 }

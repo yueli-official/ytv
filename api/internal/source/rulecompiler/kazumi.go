@@ -88,9 +88,11 @@ func (Kazumi) Compile(document json.RawMessage) (Result, error) {
 		capabilities = append(capabilities, rules.CapabilityManifestRewrite)
 		diagnostics = append(diagnostics, Diagnostic{Severity: SeverityUnsupported, Code: "manifest_rewrite", Message: "规则要求改写媒体清单，违反 YTV 不代理或改写第三方视频流的产品合同。"})
 	}
-	if present(rule.AntiCrawlerConfig) {
-		capabilities = append(capabilities, rules.CapabilityArbitraryScript)
-		diagnostics = append(diagnostics, Diagnostic{Severity: SeverityUnsupported, Code: "arbitrary_script", Message: "规则包含可执行反爬脚本；必须改写为来源专用、部署审核的 Adapter。"})
+	if capability, diagnostic, err := verificationAdvice(rule.AntiCrawlerConfig); err != nil {
+		return Result{}, err
+	} else if capability != "" {
+		capabilities = append(capabilities, capability)
+		diagnostics = append(diagnostics, diagnostic)
 	}
 
 	return Result{Plan: rules.Plan{
@@ -99,10 +101,62 @@ func (Kazumi) Compile(document json.RawMessage) (Result, error) {
 		Search: rules.SearchPlan{Request: rules.RequestPlan{
 			Method: method, URL: strings.TrimSpace(rule.SearchURL), Referer: strings.TrimSpace(rule.Referer),
 		}, ListXPath: rule.SearchList, NameXPath: rule.SearchName, LinkXPath: rule.SearchResult},
-		Title:        rules.TitlePlan{RoadsXPath: rule.ChapterRoads, EpisodesXPath: rule.ChapterResult, MultipleRoads: rule.MultipleSources},
-		Playback:     rules.PlaybackPlan{UseWebview: rule.UseWebview, UseNativePlayer: rule.UseNativePlayer, UseLegacyParser: rule.UseLegacyParser, MediaXPath: strings.TrimSpace(rule.YTV.MediaXPath)},
-		Capabilities: capabilities,
+		Title:             rules.TitlePlan{RoadsXPath: rule.ChapterRoads, EpisodesXPath: rule.ChapterResult, MultipleRoads: rule.MultipleSources},
+		Playback:          rules.PlaybackPlan{UseWebview: rule.UseWebview, UseNativePlayer: rule.UseNativePlayer, UseLegacyParser: rule.UseLegacyParser, MediaXPath: strings.TrimSpace(rule.YTV.MediaXPath)},
+		Capabilities:      capabilities,
+		VerificationXPath: verificationSelectors(rule.AntiCrawlerConfig),
 	}, Diagnostics: diagnostics}, nil
+}
+
+func verificationSelectors(raw json.RawMessage) []string {
+	var config struct {
+		Enabled bool   `json:"enabled"`
+		Type    int    `json:"captchaType"`
+		Image   string `json:"captchaImage"`
+		Input   string `json:"captchaInput"`
+		Button  string `json:"captchaButton"`
+	}
+	if json.Unmarshal(raw, &config) != nil || !config.Enabled || (config.Type != 0 && config.Type != 1) {
+		return nil
+	}
+	if strings.TrimSpace(config.Image) == "" || strings.TrimSpace(config.Input) == "" || strings.TrimSpace(config.Button) == "" {
+		return nil
+	}
+	return []string{config.Image, config.Input, config.Button}
+}
+
+// Configuration describes a possible requirement, not a challenge observed in a request.
+// No supplied script is executed and enabled verification remains unsupported.
+func verificationAdvice(raw json.RawMessage) (rules.Capability, Diagnostic, error) {
+	if !present(raw) {
+		return "", Diagnostic{}, nil
+	}
+	var config struct {
+		Enabled      *bool  `json:"enabled"`
+		Type         int    `json:"captchaType"`
+		Script       string `json:"captchaScript"`
+		LegacyScript string `json:"script"`
+	}
+	if err := json.Unmarshal(raw, &config); err != nil {
+		return "", Diagnostic{}, fmt.Errorf("invalid antiCrawlerConfig: %w", err)
+	}
+	if config.Enabled != nil && !*config.Enabled {
+		return "", Diagnostic{}, nil
+	}
+	if strings.TrimSpace(config.LegacyScript) != "" || (config.Enabled != nil && *config.Enabled && config.Type == 3) {
+		return rules.CapabilityArbitraryScript, Diagnostic{Severity: SeverityUnsupported, Code: "arbitrary_script", Message: "规则启用了自定义验证脚本；当前服务端不执行来源脚本。"}, nil
+	}
+	if config.Enabled == nil {
+		return "", Diagnostic{}, nil
+	}
+	message := "规则启用了来源验证；当前网页端尚不支持完成此验证，请选择其他来源。"
+	if config.Type == 0 || config.Type == 1 {
+		message = "规则启用了图片验证码；当前网页端尚不支持提交验证码，请选择其他来源。"
+	}
+	if config.Type == 2 {
+		message = "规则启用了浏览器按钮验证；当前服务端不能复用用户浏览器的验证状态。"
+	}
+	return rules.CapabilityVerification, Diagnostic{Severity: SeverityUnsupported, Code: "interactive_verification", Message: message}, nil
 }
 
 type scalarInt int

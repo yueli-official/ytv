@@ -218,7 +218,8 @@
         "ytv.not_authenticated",
         "ytv.not_found",
         "ytv.playback_unsafe",
-        "ytv.source_unavailable"
+        "ytv.source_unavailable",
+        "ytv.source_verification_required"
       ]
     },
     {
@@ -306,7 +307,8 @@
         "ytv.invalid_input",
         "ytv.not_authenticated",
         "ytv.not_found",
-        "ytv.source_unavailable"
+        "ytv.source_unavailable",
+        "ytv.source_verification_required"
       ]
     },
     {

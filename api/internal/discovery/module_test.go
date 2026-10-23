@@ -3,6 +3,7 @@ package discovery
 import (
 	"context"
 	"errors"
+	"fmt"
 	"testing"
 	"time"
 
@@ -134,5 +135,42 @@ func TestBrowseUsesOnlySourcesVisibleOnHome(t *testing.T) {
 	page, err := module.Browse(context.Background(), 1)
 	if err != nil || page.Attempted != 1 || len(page.Sources) != 1 || page.Sources[0].Key != "home" {
 		t.Fatalf("home source page = %#v, %v", page, err)
+	}
+}
+
+func TestSearchGroupsMissingMetadataWithoutMergingAmbiguousTitles(t *testing.T) {
+	cases := []struct {
+		name   string
+		titles []source.Title
+		want   int
+	}{
+		{"missing Kazumi metadata", []source.Title{{Name: "线上游戏的老婆不可能是女生？", Year: "2016", Category: "日韩动漫"}, {Name: "线上游戏的老婆不可能是女生?"}}, 1},
+		{"different years", []source.Title{{Name: "同名", Year: "2016"}, {Name: "同名", Year: "2026"}, {Name: "同名"}}, 3},
+		{"different categories", []source.Title{{Name: "同名", Year: "2016", Category: "电影"}, {Name: "同名", Year: "2016", Category: "电视剧"}, {Name: "同名", Year: "2016"}}, 3},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			c := &fakeCatalog{definitions: []source.Definition{{Key: "a", Enabled: true}}, pages: map[string]source.Page{"a": {Items: tc.titles}}, errors: map[string]error{}}
+			for i := range c.pages["a"].Items {
+				c.pages["a"].Items[i].Locator = source.TitleLocator{SourceKey: "a", ExternalID: fmt.Sprint(i)}
+			}
+			m, _ := New(c, Options{})
+			p, err := m.Search(context.Background(), Query{Text: "test"})
+			if err != nil || len(p.Groups) != tc.want {
+				t.Fatalf("groups=%d want=%d err=%v", len(p.Groups), tc.want, err)
+			}
+		})
+	}
+}
+
+func TestSearchDeduplicatesOnlyIdenticalLocators(t *testing.T) {
+	a := source.Title{Locator: source.TitleLocator{SourceKey: "a", ExternalID: "one"}, Name: "同名"}
+	b := a
+	b.Locator.ExternalID = "two"
+	c := &fakeCatalog{definitions: []source.Definition{{Key: "a", Enabled: true}}, pages: map[string]source.Page{"a": {Items: []source.Title{a, a, b}}}, errors: map[string]error{}}
+	m, _ := New(c, Options{})
+	p, err := m.Search(context.Background(), Query{Text: "同名"})
+	if err != nil || len(p.Groups) != 1 || len(p.Groups[0].Candidates) != 2 {
+		t.Fatalf("groups=%#v err=%v", p.Groups, err)
 	}
 }

@@ -1,45 +1,38 @@
 # YTV interface design
 
-## Public cinema
+## Public cinema — approved 2026-10-23
 
-The public site is a dark movie discovery experience. Real film artwork is the visual focus; navigation, source diagnostics and supporting metadata remain secondary. Public routes lock dark appearance; the shared administration retains its light/dark controls.
+The five-page project adaptation is the current visual direction: charcoal blue neutrals, white text, pink primary actions, pale-blue selections and progress, and amber attributed scores. The public pages stay dark; Foundation owns account and administration appearance.
 
-### Visual language
+### Shared frame
 
-- Canvas `#0b0e14`, panels `#131821`, 8% white dividers and clear white text hierarchy.
-- Pale sky `#7dd3fc` is the sole interaction accent, with dark text for solid actions. Amber marks actual source scores.
-- A compact play-shaped sky mark accompanies the white YTV wordmark. Tabler is the only icon family.
-- The public frame caps at 1280px with 32px desktop and 16px mobile outer gutters. Heading, poster rows, detail and player share that axis.
-- Section titles are 17–19px; ordinary cards 12–14px. The selected featured film may use a larger title. Small text and disabled states must be checked on actual backgrounds.
-- Ordinary surfaces use subtle borders and 6–12px corners. Only featured artwork, title posters and video receive depth. Respect reduced motion.
+Use a compact horizontal YTV wordmark, discovery/search/history navigation, search, source settings and shared account control. Content uses a 92% desktop container capped at 1600px. Mobile navigation keeps search reachable and exposes history in the navigation drawer. Use Tabler icons, visible keyboard focus, real Nuxt UI controls and documented public slots. Public styles must not affect administration.
 
 ### Discovery
 
-The sequence is search introduction, compact featured film, optional Continue Watching, attributed Douban hot rail, then actual source updates.
+A full-bleed cinematic hero immediately below the header uses the real portrait intact, with a blurred copy behind its supplied title, attributed score and pink “查找片源” action. The three manual selectors have keyboard support and no autoplay. Large posters fall back to their original cover. No invented synopsis, availability or backdrop; a source-search action never promises playback.
 
-The featured film comes from the real trending response, with title, original poster and supplied score. Four manual buttons change the selection; no autoplay. The action searches the viewer's selected sources and does not promise availability. Wide screens include a three-entry hot shortlist. The shortlist is omitted on narrower screens because its entries remain in the main rail. Do not fabricate editorial descriptions, release dates or availability.
+Continue Watching uses three horizontal poster-and-progress cards on desktop. The attributed Douban rail retains upstream order, independent movie/TV filters and paging; featured items may also appear here so the rail remains the actual trending list. Source updates use one horizontal row of four visible cards with real source identity and their own paging. Empty history reserves no content row. Local search history opens beneath the focused header search input and closes on navigation.
 
-The search field and local search history belong to the homepage introduction. Search, hot and source update paging stay independent. Source preferences remain in the header drawer; low-priority provider badges do not compete with the posters. Partial results use compact local feedback with retry; complete errors remain explicit.
+### Search
 
-Both poster collections use the same 2:3 image ratio. The source grid is 3 columns on phones, then 4/5/6 at wider sizes; the hot rail uses corresponding card widths and horizontal navigation. Title and score sit below hot posters so the artwork remains readable. Do not use artificial visual assertions as design signoff: inspect screenshots at 375px and desktop, plus layout boundaries.
-
-### Search and history
-
-Search has a bounded form, clear query/result count, and a low-priority partial-source status. Results are horizontal portrait-and-facts cards in 1/2/3 columns. Preserve all alternate source links behind a keyboard-accessible disclosure and retain query, page and source scope on the journey to playback and back.
-
-Continue Watching stays a compact horizontal portrait rail. The history route preserves local/account progress recovery and real metadata enrichment. Empty and unavailable states retain a route back to discovery. Source selection preserves at least one source, and newly enabled definitions are selected by default.
+The shared header form tracks query and source scope. Results show current-page counts, never a fabricated total. Wide portrait-and-facts cards group matching candidates without merging title identity. Up to three candidate sources are initially expanded; longer lists use a keyboard disclosure. Candidate links go to details and preserve the original query, source scope and page. Partial source failure stays local and retryable.
 
 ### Detail and playback
 
-The title introduction groups the real poster, name, metadata, primary playback action and expandable synopsis in a restrained panel. Desktop uses a 200px poster; smaller screens use a compact poster beside facts, followed by synopsis. Keep long titles and primary actions legible on narrow screens.
+Details use an unboxed portrait-and-content composition over a full-width blurred backdrop, real metadata, primary start/resume action and expandable synopsis. A separate section identifies source and line, with stable 50-episode ranges. A lone line is text; multiple lines remain selectable. Films retain version/line semantics without series next-episode controls.
 
-The playback section is separate. Explicit film categories remain films even when a line contains multiple versions; explicit series categories remain series even with only one available episode. Unknown categories use the existing entry-count fallback. Films show versions and lines, without next-episode controls. Series preserve the complete playlist in stable 50-entry ranges.
+The watch page keeps a dominant 16:9 Video.js viewport beside a single-column episode list. Its title/actions and collapsed help span the full content width beneath both columns. Retain previous/next, wide mode, source recovery, gestures, keyboard controls and progress synchronization. A decoded paused frame stays visible; generated design images never substitute for media. Do not proxy or persist third-party video.
 
-The watch route keeps the 16:9 player primary, with a compact desktop sidebar and stacked mobile list. Video.js provides transport controls; temporary 2× hold and 10-second double-tap seek remain available, along with keyboard, progress, volume and rate preferences. Help and synopsis are expandable. Do not proxy or persist third-party video streams.
+### History
 
-### Interaction and ownership
+Deduplicate by source title locator, preserving the latest episode. Show portrait-and-text rows grouped by today/yesterday/earlier, source identity, time and an explicit continue action. The filter searches only the loaded recent records. Show progress bars only with known duration; otherwise show elapsed time. Account failure preserves local history. There is no unsupported deletion or remote full-history search.
 
-Use Foundation/Nuxt UI controls and their documented public slots. Product CSS is restricted to public layout/brand classes and must not override administration. Avoid private component DOM selectors, duplicated shared modules and important overrides. Buttons/links retain visible keyboard focus; carousels support both touch scrolling and desktop side controls.
+### Verification
+
+The user rejected the initial implementation fidelity. For this redesign, stabilize and review desktop pages before any further mobile design. Keep actions compact: desktop primary text is 16px, with 40–44px button height and content-based width. Large generated-reference typography is not a mandate to enlarge ordinary controls. Mobile visual acceptance remains deferred.
+
+Use the real Workspace composition and CLI Playwright for desktop/mobile rendering and interaction, including recovery and long-series behavior. Inspect actual screenshots personally for layout and legibility; automated assertions only verify their stated functional behavior. Respect reduced motion and keep source failure fallbacks legible.
 
 ### Administration
 

@@ -42,7 +42,7 @@ export default defineNuxtConfig({
       htmlAttrs: { lang: "zh-CN" },
       titleTemplate: "%s · YTV",
       meta: [
-        { name: "theme-color", content: "#070b10" },
+        { name: "theme-color", content: "#0d141b" },
         { property: "og:type", content: "website" },
         { name: "twitter:card", content: "summary_large_image" }
       ]

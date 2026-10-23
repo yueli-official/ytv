@@ -15,19 +15,21 @@ const (
 	CapabilityBrowserCapture  Capability = "browser_capture"
 	CapabilityLegacyIframe    Capability = "legacy_iframe"
 	CapabilityArbitraryScript Capability = "arbitrary_script"
+	CapabilityVerification    Capability = "interactive_verification"
 	CapabilityManifestRewrite Capability = "manifest_rewrite"
 )
 
 type Plan struct {
-	Format       string
-	FormatLevel  int
-	Name         string
-	BaseURL      string
-	UserAgent    string
-	Search       SearchPlan
-	Title        TitlePlan
-	Playback     PlaybackPlan
-	Capabilities []Capability
+	Format            string
+	FormatLevel       int
+	Name              string
+	BaseURL           string
+	UserAgent         string
+	Search            SearchPlan
+	Title             TitlePlan
+	Playback          PlaybackPlan
+	Capabilities      []Capability
+	VerificationXPath []string
 }
 
 type RequestPlan struct {
@@ -45,6 +47,7 @@ type SearchPlan struct {
 }
 
 type TitlePlan struct {
+	NameXPath     string
 	RoadsXPath    string
 	EpisodesXPath string
 	MultipleRoads bool

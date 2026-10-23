@@ -30,7 +30,7 @@ test("bootstrap administrator reaches the shared shell and real traffic", async 
 test("a public query appears in administrator search analytics", async ({ page }) => {
   const query = `霜线验收${Date.now()}`;
   await page.goto(`/search?q=${encodeURIComponent(query)}`, { waitUntil: "networkidle" });
-  await expect(page.getByText("没有找到可播放结果", { exact: true })).toBeVisible();
+  await expect(page.getByText("没有找到相关影片", { exact: true })).toBeVisible();
   await login(page);
   await page.goto("/manage");
   await expect(page.getByRole("heading", { name: "搜索洞察" })).toBeVisible();

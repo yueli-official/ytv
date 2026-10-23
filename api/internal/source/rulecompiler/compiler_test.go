@@ -88,3 +88,29 @@ func TestKazumiRejectsStructurallyInvalidRule(t *testing.T) {
 		t.Fatal("invalid rule unexpectedly compiled")
 	}
 }
+
+func TestVerificationAdviceDistinguishesDisabledCaptchaAndScripts(t *testing.T) {
+	for _, tc := range []struct{ raw, code string }{
+		{`null`, ""},
+		{`{"enabled":false,"captchaType":3,"captchaScript":"unused()"}`, ""},
+		{`{"captchaType":1}`, ""},
+		{`{"enabled":true,"captchaType":1}`, "interactive_verification"},
+		{`{"enabled":true,"captchaType":2}`, "interactive_verification"},
+		{`{"enabled":true,"captchaType":3,"captchaScript":"verify()"}`, "arbitrary_script"},
+		{`{"script":"legacy()"}`, "arbitrary_script"},
+		{`{"enabled":true,"captchaType":99}`, "interactive_verification"},
+	} {
+		t.Run(tc.raw, func(t *testing.T) {
+			_, diagnostic, err := verificationAdvice(json.RawMessage(tc.raw))
+			if err != nil || diagnostic.Code != tc.code {
+				t.Fatalf("diagnostic=%#v err=%v", diagnostic, err)
+			}
+			if tc.code != "" && diagnostic.Severity != SeverityUnsupported {
+				t.Fatal("verification must remain unsupported until implemented")
+			}
+		})
+	}
+	if _, _, err := verificationAdvice(json.RawMessage(`{"enabled":"yes"}`)); err == nil {
+		t.Fatal("invalid config accepted")
+	}
+}

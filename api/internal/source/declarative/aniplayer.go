@@ -12,6 +12,7 @@ import (
 
 	"github.com/yueli-official/ytv/api/internal/source"
 	"github.com/yueli-official/ytv/api/internal/source/rules"
+	"github.com/yueli-official/ytv/api/internal/source/verification"
 )
 
 var aniPlayerConfigPattern = regexp.MustCompile(`(?s)var\s+config\s*=\s*\{(.*?)\}`)
@@ -68,6 +69,9 @@ func (adapter *Adapter) extractAniPlayer(ctx context.Context, definition source.
 		return "", fmt.Errorf("%w: AniPlayer request failed: %v", source.ErrUnavailable, err)
 	}
 	defer response.Body.Close()
+	if requirement := (verification.Cloudflare{}).Detect(verification.Response{Header: response.Header}); requirement != nil {
+		return "", requirement
+	}
 	if response.StatusCode != http.StatusOK {
 		return "", fmt.Errorf("%w: AniPlayer status %d", source.ErrUnavailable, response.StatusCode)
 	}

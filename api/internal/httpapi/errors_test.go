@@ -9,6 +9,7 @@ import (
 	"github.com/yueli-official/ytv/api/internal/playback"
 	"github.com/yueli-official/ytv/api/internal/progress"
 	"github.com/yueli-official/ytv/api/internal/source"
+	"github.com/yueli-official/ytv/api/internal/source/verification"
 	"github.com/yueli-official/ytv/api/internal/sourcecontrol"
 )
 
@@ -19,6 +20,7 @@ func TestPublicErrorClassificationPreservesCauses(t *testing.T) {
 		status int
 	}{
 		{source.ErrUnavailable, apierr.CodeSourceUnavailable, 503},
+		{&verification.Required{Kind: verification.Image}, apierr.CodeSourceVerificationRequired, 409},
 		{playback.ErrUnsafeURL, apierr.CodePlaybackUnsafe, 409},
 		{sourcecontrol.ErrRevisionConflict, apierr.CodeRevisionConflict, 409},
 		{sourcecontrol.ErrAlreadyInstalled, apierr.CodeSourceAlreadyInstalled, 409},

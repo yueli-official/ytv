@@ -1203,6 +1203,10 @@
           "outcome": {
             "format": "string",
             "type": "string"
+          },
+          "verificationKind": {
+            "format": "string",
+            "type": "string"
           }
         },
         "type": "object"

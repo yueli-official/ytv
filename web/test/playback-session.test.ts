@@ -21,13 +21,23 @@ function setup(resolve = vi.fn(async () => manifest("first.mp4"))) {
   const onProgress = vi.fn();
   const destroy = vi.fn();
   const onStarted = vi.fn();
-  const options = { resolve, loadProgress: undefined as undefined | ((selection: PlaybackSelection) => Promise<LocalPlaybackProgress | undefined>), mount: vi.fn(() => { const value = new Media(); media.push(value); return { media: value, destroy }; }),
+  const options = { resolve, describeError: undefined as undefined | ((cause: unknown) => string), loadProgress: undefined as undefined | ((selection: PlaybackSelection) => Promise<LocalPlaybackProgress | undefined>), mount: vi.fn(() => { const value = new Media(); media.push(value); return { media: value, destroy }; }),
     storage: () => ({ getItem: (key: string) => storage.get(key) || null, setItem: (key: string, value: string) => { storage.set(key, value); } }),
     onState: (state: PlaybackSnapshot) => states.push(state), onProgress, onStarted, onEnded: vi.fn() };
   return { session: createPlaybackSession(options), options, media, states, storage, onProgress, destroy, onStarted };
 }
 afterEach(() => vi.useRealTimers());
 describe("YTV playback session", () => {
+  it("retains the application error presentation when resolution fails", async () => {
+    const cause = { code: "ytv.playback_unsafe" };
+    const value = setup(vi.fn().mockRejectedValue(cause));
+    value.options.describeError = vi.fn(() => "此来源返回的播放地址不受支持，请选择其他来源。");
+    await value.session.open(choice("film"));
+    expect(value.options.describeError).toHaveBeenCalledWith(cause);
+    expect(value.states.at(-1)?.message).toBe("此来源返回的播放地址不受支持，请选择其他来源。");
+    expect(value.options.mount).not.toHaveBeenCalled();
+    value.session.dispose();
+  });
   it("restores account progress on a fresh browser and keeps a newer local position", async () => {
     const value = setup();
     value.options.loadProgress = async () => ({ ...choice("film"), position: 120, duration: 600, updatedAt: 100, completed: false });

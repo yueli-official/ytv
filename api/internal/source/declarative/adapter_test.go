@@ -145,3 +145,22 @@ func TestAdapterPreservesSeparatePlaybackLines(t *testing.T) {
 		}
 	}
 }
+
+func TestTitleExtractsNameAndNumbersOnlyPlayableRoads(t *testing.T) {
+	server := httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, `<div class="video-p-name">番剧名称<span>热度</span></div><ul></ul><ul><li><a href="/one">第01集</a></li></ul><ul><li><a href="https://other.example/page">无效</a></li></ul><ul><li><a href="/two">第01集</a></li></ul>`)
+	}))
+	defer server.Close()
+	a, _ := New(server.Client())
+	d := source.Definition{Key: "anime", Name: "Source", Endpoint: server.URL, Rule: &rules.Plan{BaseURL: server.URL, Title: rules.TitlePlan{NameXPath: "//div[@class='video-p-name']/text()[1]", RoadsXPath: "//ul", EpisodesXPath: "//li/a", MultipleRoads: true}}}
+	title, err := a.ResolveTitle(context.Background(), d, source.TitleLocator{SourceKey: "anime", ExternalID: encodeURL(server.URL + "/title")})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if title.Name != "番剧名称" || len(title.Episodes) != 2 || title.Episodes[0].LineName != "线路 1" || title.Episodes[1].LineName != "线路 2" {
+		t.Fatalf("title=%#v", title)
+	}
+	if title.Episodes[0].Key != encodeURL(server.URL+"/one") || title.Episodes[1].Key != encodeURL(server.URL+"/two") {
+		t.Fatal("episode identity changed")
+	}
+}

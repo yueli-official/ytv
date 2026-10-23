@@ -21,6 +21,7 @@ import (
 	"github.com/yueli-official/ytv/api/internal/searchanalytics"
 	"github.com/yueli-official/ytv/api/internal/siteprofile"
 	"github.com/yueli-official/ytv/api/internal/source"
+	"github.com/yueli-official/ytv/api/internal/source/verification"
 	"github.com/yueli-official/ytv/api/internal/sourcecontrol"
 	"github.com/yueli-official/ytv/api/internal/sourcepreference"
 	"github.com/yueli-official/ytv/api/internal/trending"
@@ -87,6 +88,7 @@ func (controller *Public) Search(ctx context.Context, request *v1.SearchReq) (*v
 		response.Sources = append(response.Sources, v1.SourceResultView{
 			Key: result.Key, Name: result.Name, Outcome: string(result.Outcome),
 			DurationMS: result.Duration.Milliseconds(), ItemCount: result.ItemCount,
+			VerificationKind: result.VerificationKind,
 		})
 	}
 	for _, group := range page.Groups {
@@ -123,6 +125,7 @@ func (controller *Public) Discover(ctx context.Context, request *v1.DiscoverReq)
 		response.Sources = append(response.Sources, v1.SourceResultView{
 			Key: result.Key, Name: result.Name, Outcome: string(result.Outcome),
 			DurationMS: result.Duration.Milliseconds(), ItemCount: result.ItemCount,
+			VerificationKind: result.VerificationKind,
 		})
 	}
 	for _, group := range page.Groups {
@@ -618,6 +621,8 @@ func mapError(err error) error {
 		return apierr.Wrap(apierr.CodeInvalidInput, err)
 	case errors.Is(err, source.ErrNotFound), errors.Is(err, playback.ErrEpisodeNotFound):
 		return apierr.Wrap(apierr.CodeNotFound, err)
+	case errors.Is(err, verification.ErrRequired):
+		return apierr.Wrap(apierr.CodeSourceVerificationRequired, err)
 	case errors.Is(err, source.ErrUnavailable), errors.Is(err, discovery.ErrAllSourcesFailed):
 		return apierr.Wrap(apierr.CodeSourceUnavailable, err)
 	case errors.Is(err, playback.ErrUnsafeURL):

@@ -16,6 +16,6 @@ const { sources, selected, ready, saving, loggedIn, toggle, selectAll } = useVie
     </div>
     <div v-else class="space-y-3"><USkeleton v-for="item in 5" :key="item" class="h-14 rounded-xl bg-white/10" /></div>
     <p v-if="selected.length === 1" class="text-xs text-white/50">至少保留一个来源。</p>
-    <p v-if="saving" class="text-xs text-sky-300" role="status">正在保存…</p>
+    <p v-if="saving" class="text-xs text-[var(--ui-primary)]" role="status">正在保存…</p>
   </div>
 </template>

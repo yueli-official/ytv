@@ -73,38 +73,15 @@ resolved episode and a recoverable playback session, while YTV itself does not h
 
 ## Brand Commitments
 
-- The product name is `YTV`.
-- The public signature is a white `YTV` wordmark with one small sky/cyan dot. Purple, violet, fuchsia and decorative gradients are
-  not part of the public palette. Sky/cyan is the single interaction signal over a near-black and cold-blue neutral ladder.
-- Public browse, search, title, history and playback surfaces are dark-locked like the legacy YTV portal. Account and
-  administration surfaces may still honor their shared appearance controls; the viewing stage always remains dark.
-- The experience is direct and task-led: finding, choosing, watching and recovering take priority over marketing claims or a
-  decorative portal homepage.
-- The public visual world follows the user-approved legacy YTV evidence: compact dark panels, portrait-poster density, six columns
-  on desktop, two columns on mobile and compact horizontal search-result cards. It must feel like a working film portal, not a
-  cinematic marketing landing page.
-- The homepage separates four tasks: multi-source search with local history; a compact horizontal Continue Watching rail that
-  resolves real source posters; an attributed Douban 2:3 poster rail with independent filters and paging; and an admin-selected
-  real-source poster grid whose own header contains “换一批资源”. Viewer source selection lives only in the navigation settings
-  drawer rather than repeating below search. No control changes
-  two modules at once.
-- Continue Watching and Douban use hidden-scrollbar carousel rails with previous/next controls vertically centered at the two
-  sides; touch and trackpad scrolling remain available without browser-native scrollbar chrome.
-- Search form, source controls, result summary, result grid and paging share the same 90rem content axis. The logo is the home
-  action, so public navigation does not duplicate it with a “浏览” link.
-- Playback history de-duplicates records by Source Title Locator, keeps the most recent episode, resolves its real source poster
-  after mount, and presents the same 2→3→4→5→6 poster-grid grammar as the homepage instead of dashboard-style action cards.
-- A title page separates the poster and factual summary from an independent episode section. Long series use stable 50-episode
-  ranges. Playback keeps the video dominant beside a 20–22rem one-line episode playlist on desktop and stacks the same single-column
-  list below on mobile. Ready, paused and ended states expose an app-owned central play/replay button; complete episode navigation,
-  previous/next and recovery remain on the watch route with at least 44px targets.
-- On 2026-08-30 the user explicitly rejected the large cinematic Hero/Comp C implementation as worse than the legacy portal; that
-  decision supersedes the earlier Netflix-like composition. The later all-purple correction was also rejected and replaced with
-  the current cold-blue portal direction.
-- Familiar film-portal information architecture is a category convention, not permission to copy another site's branding,
-  proprietary artwork or distinctive implementation.
-- Typography uses an assured workhorse sans appropriate for Chinese media UI. Exact font files, color values and Logo treatment
-  are recorded from the shipped implementation.
+- The product name is `YTV`, with a white wordmark and compact horizontal navigation.
+- The user approved a new five-page cinematic direction on 2026-10-23 and explicitly authorized implementation. This supersedes the earlier portal, champagne and mint-gallery visual attempts. Current visual rules live in `DESIGN.md`.
+- Public browse, search, detail, history and playback remain dark. Pink identifies primary actions; pale blue identifies selections and progress; amber is reserved for actual attributed scores. Shared account and administration retain their own appearance controls.
+- Real external artwork and factual metadata lead the design. A blurred copy of a supplied portrait may create depth, but no fictional backdrop, cast, availability, ratings or recommendations are invented.
+- Homepage sections separate featured discovery, optional Continue Watching, attributed Douban trending and actual source updates. Trending and source paging remain independent. Source preferences live in the header drawer.
+- Search groups preserve every candidate source and the return query/page/scope. Source title locators remain authoritative even for matching names.
+- History uses chronological rows, real poster enrichment and explicit continue actions. Filtering applies only to loaded records. Unknown duration never produces a misleading percentage.
+- Detail separates playback actions and synopsis from episodes. Long series use stable 50-entry ranges. Playback uses a dominant 16:9 viewport and a single-column playlist, with visible controls and at least 44px episode targets.
+- Use Foundation/Nuxt UI controls, Tabler icons, accessible focus and motion preferences. Familiar category conventions do not authorize copying third-party branding or implementation.
 
 ## Evidence on Hand
 

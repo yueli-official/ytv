@@ -7,7 +7,8 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, statusMessage: "Poster not found" });
   }
 
-  const response = await fetch(`https://img1.doubanio.com/view/photo/s_ratio_poster/public/${photo}`, {
+  const size = getQuery(event).size === "feature" ? "l" : "s_ratio_poster";
+  const response = await fetch(`https://img1.doubanio.com/view/photo/${size}/public/${photo}`, {
     headers: {
       accept: "image/avif,image/webp,image/jpeg,image/*;q=0.8",
       referer: "https://movie.douban.com/",

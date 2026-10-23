@@ -36,7 +36,7 @@ test("local history stays usable when account history is unavailable", async ({ 
   await page.getByRole("link", { name: "播放历史", exact: true }).last().click();
   await expect(page.getByText("账号历史暂时不可用", { exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "环海之门" })).toBeVisible();
-  await expect(page.locator('[data-history-poster-grid] a[href="/watch/fixture/ring-sea/0"]')).toBeVisible();
+  await expect(page.locator('[data-history-records] a[href="/watch/fixture/ring-sea/0"]').first()).toBeVisible();
   await page.screenshot({ path: info.outputPath("history-fallback.png"), fullPage: true, animations: "disabled" });
 });
 

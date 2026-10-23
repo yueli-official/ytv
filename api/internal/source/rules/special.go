@@ -7,10 +7,18 @@ func ApplySpecialPlayback(plan *Plan) {
 		return
 	}
 	switch plan.Name {
+	case "mutefun":
+		// Observed 2026-10-23: HTTP 200 MacCMS search verification page.
+		plan.VerificationXPath = []string{
+			"//title[normalize-space(.)='系统安全验证']",
+			"//input[@name='verify' and contains(concat(' ', normalize-space(@class), ' '), ' mac_verify ')]",
+			"//input[contains(concat(' ', normalize-space(@class), ' '), ' verify_submit ')]",
+		}
 	case "7sefun":
 		plan.Playback.Extractor = "maccms_ecplayer"
 		plan.Playback.ParserURL = "https://dp.no3acg.com/player/ec.php?code=qw&if=1"
-		plan.Playback.PlaybackHosts = []string{"*.svp.tencent-cloud.com"}
+		plan.Playback.PlaybackHosts = []string{"*.svp.tencent-cloud.com", "v1.adkwai.com"}
+		plan.Title.NameXPath = "//div[@class='video-p-name']/text()[1]"
 	case "aafun":
 		plan.Title = TitlePlan{
 			RoadsXPath:    "//div[contains(@class, 'hl-play-source')]//ul[contains(@class, 'hl-plays-list')]",
