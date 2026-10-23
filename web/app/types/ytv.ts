@@ -99,6 +99,7 @@ export interface SearchAnalyticsOverview {
 }
 
 export interface AdminSource {
+  recommended: boolean;
   key: string;
   name: string;
   kind: string;
@@ -119,6 +120,7 @@ export interface SourceCompatibilityNotice {
 }
 
 export interface AvailableSource {
+  recommended: boolean;
   key: string;
   name: string;
   kind: string;
@@ -128,7 +130,12 @@ export interface AvailableSource {
   compatibility: SourceCompatibilityNotice[];
 }
 
+export interface SourceReviewSummary { total: number; adsFew: number; adsMany: number; hd: number; normal: number; blurry: number; }
+export interface SourceReview { ads: string; quality: string; updatedAt: string; }
+
 export interface PublicSource {
+  reviews: SourceReviewSummary;
+  recommended: boolean;
   key: string;
   name: string;
 }

@@ -65,7 +65,7 @@ func TestWildcardDoesNotMatchBareRoot(t *testing.T) {
 	}
 }
 
-func Test7sefunReviewedMediaHostDoesNotAllowOtherHosts(t *testing.T) {
+func TestApprovedParserAcceptsChangingCDNWithoutHostRegistration(t *testing.T) {
 	catalog, err := rulecatalog.LoadKazumiSnapshot("5fea5eb84768a2290ddedb156583ef20d9b43561")
 	if err != nil {
 		t.Fatal(err)
@@ -77,7 +77,16 @@ func Test7sefunReviewedMediaHostDoesNotAllowOtherHosts(t *testing.T) {
 		for _, tc := range []struct {
 			url     string
 			allowed bool
-		}{{"https://v1.adkwai.com/bs2/adVideoLp/episode.mp4", true}, {"https://v2.adkwai.com/episode.mp4", false}, {"https://v1.adkwai.com.attacker.example/episode.mp4", false}, {"http://v1.adkwai.com/episode.mp4", false}} {
+		}{
+			{"https://v1.adkwai.com/bs2/adVideoLp/episode.mp4", true},
+			{"https://v26-cha.bdxiguavod.com/video/tos/episode/?signed=value", true},
+			{"https://new-cdn.example/episode.m3u8", true},
+			{"http://new-cdn.example/episode.mp4", true},
+			{"javascript:alert(1)", false},
+			{"file:///episode.mp4", false},
+			{"https://127.0.0.1/episode.mp4", false},
+			{"https://user:password@cdn.example/episode.mp4", false},
+		} {
 			_, _, err := validateURL(tc.url, d)
 			if (err == nil) != tc.allowed {
 				t.Errorf("%s allowed=%v error=%v", tc.url, tc.allowed, err)

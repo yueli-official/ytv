@@ -169,11 +169,12 @@ func compileKazumiRule(compiler *rulecompiler.Compiler, entry indexEntry, docume
 	}
 	notices = append(notices, source.CompatibilityNotice{
 		Level: "notice", Code: "catalog_snapshot",
-		Message: "来自部署固定的 Kazumi 规则快照；搜索和选集可直接尝试，跨域媒体地址需补充播放域名后才能播放。",
+		Message: "来自部署固定的 Kazumi 规则快照，播放地址由已接入的解析器获取。",
 	})
 	return compiledEntry{definition: source.Definition{
 		Key: "kazumi-" + strings.ToLower(name), Name: first(compiled.Plan.Name, name), Kind: source.KindDeclarative,
 		Catalog: kazumiCatalog, CatalogVersion: strings.TrimSpace(entry.Version), Endpoint: compiled.Plan.BaseURL,
+		TrustPlaybackURL: true, AllowHTTP: true,
 		PlaybackHosts: append([]string{strings.ToLower(endpoint.Hostname())}, compiled.Plan.Playback.PlaybackHosts...), InitiallyUninstalled: true,
 		Enabled: false, HomeVisible: false, Priority: 2000 + order, Rule: &compiled.Plan, Compatibility: notices,
 	}}

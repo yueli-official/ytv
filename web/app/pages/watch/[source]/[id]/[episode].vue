@@ -2,6 +2,8 @@
 import Playlist from "~/components/public/shared/Playlist.vue";
 const {mobile}=usePublicLayout();
 const episodesOpen=ref(false);
+const player = ref<{ enterFullscreen: () => Promise<void> } | null>(null);
+function enterFullscreen() { void player.value?.enterFullscreen(); }
 definePageMeta({ colorMode: "dark" });
 import { ytvFailureMessage } from "~/utils/ytv-failure";
 import { createBrowserUUID } from "@yueli/nuxt-runtime/runtime";
@@ -23,6 +25,8 @@ const { data, pending, error, refresh } = await useAsyncData(
   () => `ytv-watch-title-${sourceKey.value}-${externalId.value}`,
   () => api.title(sourceKey.value, externalId.value)
 );
+const { data: sourceMetadata } = useAsyncData("ytv-public-sources", () => api.publicSources());
+const currentSource = computed(() => sourceMetadata.value?.sources.find(source => source.key === sourceKey.value));
 const lines = computed(() => titleLines(data.value));
 const currentLine = computed(() => lines.value.find((line) => line.episodes.some((item) => item.key === episodeKey.value)) || lines.value[0]);
 const episodes = computed(() => currentLine.value?.episodes || []);
@@ -58,6 +62,8 @@ async function syncProgress(record: LocalPlaybackProgress) {
   await api.saveProgress(record.sourceKey, record.externalId, record.episodeKey, { titleName: record.titleName, episodeTitle: record.episodeTitle,
     positionSeconds: record.position, durationSeconds: record.duration, completed: record.completed, updatedAt: new Date(record.updatedAt).toISOString() }).catch(() => undefined);
 }
+// Third-party media is fetched directly; do not send our page URL to its CDN.
+useHead({ meta: [{ name: "referrer", content: "no-referrer" }] });
 useSeoMeta({ title: () => data.value ? `${data.value.title.name} · ${currentEpisodeTitle.value}` : "播放" });
 </script>
 
@@ -69,7 +75,7 @@ useSeoMeta({ title: () => data.value ? `${data.value.title.name} · ${currentEpi
       <UAlert v-else-if="error" color="error" title="影片暂时无法打开" :description="ytvFailureMessage(error, '请重试或返回搜索选择其他来源。')"><template #actions><UButton label="重试" @click="() => refresh()" /></template></UAlert>
       <div v-else-if="data" class="ytv-watch-grid" :class="{ wide: theatre }">
         <section class="ytv-watch-player relative aspect-video overflow-hidden rounded-xl border border-white/10 bg-black shadow-2xl" aria-label="播放器区域">
-          <YtvPlayer v-if="currentEpisode" :source-key="sourceKey" :external-id="externalId" :episode-key="episodeKey" :title="data.title.name" :episode-label="currentEpisodeTitle" :poster="data.title.imageUrl" @started="recordPlaybackStart" @progress="syncProgress">
+          <YtvPlayer v-if="currentEpisode" ref="player" :source-key="sourceKey" :external-id="externalId" :episode-key="episodeKey" :title="data.title.name" :episode-label="currentEpisodeTitle" :poster="data.title.imageUrl" @started="recordPlaybackStart" @progress="syncProgress">
             <template #recovery>
               <UButton v-if="alternateEpisode" :to="playbackLink(alternateEpisode.key)" label="换条线路" icon="i-tabler-switch-horizontal" color="neutral" variant="outline" />
               <UButton :to="{ path: '/search', query: { q: data.title.name } }" label="换个来源" icon="i-tabler-search" color="neutral" variant="outline" />
@@ -80,17 +86,26 @@ useSeoMeta({ title: () => data.value ? `${data.value.title.name} · ${currentEpi
         <Playlist v-if="!mobile && !theatre" v-model:line="selectedLine" v-model:range="rangeStart" :title="data.title" :movie="movie" :episodes="visibleEpisodes" :total="episodes.length" :line-options="lineOptions" :line-name="currentLine?.name" :ranges="ranges" :episode-key="episodeKey" :playback-link="playbackLink"/>
         <div class="ytv-watch-meta">
           <div class="min-w-0 space-y-3"><h1>{{ data.title.name }}<span class="ml-3 text-base font-normal text-white/75">{{ currentEpisodeTitle }}</span></h1><div class="flex flex-wrap gap-x-5 gap-y-2 text-sm text-white/70"><p>{{ [data.title.year, data.title.category, data.title.language].filter(Boolean).join(' · ') }}</p><NuxtLink :to="titleLink" class="text-inherit no-underline hover:text-white">影片详情</NuxtLink><NuxtLink v-if="contextQuery.from" :to="contextQuery.from" class="text-inherit no-underline hover:text-white">返回搜索结果</NuxtLink></div></div>
-          <div class="flex flex-wrap gap-3">
+          <div v-if="!mobile" class="flex flex-wrap gap-3">
             <UButton v-if="previousEpisode && !mobile" label="上一集" icon="i-tabler-player-skip-back" :to="playbackLink(previousEpisode.key)" color="neutral" variant="ghost" class="ytv-secondary" />
             <UButton v-if="nextEpisode" label="下一集" trailing-icon="i-tabler-player-skip-forward" :to="playbackLink(nextEpisode.key)" color="neutral" class="ytv-primary" />
             <UButton :label="theatre ? '退出宽屏' : '宽屏'" icon="i-tabler-layout-bottombar-collapse" color="neutral" variant="ghost" class="ytv-secondary hidden lg:inline-flex" :aria-pressed="theatre" @click="toggleTheatre" />
           </div>
         </div>
-        <div v-if="mobile" class="mobile-watch-actions"><UButton label="选集" icon="i-tabler-list" color="neutral" variant="outline" size="sm" @click="() => { episodesOpen=true; }"/><UButton :to="{path:'/search',query:{q:data.title.name}}" label="换源" icon="i-tabler-switch-horizontal" color="neutral" variant="outline" size="sm"/></div>
+        <div v-if="mobile" class="mobile-watch-actions">
+          <UButton label="全屏观看" icon="i-tabler-maximize" color="neutral" variant="outline" size="sm" @click="enterFullscreen" />
+          <UButton v-if="nextEpisode" label="下一集" icon="i-tabler-player-skip-forward" :to="playbackLink(nextEpisode.key)" color="neutral" variant="outline" size="sm" />
+          <UButton label="选集" icon="i-tabler-list" color="neutral" variant="outline" size="sm" @click="() => { episodesOpen=true; }"/>
+          <UButton :to="{path:'/search',query:{q:data.title.name}}" label="换源" icon="i-tabler-switch-horizontal" color="neutral" variant="outline" size="sm"/>
+        </div>
         <USlideover v-if="mobile" v-model:open="episodesOpen" side="bottom" title="选集" description="选择播放线路与集数" :ui="{content:'bg-[#141e28] text-white max-h-[80dvh]',body:'p-4'}"><template #body><Playlist compact v-model:line="selectedLine" v-model:range="rangeStart" :title="data.title" :movie="movie" :episodes="visibleEpisodes" :total="episodes.length" :line-options="lineOptions" :line-name="currentLine?.name" :ranges="ranges" :episode-key="episodeKey" :playback-link="playbackLink"/></template></USlideover>
         <div class="ytv-watch-help space-y-4">
+          <section aria-label="当前来源评价" class="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-white/10 px-4 py-3">
+            <div class="min-w-0"><p class="break-words text-sm text-white/75">当前来源 · {{ data.title.sourceName }}</p><SourceBadges :recommended="currentSource?.recommended" :reviews="currentSource?.reviews" /></div>
+            <SourceReviewControl :key="sourceKey" :source-key="sourceKey" :source-name="data.title.sourceName" :total="currentSource?.reviews?.total" />
+          </section>
           <div v-if="theatre" class="flex flex-wrap items-center gap-3 rounded-xl border border-white/10 p-4"><span class="text-white/70">线路</span><USelect v-if="lines.length > 1" v-model="selectedLine" :items="lineOptions" aria-label="播放线路" class="w-44" /><span v-else class="text-white/70">{{ currentLine?.name }}</span><UButton v-if="!movie" label="展开选集" color="neutral" variant="ghost" @click="showEpisodes" /></div>
-          <details class="ytv-fold"><summary>播放操作</summary><p class="mt-3 leading-8 text-white/70">播放时按住画面可临时 2 倍速，松开恢复原倍速。双击画面左侧快退 10 秒，右侧快进 10 秒；也可拖动进度条。电脑上先点击播放器，再用 ← / → 跳转，空格播放或暂停，F 全屏。倍速、字幕和音轨可在播放器设置中选择，具体选项取决于片源。</p></details>
+          <details class="ytv-fold"><summary>播放操作</summary><p v-if="mobile" class="mt-3 text-white/70">点“全屏观看”放大画面，支持的设备会自动横屏；未旋转时请横放手机。轻点画面显示控件，双击中央切换全屏。</p><p class="mt-3 leading-8 text-white/70">播放时按住画面可临时 2 倍速，松开恢复原倍速。双击画面左侧快退 10 秒，右侧快进 10 秒；也可拖动进度条。电脑上先点击播放器，再用 ← / → 跳转，空格播放或暂停，F 全屏。倍速、字幕和音轨可在播放器设置中选择，具体选项取决于片源。</p></details>
           <details class="ytv-fold"><summary>剧情简介</summary><p class="mt-3 max-w-5xl leading-8 text-white/70">{{ data.title.summary || '当前来源暂未提供简介。' }}</p></details>
         </div>
       </div>
@@ -99,7 +114,7 @@ useSeoMeta({ title: () => data.value ? `${data.value.title.name} · ${currentEpi
 </template>
 
 <style scoped>
-@media(max-width:767px){
+@media(max-width:767px), (pointer:coarse) and (max-height:767px) and (max-width:1024px){
 .ytv-watch>.ytv-container{width:100%;padding:12px 0 24px}
 .ytv-watch>.ytv-container>button,.ytv-watch>.ytv-container>a{margin-left:12px}
 .ytv-watch-grid,.ytv-watch-grid.wide{display:flex;flex-direction:column;gap:16px}
@@ -109,11 +124,16 @@ useSeoMeta({ title: () => data.value ? `${data.value.title.name} · ${currentEpi
 .ytv-watch-meta h1>span{display:block;font-size:12px;margin:4px 0 0}
 .ytv-watch-meta>div:first-child>div{display:none}
 .ytv-watch-meta>div:last-child{flex-shrink:0}
-.mobile-watch-actions{display:flex;gap:10px;padding:0 16px}
+.mobile-watch-actions{display:flex;flex-wrap:wrap;gap:8px;padding:0 16px}
+.mobile-watch-actions :is(button,a){min-height:36px;padding:8px;font-size:12px}
 .ytv-watch-help{padding:0 16px;width:100%}
 .ytv-watch-meta,.mobile-watch-actions{width:100%}
 .ytv-fold{padding:12px;font-size:13px}
 .ytv-fold summary{font-size:13px}
 .ytv-fold p{font-size:13px;line-height:1.8}
+}
+@media (pointer:coarse) and (orientation:landscape) and (max-height:767px) and (max-width:1024px) {
+  .ytv-watch-player { aspect-ratio:auto; height:calc(100dvh - 56px); min-height:180px; }
+  .ytv-watch-meta h1 { font-size:16px; }
 }
 </style>

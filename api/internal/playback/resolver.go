@@ -117,9 +117,9 @@ func validateURL(raw string, definition source.Definition) (*url.URL, Engine, er
 			return nil, "", ErrUnsafeURL
 		}
 	}
-	if len(definition.PlaybackHosts) == 0 || !slices.ContainsFunc(definition.PlaybackHosts, func(pattern string) bool {
+	if !definition.TrustPlaybackURL && (len(definition.PlaybackHosts) == 0 || !slices.ContainsFunc(definition.PlaybackHosts, func(pattern string) bool {
 		return hostMatches(host, pattern)
-	}) {
+	})) {
 		return nil, "", ErrUnsafeURL
 	}
 	engine := EngineDirect

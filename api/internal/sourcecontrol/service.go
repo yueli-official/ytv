@@ -18,6 +18,7 @@ var ErrAlreadyInstalled = errors.New("source is already installed")
 var ErrNotInstalled = errors.New("source is not installed")
 
 type Setting struct {
+	Recommended bool
 	SourceKey   string
 	DisplayName string
 	Installed   bool
@@ -29,6 +30,7 @@ type Setting struct {
 }
 
 type SourceView struct {
+	Recommended    bool
 	Key            string
 	Name           string
 	Kind           source.Kind
@@ -43,6 +45,7 @@ type SourceView struct {
 }
 
 type AvailableSource struct {
+	Recommended    bool
 	Key            string
 	Name           string
 	Kind           source.Kind
@@ -120,7 +123,7 @@ func (service *Service) List() []SourceView {
 			Catalog: definition.Catalog, CatalogVersion: definition.CatalogVersion,
 			Enabled: setting.Enabled, HomeVisible: setting.HomeVisible, Priority: setting.Priority,
 			Revision: setting.Revision, UpdatedAt: setting.UpdatedAt,
-			Compatibility: definition.Compatibility,
+			Compatibility: definition.Compatibility, Recommended: setting.Recommended,
 		})
 	}
 	return result
@@ -135,12 +138,12 @@ func (service *Service) Available() []AvailableSource {
 		if setting.Installed {
 			continue
 		}
-		result = append(result, AvailableSource{Key: definition.Key, Name: setting.DisplayName, Kind: definition.Kind, Catalog: definition.Catalog, CatalogVersion: definition.CatalogVersion, Revision: setting.Revision, Compatibility: definition.Compatibility})
+		result = append(result, AvailableSource{Key: definition.Key, Name: setting.DisplayName, Kind: definition.Kind, Catalog: definition.Catalog, CatalogVersion: definition.CatalogVersion, Revision: setting.Revision, Compatibility: definition.Compatibility, Recommended: setting.Recommended})
 	}
 	return result
 }
 
-func (service *Service) Update(ctx context.Context, sourceKey string, displayName string, enabled bool, homeVisible bool, priority int, expectedRevision int64) (SourceView, error) {
+func (service *Service) Update(ctx context.Context, sourceKey string, displayName string, enabled bool, homeVisible bool, priority int, expectedRevision int64, presentation ...PresentationUpdate) (SourceView, error) {
 	sourceKey = strings.TrimSpace(sourceKey)
 	displayName = strings.TrimSpace(displayName)
 	if sourceKey == "" || displayName == "" || len([]rune(displayName)) > 80 || priority < 0 || expectedRevision < 0 {
@@ -158,11 +161,21 @@ func (service *Service) Update(ctx context.Context, sourceKey string, displayNam
 	if current.Revision != expectedRevision {
 		return SourceView{}, ErrRevisionConflict
 	}
-	if current.DisplayName == displayName && current.Enabled == enabled && current.HomeVisible == homeVisible && current.Priority == priority {
+	recommended := current.Recommended
+	if len(presentation) > 1 {
+		return SourceView{}, ErrInvalid
+	}
+	if len(presentation) == 1 {
+
+		if presentation[0].Recommended != nil {
+			recommended = *presentation[0].Recommended
+		}
+	}
+	if current.DisplayName == displayName && current.Enabled == enabled && current.HomeVisible == homeVisible && current.Priority == priority && current.Recommended == recommended {
 		return service.view(sourceKey, current)
 	}
 	saved, err := service.store.Save(ctx, Setting{
-		SourceKey: sourceKey, DisplayName: displayName, Installed: true,
+		SourceKey: sourceKey, DisplayName: displayName, Installed: true, Recommended: recommended,
 		Enabled: enabled, HomeVisible: homeVisible, Priority: priority, UpdatedAt: service.clock().UTC(),
 	}, expectedRevision)
 	if err != nil {
@@ -228,7 +241,7 @@ func (service *Service) Remove(ctx context.Context, sourceKey string, expectedRe
 	service.settings[sourceKey] = saved
 	for _, definition := range service.registry.Definitions() {
 		if definition.Key == sourceKey {
-			return AvailableSource{Key: sourceKey, Name: saved.DisplayName, Kind: definition.Kind, Catalog: definition.Catalog, CatalogVersion: definition.CatalogVersion, Revision: saved.Revision, Compatibility: definition.Compatibility}, nil
+			return AvailableSource{Key: sourceKey, Name: saved.DisplayName, Kind: definition.Kind, Catalog: definition.Catalog, CatalogVersion: definition.CatalogVersion, Revision: saved.Revision, Compatibility: definition.Compatibility, Recommended: saved.Recommended}, nil
 		}
 	}
 	return AvailableSource{}, fmt.Errorf("%w: %s", source.ErrNotFound, sourceKey)
@@ -251,7 +264,7 @@ func (service *Service) view(sourceKey string, setting Setting) (SourceView, err
 				Catalog: definition.Catalog, CatalogVersion: definition.CatalogVersion,
 				Enabled: setting.Enabled, HomeVisible: setting.HomeVisible, Priority: setting.Priority,
 				Revision: setting.Revision, UpdatedAt: setting.UpdatedAt,
-				Compatibility: definition.Compatibility,
+				Compatibility: definition.Compatibility, Recommended: setting.Recommended,
 			}, nil
 		}
 	}

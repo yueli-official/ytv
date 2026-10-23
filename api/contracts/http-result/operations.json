@@ -186,6 +186,24 @@
       ]
     },
     {
+      "id": "ytv.get.api.v1.me.source-reviews.by-sourceKey",
+      "method": "GET",
+      "path": "/api/v1/me/source-reviews/{sourceKey}",
+      "success": {
+        "status": 200,
+        "kind": "resource",
+        "schemaRef": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.GetSourceReviewRes"
+      },
+      "errors": [
+        "common.internal",
+        "common.rate_limited",
+        "common.validation_failed",
+        "ytv.invalid_input",
+        "ytv.not_authenticated",
+        "ytv.not_found"
+      ]
+    },
+    {
       "id": "ytv.get.api.v1.meta",
       "method": "GET",
       "path": "/api/v1/meta",
@@ -487,6 +505,24 @@
         "ytv.invalid_input",
         "ytv.not_authenticated",
         "ytv.revision_conflict"
+      ]
+    },
+    {
+      "id": "ytv.put.api.v1.me.source-reviews.by-sourceKey",
+      "method": "PUT",
+      "path": "/api/v1/me/source-reviews/{sourceKey}",
+      "success": {
+        "status": 200,
+        "kind": "resource",
+        "schemaRef": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.SaveSourceReviewRes"
+      },
+      "errors": [
+        "common.internal",
+        "common.rate_limited",
+        "common.validation_failed",
+        "ytv.invalid_input",
+        "ytv.not_authenticated",
+        "ytv.not_found"
       ]
     },
     {

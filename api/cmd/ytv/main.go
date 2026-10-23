@@ -34,6 +34,7 @@ import (
 	"github.com/yueli-official/ytv/api/internal/sourceconfig"
 	"github.com/yueli-official/ytv/api/internal/sourcecontrol"
 	"github.com/yueli-official/ytv/api/internal/sourcepreference"
+	"github.com/yueli-official/ytv/api/internal/sourcereview"
 	"github.com/yueli-official/ytv/api/internal/trending"
 )
 
@@ -156,7 +157,7 @@ func main() {
 	controller, err := httpapi.New(environment("YTV_SITE_KEY", "ytv-main"), httpapi.Dependencies{
 		Authorization: authz.New(authorizationRuntime, len(protectedSubjects) > 0), Discovery: discoveryModule, Catalog: registry,
 		Playback: playbackResolver, Traffic: trafficService, Searches: searchService,
-		Sources: sourceService, Progress: progressService, SourcePreferences: preferenceService, SiteProfile: profileService, Trending: trendingService,
+		SourceReviews: sourcereview.New(sourcereview.NewPostgresStore(database)), Sources: sourceService, Progress: progressService, SourcePreferences: preferenceService, SiteProfile: profileService, Trending: trendingService,
 	})
 	must(err)
 	httpServer := g.Server()

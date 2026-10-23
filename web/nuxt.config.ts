@@ -70,6 +70,9 @@ export default defineNuxtConfig({
     identityBase: process.env.NUXT_IDENTITY_BASE || "http://127.0.0.1:8081",
     cookieSecure,
     authCookieSecure: cookieSecure,
+    guestCookieSecure: cookieSecure,
+    guestSessionTtlSeconds: 30 * 24 * 60 * 60,
+    ytvAudience: "ytv-api",
     sealSecret: process.env.NUXT_SEAL_SECRET || "dev-ytv-seal-secret-change-me-0123456789abcdef",
     public: {
       oidcIssuer: process.env.NUXT_PUBLIC_OIDC_ISSUER || "http://localhost:3000",

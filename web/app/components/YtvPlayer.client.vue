@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import "@videojs/html/video/player";
+import "~/utils/video-player-element";
+import type { YtvVideoPlayerElement } from "~/utils/video-player-element";
 import "@videojs/html/video/neutral-skin";
 import "@videojs/html/media/hlsjs-video";
 import "@videojs/html/i18n";
@@ -16,6 +17,8 @@ const emit = defineEmits<{ ended: []; started: [selection: PlaybackSelection]; p
 const api = useYtvApi();
 const { loggedIn } = useAuth();
 const skin = ref<HTMLElement | null>(null);
+const player = ref<YtvVideoPlayerElement | null>(null);
+const fullscreenMessage = ref("");
 const holdingSpeed = ref(false);
 const fullscreenActive = ref(false);
 const snapshot = ref<PlaybackSnapshot>({ state: "idle", message: "" });
@@ -25,6 +28,17 @@ function persist() { session?.save(); }
 function retryPlayback() { void session?.retry(); }
 function play() { void session?.play(); }
 function updateFullscreen() { fullscreenActive.value = Boolean(document.fullscreenElement); }
+async function enterFullscreen() {
+  fullscreenMessage.value = "";
+  const store = player.value?.store;
+  if (!store || store.state.fullscreenAvailability !== "available") {
+    fullscreenMessage.value = "当前浏览器不支持全屏，可横放手机观看。";
+    return;
+  }
+  try { await store.requestFullscreen(); }
+  catch { fullscreenMessage.value = "未能进入全屏，请再点一次全屏观看。"; }
+}
+defineExpose({ enterFullscreen });
 
 onMounted(() => {
   session = createPlaybackSession({
@@ -70,12 +84,13 @@ onBeforeUnmount(() => {
 <template>
   <div class="absolute inset-0 bg-black" :data-player-state="snapshot.state">
     <media-i18n lang="zh" class="block size-full">
-      <video-player :poster="poster || undefined" class="block size-full">
+      <component :is="'ytv-video-player'" ref="player" orientation-lock-type="landscape" :poster="poster || undefined" class="block size-full">
         <video-neutral-skin ref="skin" class="ytv-player-skin">
           <div class="ytv-gesture-feedback" :class="{ 'is-fullscreen': fullscreenActive }" aria-live="polite" aria-atomic="true"><span v-if="holdingSpeed" data-hold-speed>2 倍速播放 · 松开恢复</span></div>
         </video-neutral-skin>
-      </video-player>
+      </component>
     </media-i18n>
+    <p v-if="fullscreenMessage" role="status" class="absolute inset-x-3 top-3 z-30 rounded-lg bg-black/80 px-3 py-2 text-center text-xs text-white">{{ fullscreenMessage }}</p>
     <button v-if="['ready', 'paused', 'ended'].includes(snapshot.state)" type="button" data-primary-play :aria-label="snapshot.state === 'ended' ? '重新播放' : '播放'" class="absolute left-1/2 top-1/2 grid size-14 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border border-white/25 bg-black/55 text-white shadow-xl backdrop-blur-sm transition hover:scale-105 hover:bg-[var(--ui-primary)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--ui-primary)] sm:size-16" @click="play"><UIcon :name="snapshot.state === 'ended' ? 'i-tabler-refresh' : 'i-tabler-player-play-filled'" class="size-6 sm:size-7" /></button>
     <div v-if="snapshot.state === 'resolving' || snapshot.state === 'loading'" class="pointer-events-none absolute inset-0 grid place-items-center bg-black/60">
       <div class="grid justify-items-center gap-3 text-sm text-white/70" role="status"><UIcon name="i-tabler-loader-2" class="size-6 animate-spin text-[var(--ui-primary)] motion-reduce:animate-none" />{{ snapshot.message }}</div>
@@ -99,4 +114,8 @@ onBeforeUnmount(() => {
 .ytv-gesture-feedback span { border-radius: 999px; background: rgb(0 0 0 / 75%); padding: 0.5rem 1rem; color: white; font-size: 0.75rem; }
 .ytv-gesture-feedback.is-fullscreen { padding-top: 4rem; }
 .ytv-gesture-feedback.is-fullscreen span { font-size: 0.875rem; }
+@media (pointer: coarse) {
+  .ytv-player-skin { --media-scale-unit: 20px; touch-action: manipulation; }
+  .ytv-gesture-feedback { padding-top: max(12px, env(safe-area-inset-top)); }
+}
 </style>

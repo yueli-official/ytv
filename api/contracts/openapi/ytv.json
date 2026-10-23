@@ -31,6 +31,10 @@
             "format": "string",
             "type": "string"
           },
+          "recommended": {
+            "format": "bool",
+            "type": "boolean"
+          },
           "revision": {
             "format": "int64",
             "type": "integer"
@@ -309,6 +313,27 @@
         },
         "type": "object"
       },
+      "github.com.yueli-official.ytv.api.api.v1.GetSourceReviewReq": {
+        "properties": {
+          "sourceKey": {
+            "format": "string",
+            "type": "string"
+          }
+        },
+        "required": [
+          "sourceKey"
+        ],
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.GetSourceReviewRes": {
+        "properties": {
+          "review": {
+            "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.SourceReviewView",
+            "description": ""
+          }
+        },
+        "type": "object"
+      },
       "github.com.yueli-official.ytv.api.api.v1.GetSourcesReq": {
         "properties": {},
         "type": "object"
@@ -576,6 +601,14 @@
           "name": {
             "format": "string",
             "type": "string"
+          },
+          "recommended": {
+            "format": "bool",
+            "type": "boolean"
+          },
+          "reviews": {
+            "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.SourceReviewSummary",
+            "description": ""
           }
         },
         "type": "object"
@@ -810,6 +843,35 @@
         "properties": {
           "preference": {
             "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.SourcePreferenceView",
+            "description": ""
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.SaveSourceReviewReq": {
+        "properties": {
+          "ads": {
+            "format": "string",
+            "type": "string"
+          },
+          "quality": {
+            "format": "string",
+            "type": "string"
+          },
+          "sourceKey": {
+            "format": "string",
+            "type": "string"
+          }
+        },
+        "required": [
+          "sourceKey"
+        ],
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.SaveSourceReviewRes": {
+        "properties": {
+          "review": {
+            "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.SourceReviewView",
             "description": ""
           }
         },
@@ -1108,6 +1170,10 @@
             "format": "int",
             "type": "integer"
           },
+          "recommended": {
+            "format": "bool",
+            "type": "boolean"
+          },
           "revision": {
             "format": "int64",
             "type": "integer"
@@ -1206,6 +1272,52 @@
           },
           "verificationKind": {
             "format": "string",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.SourceReviewSummary": {
+        "properties": {
+          "adsFew": {
+            "format": "int",
+            "type": "integer"
+          },
+          "adsMany": {
+            "format": "int",
+            "type": "integer"
+          },
+          "blurry": {
+            "format": "int",
+            "type": "integer"
+          },
+          "hd": {
+            "format": "int",
+            "type": "integer"
+          },
+          "normal": {
+            "format": "int",
+            "type": "integer"
+          },
+          "total": {
+            "format": "int",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.SourceReviewView": {
+        "properties": {
+          "ads": {
+            "format": "string",
+            "type": "string"
+          },
+          "quality": {
+            "format": "string",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "time.Time",
             "type": "string"
           }
         },
@@ -1336,6 +1448,10 @@
             "maximum": 100000,
             "minimum": 0,
             "type": "integer"
+          },
+          "recommended": {
+            "format": "*bool",
+            "type": "boolean"
           },
           "revision": {
             "format": "int64",
@@ -1679,6 +1795,10 @@
                     "minimum": 0,
                     "type": "integer"
                   },
+                  "recommended": {
+                    "format": "*bool",
+                    "type": "boolean"
+                  },
                   "revision": {
                     "format": "int64",
                     "minimum": 0,
@@ -1855,6 +1975,87 @@
         "summary": "Browse current items from enabled source catalogs",
         "tags": [
           "Discovery"
+        ]
+      }
+    },
+    "/api/v1/me/source-reviews/{sourceKey}": {
+      "get": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "sourceKey",
+            "required": true,
+            "schema": {
+              "format": "string",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.GetSourceReviewRes",
+                  "description": ""
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "summary": "Read my source assessment",
+        "tags": [
+          "Account"
+        ]
+      },
+      "put": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "sourceKey",
+            "required": true,
+            "schema": {
+              "format": "string",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "ads": {
+                    "format": "string",
+                    "type": "string"
+                  },
+                  "quality": {
+                    "format": "string",
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.SaveSourceReviewRes",
+                  "description": ""
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "summary": "Replace or withdraw my source assessment",
+        "tags": [
+          "Account"
         ]
       }
     },

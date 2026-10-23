@@ -5,7 +5,7 @@ export function usePublicLayout() {
  const ready=useState('ytv-layout-ready',()=>false);
  let query:MediaQueryList|undefined;
  const update=()=>{mobile.value=query?.matches||false;ready.value=true;};
- onMounted(()=>{query=window.matchMedia('(max-width: 767px)');update();query.addEventListener('change',update);});
+ onMounted(()=>{query=window.matchMedia('(max-width: 767px), (pointer: coarse) and (max-height: 767px) and (max-width: 1024px)');update();query.addEventListener('change',update);});
  onBeforeUnmount(()=>query?.removeEventListener('change',update));
  return {mobile,ready};
 }

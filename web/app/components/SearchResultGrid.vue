@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import type { SearchGroup } from "~/types/ytv";
 
+const api = useYtvApi();
+const { data: sourceMetadata } = useAsyncData("ytv-public-sources", () => api.publicSources());
+const sourceDetails = computed(() => new Map(sourceMetadata.value?.sources.map(source => [source.key, source]) || []));
+
 const props = defineProps<{ groups: SearchGroup[]; returnTo?: string; compact?: boolean }>();
 function titleLink(source: string, id: string) {
   return { path: `/title/${encodeURIComponent(source)}/${encodeURIComponent(id)}`, query: props.returnTo ? { from: props.returnTo } : {} };
@@ -37,11 +41,11 @@ function summaryFor(group: SearchGroup) {
       <details v-if="group.candidates.length" :open="!compact && group.candidates.length <= 3" :class="['ytv-result-sources', { 'ytv-result-sources-open': !compact && group.candidates.length <= 3 }]">
         <summary class="mb-3 cursor-pointer text-sm text-primary">选择来源 · {{ sourceCount(group) }} 个</summary>
         <div class="grid gap-2 xl:grid-cols-3" aria-label="影片来源">
-          <NuxtLink v-for="(candidate, candidateIndex) in group.candidates" :key="`${candidate.sourceKey}:${candidate.externalId}`" :aria-label="candidateLabel(group, candidateIndex)" :to="titleLink(candidate.sourceKey, candidate.externalId)" class="flex min-h-14 items-center gap-3 rounded-lg border border-white/10 bg-white/[0.02] px-3 py-2 text-inherit no-underline hover:border-primary/40 hover:bg-white/5">
+          <div v-for="(candidate, candidateIndex) in group.candidates" :key="`${candidate.sourceKey}:${candidate.externalId}`" class="min-w-0"><NuxtLink :aria-label="candidateLabel(group, candidateIndex)" :to="titleLink(candidate.sourceKey, candidate.externalId)" class="flex min-h-14 items-center gap-3 rounded-lg border border-white/10 bg-white/[0.02] px-3 py-2 text-inherit no-underline hover:border-primary/40 hover:bg-white/5">
             <UIcon name="i-tabler-file-description" class="size-5 shrink-0 text-white/80" />
-            <span class="min-w-0 flex-1"><strong class="block break-words text-sm font-semibold sm:text-base">{{ candidateLabel(group, candidateIndex) }}</strong><span class="mt-1 block break-words text-xs sm:text-sm text-white/75">{{ candidate.remarks || (candidate.episodeCount === 1 ? '正片' : candidate.episodeCount > 1 ? `${candidate.episodeCount} 集` : '查看播放选项') }}</span></span>
+            <span class="min-w-0 flex-1"><strong class="block break-words text-sm font-semibold sm:text-base">{{ candidateLabel(group, candidateIndex) }}</strong><span class="mt-1 block break-words text-xs sm:text-sm text-white/75">{{ candidate.remarks || (candidate.episodeCount === 1 ? '正片' : candidate.episodeCount > 1 ? `${candidate.episodeCount} 集` : '查看播放选项') }}</span><SourceBadges :recommended="sourceDetails.get(candidate.sourceKey)?.recommended" :reviews="sourceDetails.get(candidate.sourceKey)?.reviews" /></span>
             <UIcon name="i-tabler-chevron-right" class="size-4 shrink-0 text-white/65" />
-          </NuxtLink>
+          </NuxtLink></div>
         </div>
       </details>
     </article>

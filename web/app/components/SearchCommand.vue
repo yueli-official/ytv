@@ -98,9 +98,15 @@ function historyTo(query: string) {
         <h2 :id="historyHeading" class="text-xs font-semibold text-white/60">搜索历史</h2>
         <UButton label="清空" color="neutral" variant="link" size="xs" @click="clearHistory" />
       </div>
-      <div class="flex gap-2 overflow-x-auto pb-1">
-        <NuxtLink v-for="item in history" :key="item" :to="historyTo(item)" class="shrink-0 rounded-lg bg-[#1d2a36] px-3 py-2 text-xs text-white/80 no-underline hover:bg-[#293c4d] hover:text-white">{{ item }}</NuxtLink>
-      </div>
+      <ul class="ytv-search-history">
+        <li v-for="item in history" :key="item">
+          <NuxtLink :to="historyTo(item)" class="ytv-search-history-link">
+            <UIcon name="i-tabler-history" class="size-4 shrink-0 opacity-50" />
+            <span class="min-w-0 flex-1 break-words">{{ item }}</span>
+            <UIcon name="i-tabler-arrow-up-left" class="size-4 shrink-0 opacity-40" />
+          </NuxtLink>
+        </li>
+      </ul>
     </section>
   </div>
 </template>

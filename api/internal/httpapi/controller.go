@@ -24,10 +24,12 @@ import (
 	"github.com/yueli-official/ytv/api/internal/source/verification"
 	"github.com/yueli-official/ytv/api/internal/sourcecontrol"
 	"github.com/yueli-official/ytv/api/internal/sourcepreference"
+	"github.com/yueli-official/ytv/api/internal/sourcereview"
 	"github.com/yueli-official/ytv/api/internal/trending"
 )
 
 type Core struct {
+	reviews     *sourcereview.Service
 	siteKey     string
 	authz       *authz.Service
 	discovery   *discovery.Module
@@ -47,6 +49,7 @@ type Account struct{ core *Core }
 type Administrator struct{ core *Core }
 
 type Dependencies struct {
+	SourceReviews     *sourcereview.Service
 	Authorization     *authz.Service
 	Discovery         *discovery.Module
 	Catalog           source.Catalog
@@ -65,7 +68,7 @@ func New(siteKey string, dependencies Dependencies) (*Core, error) {
 		return nil, errors.New("ytv/httpapi: site key and all product modules are required")
 	}
 	return &Core{
-		siteKey: siteKey, authz: dependencies.Authorization, discovery: dependencies.Discovery,
+		reviews: dependencies.SourceReviews, siteKey: siteKey, authz: dependencies.Authorization, discovery: dependencies.Discovery,
 		catalog: dependencies.Catalog, playback: dependencies.Playback, traffic: dependencies.Traffic,
 		searches: dependencies.Searches, sources: dependencies.Sources, progress: dependencies.Progress, preferences: dependencies.SourcePreferences,
 		profile: dependencies.SiteProfile, trending: dependencies.Trending,
@@ -108,6 +111,9 @@ func (controller *Public) Search(ctx context.Context, request *v1.SearchReq) (*v
 	if err != nil {
 		return nil, apierr.Wrap(apierr.CodeSourceUnavailable, err)
 	}
+	if err := controller.rankSearchSources(ctx, response); err != nil {
+		return nil, err
+	}
 	return response, nil
 }
 
@@ -138,15 +144,26 @@ func (controller *Public) Discover(ctx context.Context, request *v1.DiscoverReq)
 	if err != nil {
 		return nil, apierr.Wrap(apierr.CodeSourceUnavailable, err)
 	}
+	if err := controller.rankSearchSources(ctx, response); err != nil {
+		return nil, err
+	}
 	return response, nil
 }
 
 func (controller *Public) GetPublicSources(ctx context.Context, _ *v1.GetPublicSourcesReq) (*v1.GetPublicSourcesRes, error) {
 	values := controller.core.sources.List()
+	summaries := map[string]sourcereview.Summary{}
+	if controller.core.reviews != nil {
+		var err error
+		summaries, err = controller.core.reviews.Summaries(ctx)
+		if err != nil {
+			return nil, mapError(err)
+		}
+	}
 	response := &v1.GetPublicSourcesRes{Items: make([]v1.PublicSourceView, 0, len(values))}
 	for _, value := range values {
 		if value.Enabled {
-			response.Items = append(response.Items, v1.PublicSourceView{Key: value.Key, Name: value.Name})
+			response.Items = append(response.Items, v1.PublicSourceView{Key: value.Key, Name: value.Name, Recommended: value.Recommended, Reviews: reviewSummaryView(summaries[value.Key])})
 		}
 	}
 	return response, nil
@@ -417,7 +434,7 @@ func (controller *Administrator) UpdateSource(ctx context.Context, request *v1.U
 	if _, err := controller.core.requireAdministrator(ctx); err != nil {
 		return nil, err
 	}
-	updated, err := controller.core.sources.Update(ctx, request.SourceKey, request.Name, request.Enabled, request.HomeVisible, request.Priority, request.Revision)
+	updated, err := controller.core.sources.Update(ctx, request.SourceKey, request.Name, request.Enabled, request.HomeVisible, request.Priority, request.Revision, sourcecontrol.PresentationUpdate{Recommended: request.Recommended})
 	if err != nil {
 		return nil, mapError(err)
 	}
@@ -558,12 +575,12 @@ func sourceAdminView(value sourcecontrol.SourceView) v1.SourceAdminView {
 		Key: value.Key, Name: value.Name, Kind: string(value.Kind), Enabled: value.Enabled,
 		Catalog: value.Catalog, CatalogVersion: value.CatalogVersion,
 		HomeVisible: value.HomeVisible, Priority: value.Priority, Revision: value.Revision, UpdatedAt: value.UpdatedAt,
-		Compatibility: sourceCompatibilityView(value.Compatibility),
+		Compatibility: sourceCompatibilityView(value.Compatibility), Recommended: value.Recommended,
 	}
 }
 
 func availableSourceView(value sourcecontrol.AvailableSource) v1.AvailableSourceView {
-	return v1.AvailableSourceView{Key: value.Key, Name: value.Name, Kind: string(value.Kind), Catalog: value.Catalog, CatalogVersion: value.CatalogVersion, Revision: value.Revision, Compatibility: sourceCompatibilityView(value.Compatibility)}
+	return v1.AvailableSourceView{Key: value.Key, Name: value.Name, Kind: string(value.Kind), Catalog: value.Catalog, CatalogVersion: value.CatalogVersion, Revision: value.Revision, Compatibility: sourceCompatibilityView(value.Compatibility), Recommended: value.Recommended}
 }
 
 func sourceCompatibilityView(values []source.CompatibilityNotice) []v1.SourceCompatibilityView {

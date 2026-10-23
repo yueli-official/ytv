@@ -6,6 +6,7 @@
  background:radial-gradient(ellipse at 50% 0%,#17222955,transparent 65%),var(--ytv-canvas); color:#f5f7fa; font-size:16px; font-family:'Segoe UI','Microsoft YaHei','PingFang SC',sans-serif;
 }
 .ytv-public :where(a,button,summary):focus-visible { outline:2px solid #91cdf7; outline-offset:4px; }
+.ytv-public, .ytv-public :where(*) { scrollbar-width:thin; scrollbar-color:#455662 transparent; }
 .ytv-container { width:min(92%,1600px); margin-inline:auto; }
 .ytv-header { position:relative; z-index:30; border-bottom:1px solid var(--ytv-line); background:#0c151ce8; }
 .ytv-topbar { display:flex; align-items:center; min-height:70px; gap:48px; }
@@ -24,6 +25,9 @@
 .ytv-primary:hover { background:#bf285b; }
 .ytv-search-submit { min-height:40px; padding:8px 16px; border-radius:12px; }
 .ytv-search-popover { position:absolute; top:calc(100% + 10px); inset-inline:0; padding:16px; border:1px solid var(--ytv-line); border-radius:14px; background:#14212b; box-shadow:0 16px 40px #0008; }
+.ytv-search-history { display:grid; gap:2px; max-height:320px; overflow-y:auto; margin:0; padding:4px; list-style:none; }
+.ytv-search-history-link { display:flex; align-items:center; gap:10px; padding:10px 8px; border-radius:8px; color:#d1d9e0; font-size:13px; line-height:1.5; text-decoration:none; }
+.ytv-search-history-link:hover,.ytv-search-history-link:focus-visible { background:#ffffff0a; color:white; }
 .ytv-home { display:grid; gap:30px; padding-bottom:36px; }
 .ytv-home-history { display:none; }
 .ytv-home-history:has([data-continue-watching]) { display:block; min-width:0; }

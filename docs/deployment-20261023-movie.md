@@ -1,5 +1,18 @@
 # 2026-10-23 电影站升级上线
 
+## 手机播放器适配发布（2026-10-23）
+
+用户授权部署后，已上线 `ytv-player-20261023-14`：https://tv.yuelili.com。Web 更新为 `yueli/ytv-web:player-20261023-14`；API 复用 `yueli/ytv-api:playback-20261023-12`，源码摘要、二进制摘要、运行镜像和容器 ID 均核验一致，没有重启 API 或迁移数据库。数据库 v9 clean，发布前备份可读。没有 commit/push。
+
+手机全屏加入 landscape 方向锁请求、退出解锁，保留原生浏览器回退；横屏继续使用手机布局并保留同一视频元素，辅助操作压缩为一排。正式冻结依赖、Workspace 当前基线核验、类型检查、生产构建及双端发布门禁通过。归档 manifest/基线与工作区差异仅换行符，分别对齐当前 manifest 和 Workspace 原始导出字节，未更改版本或批准内容。
+
+候选与正式 HTTPS 的 105 个 JS 摘要匹配。CLI Playwright 覆盖 1440px 桌面、390px 手机、暗色/保存浅色偏好、搜索历史与清空、Account 登录表单跳转；真实 7sefun 31667-1-1 均进入 playing。手机触摸模拟验证全屏/退出方向调用与旋转保留视频节点，实际竖屏、横屏全屏和桌面截图已亲自检查。首次候选脚本在 ready 前点击导致等待超时，修正脚本等待 ready 后通过；未修改产品代码绕过问题。实体手机/iOS Safari 的旋转未验证。
+
+生产清单 `/projects/yuelili.com/ytv/deployment-release.json`；备份 `/projects/yuelili.com/backups/ytv-player-20261023-14`。Web image ID `sha256:9cdd226edf7a8767d431553ad32e74f4feca4fccffac794b7d622244bdd7b52c`，两端 healthy。证据 `D:/coding/yueli-official/task-artifacts/ytv/deploy-player-20261023-14`。候选预选端口被占用，未动占用服务，改为 Docker 分配回环 32772；候选和远端组装目录已清理，SSH 隧道已停止。
+
+部署期间观察到独立 Paste 发布替换了 paste-paste-web-1，已核验其自身清单与新镜像一致并记录；本次脚本只切换 YTV Web，保留其他任务状态。回滚仅恢复本次备份 .env 后重建 ytv-web，并核验旧配套清单；不恢复数据库。
+
+
 ## 当前发布：手机独立布局与片源改进
 
 用户授权提交和部署后，已发布源码 `784ed7440a80f03a13ed0f6b73fbd22a5d18393d` 到 https://tv.yuelili.com 。本轮提交包含 `07ee3ad` 手机拆分、`491752b` 正式依赖下的点击回调类型修正、`784ed74` 手机电影版本标签修正；没有 Git push。
@@ -65,3 +78,12 @@ Go 全量测试、19 个前端单测、冻结依赖/typecheck/Nitro build 通过
 旧容器 `ytv` 已停止，旧镜像 `sha256:2ddf8d7b45cb67d84d79ea202eb7948085b2e95c70a416057445f8be709c826d` 与 `docker-compose.legacy-20261023.yml` 保留。若回滚，先启动该旧容器并确认原 9003 入口，再仅恢复本站 `tv-proxy.conf`、执行 nginx 配置检查和 reload；确认旧站可用后停止新版两个服务。不自动恢复或删除数据库。
 
 服务器临时镜像构建目录已清理；本地临时 Consumer 已由 Workspace 停止，SSH 旁路隧道已关闭，共享 Identity Provider 保留。其他工作的未提交测试清理和 vendor 包未纳入本轮提交。
+
+
+## 2026-10-23 播放修复与搜索历史发布完成
+
+发布 `ytv-playback-20261023-12` 已部署到 https://tv.yuelili.com。来源为 HEAD `6b154e8` 加发布清单记录的 7 个未提交文件；本轮没有 commit/push。已批准 Kazumi 解析器信任其 HTTP/HTTPS 媒体结果，不再逐个登记 CDN。另修复播放页 Referer：上游在站内请求下返回不可播放内容，使用页面 no-referrer 后实际播放恢复。搜索历史改为纵向列表，公开站细滚动条。
+
+Go 全量测试、正式依赖门禁、类型检查、生产构建通过。候选和正式站都经 CLI Playwright 运行，1440 桌面/390 手机视口，暗色和保存浅色偏好，确切 7sefun 31667-1-1 进入 playing，截图亲自复核；历史长文本无横向溢出，Escape/清空正常；登录到 Account 表单正常。105 个 JS 哈希与构建一致，双端镜像健康，API 二进制摘要匹配；没有验证实体手机/Safari、整集播放或所有片源。
+
+数据库保持 v9，无迁移；备份验证可读。生产清单 `/projects/yuelili.com/ytv/deployment-release.json`，备份 `/projects/yuelili.com/backups/ytv-playback-20261023-12`。候选容器和远端镜像组装目录已清理，无关容器未变化。完整证据在 `D:/coding/yueli-official/task-artifacts/ytv/deploy-playback-20261023-12`。本机构建中断后重启恢复，正式构建最终成功。

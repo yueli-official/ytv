@@ -1,6 +1,6 @@
 import { createBrowserUUID, useApi as useFoundationApi } from "@yueli/nuxt-runtime/runtime";
 import type { JsonValue } from "@yueli/http-runtime";
-import type { AdminSource, AvailableSource, DiscoveryResponse, PlaybackManifest, PlaybackProgress, PublicSource, SearchAnalyticsOverview, SiteProfile, SourcePreference, SourceProbe, TitleResponse, TrendingItem } from "~/types/ytv";
+import type { SourceReview, AdminSource, AvailableSource, DiscoveryResponse, PlaybackManifest, PlaybackProgress, PublicSource, SearchAnalyticsOverview, SiteProfile, SourcePreference, SourceProbe, TitleResponse, TrendingItem } from "~/types/ytv";
 
 export function useYtvApi() {
   const api = useFoundationApi("platform");
@@ -23,6 +23,12 @@ export function useYtvApi() {
         query: { q: query, page, sources: sources.join(","), eventId: `search_${createBrowserUUID()}` },
         auth: "optional"
       });
+    },
+    sourceReview(key: string) {
+      return api.request<{review: SourceReview}>(`/api/v1/me/source-reviews/${encodeURIComponent(key)}`, {auth: "optional"});
+    },
+    saveSourceReview(key: string, input: {ads: string; quality: string}) {
+      return api.request<{review: SourceReview}>(`/api/v1/me/source-reviews/${encodeURIComponent(key)}`, {method: "PUT", body: input, auth: "optional", replayAfterReauth: "never"});
     },
     publicSources() {
       return sourceCollection<PublicSource>("/api/v1/sources", "optional");
@@ -63,8 +69,9 @@ export function useYtvApi() {
         query: { days, limit }, auth: "required"
       });
     },
-    adminSources() {
-      return sourceCollection<AdminSource>("/api/v1/admin/sources", "required");
+    async adminSources() {
+      const result = await api.request<{ items: AdminSource[] }>("/api/v1/admin/sources", { auth: "required" });
+      return { sources: result.items };
     },
     availableSources() {
       return sourceCollection<AvailableSource>("/api/v1/admin/source-catalog", "required");
@@ -74,7 +81,7 @@ export function useYtvApi() {
         method: "POST", body: { sourceKey, revision } as unknown as JsonValue, auth: "required", replayAfterReauth: "never"
       });
     },
-    updateSource(sourceKey: string, input: { name: string; enabled: boolean; homeVisible: boolean; priority: number; revision: number }) {
+    updateSource(sourceKey: string, input: { name: string; enabled: boolean; homeVisible: boolean; priority: number; revision: number; recommended?: boolean }) {
       return api.request<{ source: AdminSource }>(`/api/v1/admin/sources/${encodeURIComponent(sourceKey)}`, {
         method: "PATCH", body: input as unknown as JsonValue, auth: "required", replayAfterReauth: "never"
       });

@@ -24,13 +24,15 @@ const (
 )
 
 type Definition struct {
-	Key                  string
-	Name                 string
-	Kind                 Kind
-	Catalog              string
-	CatalogVersion       string
-	Endpoint             string
-	PlaybackHosts        []string
+	Key            string
+	Name           string
+	Kind           Kind
+	Catalog        string
+	CatalogVersion string
+	Endpoint       string
+	PlaybackHosts  []string
+	// TrustPlaybackURL is set by approved parser catalogs, not viewer input.
+	TrustPlaybackURL     bool
 	ImageHosts           []string
 	InitiallyUninstalled bool
 	Enabled              bool

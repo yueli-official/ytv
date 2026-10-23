@@ -244,6 +244,22 @@
       "ytv.not_authenticated",
       "ytv.forbidden",
       "ytv.conflict"
+    ],
+    "GET /api/v1/me/source-reviews/{sourceKey}": [
+      "common.internal",
+      "common.rate_limited",
+      "common.validation_failed",
+      "ytv.invalid_input",
+      "ytv.not_authenticated",
+      "ytv.not_found"
+    ],
+    "PUT /api/v1/me/source-reviews/{sourceKey}": [
+      "common.internal",
+      "common.rate_limited",
+      "common.validation_failed",
+      "ytv.invalid_input",
+      "ytv.not_authenticated",
+      "ytv.not_found"
     ]
   }
 }

@@ -76,8 +76,10 @@ type GetPublicSourcesReq struct {
 }
 
 type PublicSourceView struct {
-	Key  string `json:"key"`
-	Name string `json:"name"`
+	Reviews     SourceReviewSummary `json:"reviews"`
+	Recommended bool                `json:"recommended"`
+	Key         string              `json:"key"`
+	Name        string              `json:"name"`
 }
 
 type GetPublicSourcesRes struct {
@@ -242,6 +244,7 @@ type GetSearchOverviewRes struct {
 }
 
 type SourceAdminView struct {
+	Recommended    bool                      `json:"recommended"`
 	Key            string                    `json:"key"`
 	Name           string                    `json:"name"`
 	Kind           string                    `json:"kind"`
@@ -270,6 +273,7 @@ type GetSourcesRes struct {
 }
 
 type AvailableSourceView struct {
+	Recommended    bool                      `json:"recommended"`
 	Key            string                    `json:"key"`
 	Name           string                    `json:"name"`
 	Kind           string                    `json:"kind"`
@@ -299,6 +303,7 @@ type InstallSourceRes struct {
 }
 
 type UpdateSourceReq struct {
+	Recommended *bool `json:"recommended"`
 	g.Meta      `path:"/api/v1/admin/sources/{sourceKey}" method:"patch" tags:"Administration" summary:"Update source runtime settings"`
 	SourceKey   string `json:"sourceKey" in:"path" v:"required"`
 	Name        string `json:"name" v:"required|length:1,80"`
@@ -447,4 +452,34 @@ type GetAuthorizationOverviewRes struct {
 	Capabilities          []string `json:"capabilities"`
 	InitialClaimAvailable bool     `json:"initialClaimAvailable"`
 	BootstrapMode         bool     `json:"bootstrapMode"`
+}
+
+type SourceReviewSummary struct {
+	Total   int `json:"total"`
+	AdsFew  int `json:"adsFew"`
+	AdsMany int `json:"adsMany"`
+	HD      int `json:"hd"`
+	Normal  int `json:"normal"`
+	Blurry  int `json:"blurry"`
+}
+type SourceReviewView struct {
+	Ads       string    `json:"ads"`
+	Quality   string    `json:"quality"`
+	UpdatedAt time.Time `json:"updatedAt"`
+}
+type GetSourceReviewReq struct {
+	g.Meta    `path:"/api/v1/me/source-reviews/{sourceKey}" method:"get" tags:"Account" summary:"Read my source assessment"`
+	SourceKey string `json:"sourceKey" in:"path" v:"required"`
+}
+type GetSourceReviewRes struct {
+	Review SourceReviewView `json:"review"`
+}
+type SaveSourceReviewReq struct {
+	g.Meta    `path:"/api/v1/me/source-reviews/{sourceKey}" method:"put" tags:"Account" summary:"Replace or withdraw my source assessment"`
+	SourceKey string `json:"sourceKey" in:"path" v:"required"`
+	Ads       string `json:"ads"`
+	Quality   string `json:"quality"`
+}
+type SaveSourceReviewRes struct {
+	Review SourceReviewView `json:"review"`
 }

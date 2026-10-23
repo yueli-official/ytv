@@ -19,7 +19,7 @@ func NewPostgresStore(database *sql.DB) (*PostgresStore, error) {
 }
 
 func (store *PostgresStore) LoadAll(ctx context.Context) ([]Setting, error) {
-	rows, err := store.database.QueryContext(ctx, `SELECT source_key, display_name, installed, enabled, home_visible, priority, revision, updated_at
+	rows, err := store.database.QueryContext(ctx, `SELECT source_key, display_name, installed, enabled, home_visible, priority, revision, updated_at, recommended
 		FROM ytv_source_settings ORDER BY priority, source_key`)
 	if err != nil {
 		return nil, err
@@ -28,9 +28,10 @@ func (store *PostgresStore) LoadAll(ctx context.Context) ([]Setting, error) {
 	var result []Setting
 	for rows.Next() {
 		var setting Setting
-		if err := rows.Scan(&setting.SourceKey, &setting.DisplayName, &setting.Installed, &setting.Enabled, &setting.HomeVisible, &setting.Priority, &setting.Revision, &setting.UpdatedAt); err != nil {
+		if err := rows.Scan(&setting.SourceKey, &setting.DisplayName, &setting.Installed, &setting.Enabled, &setting.HomeVisible, &setting.Priority, &setting.Revision, &setting.UpdatedAt, &setting.Recommended); err != nil {
 			return nil, err
 		}
+
 		result = append(result, setting)
 	}
 	return result, rows.Err()
@@ -40,15 +41,15 @@ func (store *PostgresStore) Save(ctx context.Context, setting Setting, expectedR
 	var row *sql.Row
 	if expectedRevision == 0 {
 		row = store.database.QueryRowContext(ctx, `INSERT INTO ytv_source_settings (
-			source_key, display_name, installed, enabled, home_visible, priority, revision, updated_at
-		) VALUES ($1, $2, $3, $4, $5, $6, 1, $7)
+			source_key, display_name, installed, enabled, home_visible, priority, revision, updated_at, recommended
+		) VALUES ($1, $2, $3, $4, $5, $6, 1, $7, $8)
 		ON CONFLICT (source_key) DO NOTHING
-		RETURNING revision, updated_at`, setting.SourceKey, setting.DisplayName, setting.Installed, setting.Enabled, setting.HomeVisible, setting.Priority, setting.UpdatedAt)
+		RETURNING revision, updated_at`, setting.SourceKey, setting.DisplayName, setting.Installed, setting.Enabled, setting.HomeVisible, setting.Priority, setting.UpdatedAt, setting.Recommended)
 	} else {
 		row = store.database.QueryRowContext(ctx, `UPDATE ytv_source_settings
-		SET display_name=$2, installed=$3, enabled=$4, home_visible=$5, priority=$6, revision=revision+1, updated_at=$7
+		SET display_name=$2, installed=$3, enabled=$4, home_visible=$5, priority=$6, revision=revision+1, updated_at=$7, recommended=$9
 		WHERE source_key=$1 AND revision=$8
-		RETURNING revision, updated_at`, setting.SourceKey, setting.DisplayName, setting.Installed, setting.Enabled, setting.HomeVisible, setting.Priority, setting.UpdatedAt, expectedRevision)
+		RETURNING revision, updated_at`, setting.SourceKey, setting.DisplayName, setting.Installed, setting.Enabled, setting.HomeVisible, setting.Priority, setting.UpdatedAt, expectedRevision, setting.Recommended)
 	}
 	if err := row.Scan(&setting.Revision, &setting.UpdatedAt); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {

@@ -13,6 +13,7 @@ definePageMeta({ layout: "manage", middleware: ["auth", "manage"] });
 useSeoMeta({ title: "数据源" });
 
 interface SourceDraft {
+  recommended: boolean;
   name: string;
   enabled: boolean;
   homeVisible: boolean;
@@ -67,7 +68,7 @@ async function loadSources(query: Readonly<SourceCollectionQuery>, activeWorkflo
     allSources.value = response.sources;
     const needle = query.q.trim().toLocaleLowerCase("zh-CN");
     const filtered = response.sources.filter((source) => {
-      const matchesText = !needle || [source.name, source.key, source.kind, source.catalog].some((value) => value.toLocaleLowerCase("zh-CN").includes(needle));
+      const matchesText = !needle || [source.name, source.key, source.kind, source.catalog, source.recommended ? "推荐" : ""].some((value) => value.toLocaleLowerCase("zh-CN").includes(needle));
       const matchesEnabled = query.enabled === "all" || source.enabled === (query.enabled === "yes");
       const matchesHome = query.homeVisible === "all" || source.homeVisible === (query.homeVisible === "yes");
       return matchesText && matchesEnabled && matchesHome;
@@ -128,7 +129,7 @@ watch(allSources, (value) => {
     delete probes[key];
   }
   for (const source of value) {
-    drafts[source.key] = { name: source.name, enabled: source.enabled, homeVisible: source.homeVisible, priority: source.priority, revision: source.revision };
+    drafts[source.key] = { recommended: source.recommended || false, name: source.name, enabled: source.enabled, homeVisible: source.homeVisible, priority: source.priority, revision: source.revision };
   }
 }, { immediate: true });
 function toggleAllAvailable(selected: boolean) {
@@ -143,7 +144,7 @@ function changeControl(id: string, value: CollectionControlValue) { workflow.set
 function clearFilters() { workflow.setQuery({ ...query.value, enabled: "all", homeVisible: "all", page: 1 }); }
 
 function sameDraft(left: SourceDraft, right: SourceDraft) {
-  return left.name === right.name && left.enabled === right.enabled && left.homeVisible === right.homeVisible && left.priority === right.priority;
+  return left.name === right.name && left.enabled === right.enabled && left.homeVisible === right.homeVisible && left.priority === right.priority && left.recommended === right.recommended;
 }
 
 async function persist(sourceKey: string) {
@@ -152,6 +153,7 @@ async function persist(sourceKey: string) {
   draft.name = draft.name.trim();
   saveMessages[sourceKey] = "";
   if (!draft.name) { saveState[sourceKey] = "error"; return; }
+
   saveRequested[sourceKey] = true;
   if (saving[sourceKey]) return;
   saving[sourceKey] = true;
@@ -167,7 +169,7 @@ async function persist(sourceKey: string) {
       if (!latest) break;
       latest.revision = result.source.revision;
       if (!saveRequested[sourceKey] && sameDraft(latest, snapshot)) {
-        Object.assign(latest, { name: result.source.name, enabled: result.source.enabled, homeVisible: result.source.homeVisible, priority: result.source.priority, revision: result.source.revision });
+        Object.assign(latest, { recommended: result.source.recommended, name: result.source.name, enabled: result.source.enabled, homeVisible: result.source.homeVisible, priority: result.source.priority, revision: result.source.revision });
       }
       saveState[sourceKey] = "success";
     } catch (error) {
@@ -396,6 +398,9 @@ const sourceToolItems = computed(() => [[
             <div v-if="drafts[source.key]" class="min-w-0 flex-1">
               <UInput v-model="drafts[source.key]!.name" class="w-full" maxlength="80" :aria-label="`${source.name} 名称`" @update:model-value="schedulePersist(source.key)" />
               <p class="mt-1 truncate text-xs text-muted">{{ source.catalog ? `${source.catalog} ${source.catalogVersion}` : source.kind }} · {{ source.key }}</p>
+              <div class="mt-2 flex flex-wrap items-center gap-3">
+                <USwitch v-model="drafts[source.key]!.recommended" label="推荐" :aria-label="`推荐 ${source.name}`" @update:model-value="schedulePersist(source.key)" />
+              </div>
               <p v-if="saveState[source.key] === 'pending'" class="mt-1 text-xs text-muted" role="status">正在保存…</p>
               <p v-else-if="saveState[source.key] === 'success'" class="mt-1 text-xs text-success" role="status">已自动保存</p>
               <p v-else-if="saveState[source.key] === 'error'" class="mt-1 text-xs text-error" role="alert">{{ saveMessages[source.key] || "请填写来源名称。" }}</p>
