@@ -85,9 +85,9 @@ onBeforeUnmount(() => {
   <div class="absolute inset-0 bg-black" :data-player-state="snapshot.state">
     <media-i18n lang="zh" class="block size-full">
       <component :is="'ytv-video-player'" ref="player" orientation-lock-type="landscape" :poster="poster || undefined" class="block size-full">
-        <video-neutral-skin ref="skin" class="ytv-player-skin">
+        <ytv-video-skin ref="skin" class="ytv-player-skin">
           <div class="ytv-gesture-feedback" :class="{ 'is-fullscreen': fullscreenActive }" aria-live="polite" aria-atomic="true"><span v-if="holdingSpeed" data-hold-speed>2 倍速播放 · 松开恢复</span></div>
-        </video-neutral-skin>
+        </ytv-video-skin>
       </component>
     </media-i18n>
     <p v-if="fullscreenMessage" role="status" class="absolute inset-x-3 top-3 z-30 rounded-lg bg-black/80 px-3 py-2 text-center text-xs text-white">{{ fullscreenMessage }}</p>
