@@ -49,7 +49,8 @@ export function bindVideoEnhancement(media: HTMLElement, host: HTMLElement, repo
       if (!valid()) { cleanup(); return; }
       const width = video.videoWidth, height = video.videoHeight;
       if (!width || !height || width * 2 > device.limits.maxTextureDimension2D || height * 2 > device.limits.maxTextureDimension2D) throw new Error('Unsupported size');
-      const bounds = host.getBoundingClientRect();
+      host.append(canvas);
+      const bounds = canvas.getBoundingClientRect();
       const scale = Math.min(2, Math.min(bounds.width / width, bounds.height / height) * window.devicePixelRatio);
       canvas.width = Math.max(1, Math.round(width * scale));
       canvas.height = Math.max(1, Math.round(height * scale));
@@ -74,7 +75,6 @@ export function bindVideoEnhancement(media: HTMLElement, host: HTMLElement, repo
         }` });
       const pipeline = device.createRenderPipeline({ layout: 'auto', vertex: { module, entryPoint: 'vertex' }, fragment: { module, entryPoint: 'fragment', targets: [{ format }] }, primitive: { topology: 'triangle-list' } });
       const group = device.createBindGroup({ layout: pipeline.getBindGroupLayout(0), entries: [{ binding: 0, resource: enhance.getOutputTexture().createView() }, { binding: 1, resource: device.createSampler({ minFilter: 'linear', magFilter: 'linear' }) }] });
-      host.append(canvas);
       let first = true;
       const draw = () => {
         if (!valid()) return;
@@ -104,8 +104,9 @@ export function bindVideoEnhancement(media: HTMLElement, host: HTMLElement, repo
   const resize = new ResizeObserver(onReady);
   resize.observe(host);
   window.addEventListener('resize', onReady);
+  document.addEventListener('fullscreenchange', onReady);
   return {
     setEnabled(value: boolean) { enabled = value; void restart(); },
-    dispose() { disposed = true; ++generation; stop(); resize.disconnect(); window.removeEventListener('resize', onReady); media.removeEventListener('loadeddata', onReady); media.removeEventListener('resize', onReady); media.removeEventListener('enterpictureinpicture', onReady); media.removeEventListener('leavepictureinpicture', onReady); },
+    dispose() { disposed = true; ++generation; stop(); resize.disconnect(); window.removeEventListener('resize', onReady); document.removeEventListener('fullscreenchange', onReady); media.removeEventListener('loadeddata', onReady); media.removeEventListener('resize', onReady); media.removeEventListener('enterpictureinpicture', onReady); media.removeEventListener('leavepictureinpicture', onReady); },
   };
 }
