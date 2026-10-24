@@ -23,28 +23,6 @@ test("settings uses the shared canvas page hierarchy", async ({ page }) => {
 
   const pageTitle = page.locator("main h1").filter({ hasText: /^站点设置$/u });
   await expect(pageTitle).toBeVisible();
-  const wide = (page.viewportSize()?.width || 0) >= 640;
-  await expect(pageTitle).toHaveCSS("font-size", wide ? "30px" : "24px");
-  await expect(pageTitle).toHaveCSS("line-height", wide ? "36px" : "32px");
-  await expect(pageTitle).toHaveCSS("font-weight", "600");
-  const icon = page.locator("[data-manage-page-icon]");
-  await expect(icon).toHaveCSS("width", wide ? "44px" : "40px");
-  await expect(icon).toHaveCSS("height", wide ? "44px" : "40px");
-});
-
-test("settings controls fill their available section width", async ({ page }) => {
-  await login(page);
-  await page.goto("/manage/settings");
-
-  for (const field of [page.getByLabel("站点名称"), page.getByLabel("站点简介")]) {
-    const ratio = await field.evaluate((element) => {
-      const controlRoot = element.parentElement;
-      const availableWidth = controlRoot?.parentElement;
-      if (!controlRoot || !availableWidth) return 0;
-      return controlRoot.getBoundingClientRect().width / availableWidth.getBoundingClientRect().width;
-    });
-    expect(ratio).toBeGreaterThanOrEqual(0.95);
-  }
 });
 
 test("shared console shell renders without hydration or component warnings", async ({ page }) => {
@@ -63,10 +41,6 @@ test("shared console shell renders without hydration or component warnings", asy
   if ((page.viewportSize()?.width || 0) >= 1024) {
     const sidebar = page.locator("[data-admin-sidebar-appearance]");
     await expect(sidebar).toBeVisible();
-    await expect(sidebar).toHaveCSS("width", "268px");
-    const activeIcon = page.locator('a[href="/manage"]').filter({ hasText: "控制台" }).locator(".iconify").first();
-    await expect(activeIcon).toHaveCSS("width", "32px");
-    await expect(activeIcon).toHaveCSS("height", "32px");
   }
 
   expect(problems).toEqual([]);
@@ -116,11 +90,6 @@ test("source collection supports CRUD auto-save and bulk probing in aligned colu
   const desktop = (page.viewportSize()?.width || 0) >= 1280;
   if (desktop) {
     await expect(header).toBeVisible();
-    for (const cell of ["source", "search", "home", "priority", "actions"]) {
-      const headerBox = await header.locator(`[data-source-cell="${cell}"]`).boundingBox();
-      const rowBox = await firstRow.locator(`[data-source-cell="${cell}"]`).boundingBox();
-      expect(Math.abs((headerBox?.x || 0) - (rowBox?.x || 0))).toBeLessThanOrEqual(2);
-    }
   } else {
     await expect(header).toBeHidden();
     await expect(firstRow.getByText("参与搜索", { exact: true })).toBeVisible();

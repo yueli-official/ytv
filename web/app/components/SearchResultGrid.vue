@@ -14,7 +14,7 @@ function sourceCount(group: SearchGroup) { return new Set(group.candidates.map(i
 function candidateLabel(group: SearchGroup, index: number) {
  const item = group.candidates[index]!;
  const siblings = group.candidates.filter(candidate => candidate.sourceKey === item.sourceKey);
- return siblings.length > 1 ? `${item.sourceName} · 条目 ${siblings.indexOf(item) + 1}` : item.sourceName;
+ return siblings.length > 1 ? `${item.sourceName} · ${item.name}${siblings.filter(candidate => candidate.name === item.name).length > 1 ? ` · ${siblings.indexOf(item) + 1}` : ""}` : item.sourceName;
 }
 const failedPosters = ref(new Set<string>());
 function posterFor(group: SearchGroup) {

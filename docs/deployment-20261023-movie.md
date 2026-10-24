@@ -1,5 +1,13 @@
 # 2026-10-23 电影站升级上线
 
+## 播放地址限制修复发布（2026-10-24）
+
+已发布 `ytv-playback-policy-20261024-06`。以线上 `source-expansion-20261024-05` 源码归档为基准，仅替换播放 resolver 和对应已有测试，移除媒体域名/IP/HTTP授权限制；保留地址格式与HTTP/HTTPS协议校验。其余本地未发布改动未纳入。没有commit/push。
+
+API全套测试与Linux构建通过；使用Workspace当前导出的基线通过配套发布门禁。Web源码逐文件摘要与旧制品一致，复用原镜像和容器。候选/正式均验证8条原409解析恢复、桌面暗色非凡和手机亮色电影天堂实际播放及180秒拖动、106份JS哈希。8条正式媒体另外完成24张抽帧人工复查；[审核表](research/online-source-five-audit-20261024.md)已更新。
+
+数据库v11 clean，备份已验证可读，没有迁移、来源配置或用户评价改动。仅切换YTV API，其他原有容器ID不变。生产清单 `/projects/yuelili.com/ytv/deployment-release.json`，备份 `/projects/yuelili.com/backups/ytv-playback-policy-20261024-06`，本机证据 `D:/coding/yueli-official/task-artifacts/ytv/deploy-playback-policy-20261024-06`。候选容器、镜像组装目录和SSH隧道已清理。
+
 ## 手机播放器适配发布（2026-10-23）
 
 用户授权部署后，已上线 `ytv-player-20261023-14`：https://tv.yuelili.com。Web 更新为 `yueli/ytv-web:player-20261023-14`；API 复用 `yueli/ytv-api:playback-20261023-12`，源码摘要、二进制摘要、运行镜像和容器 ID 均核验一致，没有重启 API 或迁移数据库。数据库 v9 clean，发布前备份可读。没有 commit/push。

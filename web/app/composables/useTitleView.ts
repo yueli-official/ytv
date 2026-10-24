@@ -11,7 +11,7 @@ const playbackLink = (episode: string) => ({ path: watchPath(sourceKey.value, ex
 const sourceKey = computed(() => String(route.params.source || ""));
 const externalId = computed(() => String(route.params.id || ""));
 const { data, pending, error, refresh } = useAsyncData(() => `ytv-title-${sourceKey.value}-${externalId.value}`, () => api.title(sourceKey.value, externalId.value));
-const selectedLine = ref("0");
+const selectedLine = ref("");
 const rangeStart = ref(0);
 const lines = computed(() => titleLines(data.value));
 const line = computed(() => lines.value.find((item) => item.key === selectedLine.value) || lines.value[0]);
@@ -48,7 +48,7 @@ async function readHistory() {
 }
 onMounted(readHistory);
 onBeforeUnmount(() => { historyRequest++; });
-watch([sourceKey, externalId], () => { historyRequest++; lineChosen = false; selectedLine.value = "0"; rangeStart.value = 0; posterFailed.value = false; history.value = null; summaryExpanded.value = false; });
+watch([sourceKey, externalId], () => { historyRequest++; lineChosen = false; selectedLine.value = ""; rangeStart.value = 0; posterFailed.value = false; history.value = null; summaryExpanded.value = false; });
 watch(data, () => { if (import.meta.client) readHistory(); });
 watch(selectedLine, revealResume);
 const resume = computed(() => history.value && episodes.value.some((item) => item.key === history.value?.episodeKey) ? history.value : null);

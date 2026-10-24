@@ -1,0 +1,54 @@
+[
+  {
+    "key": "ffzy",
+    "name": "非凡资源",
+    "kind": "json_catalog",
+    "endpoint": "https://api.ffzyapi.com/api.php/provide/vod",
+    "imageHosts": [
+      "fffgood.com"
+    ],
+    "installed": true,
+    "enabled": true,
+    "homeVisible": false,
+    "priority": 75
+  },
+  {
+    "key": "dytt",
+    "name": "电影天堂",
+    "kind": "json_catalog",
+    "endpoint": "https://caiji.dyttzyapi.com/api.php/provide/vod/from/dyttm3u8",
+    "imageHosts": [
+      "img.dytt-tupian.com"
+    ],
+    "installed": true,
+    "enabled": true,
+    "homeVisible": false,
+    "priority": 76
+  },
+  {
+    "key": "maoyan",
+    "name": "猫眼资源",
+    "kind": "json_catalog",
+    "endpoint": "https://api.maoyanapi.top/api.php/provide/vod",
+    "imageHosts": [
+      "www.maoyanimg.top"
+    ],
+    "installed": true,
+    "enabled": false,
+    "homeVisible": false,
+    "priority": 77
+  },
+  {
+    "key": "iqiyi",
+    "name": "爱奇艺资源",
+    "kind": "json_catalog",
+    "endpoint": "https://iqiyizyapi.com/api.php/provide/vod",
+    "imageHosts": [
+      "tu.iqiyizyimg.com"
+    ],
+    "installed": true,
+    "enabled": true,
+    "homeVisible": false,
+    "priority": 78
+  }
+]

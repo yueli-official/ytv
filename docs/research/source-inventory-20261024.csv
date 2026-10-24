@@ -8,10 +8,19 @@ wwzy,旺旺短剧,https://wwzy.tv/api.php/provide/vod,停用,原有,保留现状
 qgsuoni,索尼资源,https://suoniapi.com/api.php/provide/vod,启用,原有,保留现状；本轮未复测
 qgyouzhiziyuanku,优质资源库,https://api.yzzy-api.com/inc/api_mac10_all.php,停用,原有,保留现状；本轮未复测
 qgikun,Ikun资源,https://www.ikunzy.com/api.php/provide/vod,停用,原有,保留现状；本轮未复测
-wujin,无尽资源,https://api.wujinapi.com/api.php/provide/vod,启用,本次新增,两部实播与拖动通过；1280×504 / 1710×720；后续复测《哪吒》片头有广告叠字
-kazumi-xfdmneo,xfdmneo,Kazumi 内置规则目录,启用,原有,本轮未复测
+wujin,无尽资源,https://api.wujinapi.com/api.php/provide/vod,启用,此前新增,两部实播与拖动通过；1280×504 / 1710×720；后续复测《哪吒》片头有广告叠字
+kazumi-xfdmneo,xfdmneo,Kazumi 内置规则目录,启用,原有,本轮两个媒体样本 401/未播放；既有启用保留，不计本轮验证成功
 kazumi-mxdm,MXdm,Kazumi 内置规则目录,启用,原有,本轮未复测
 kazumi-moonci,moonci,Kazumi 内置规则目录,启用,原有,本轮未复测
 kazumi-akianime,akianime,Kazumi 内置规则目录,启用,原有,本轮未复测
-kazumi-aafun,aafun,Kazumi 内置规则目录,启用,原有,本轮未复测
+kazumi-aafun,aafun,Kazumi 内置规则目录,停用,原有,与 moonci 同站同目录；去重停用，保留历史
 kazumi-7sefun,7sefun,Kazumi 内置规则目录,启用,原有,本轮未复测
+ffzy,非凡资源,https://api.ffzyapi.com/api.php/provide/vod,启用,本轮新增,两部样本解码与180秒拖动通过；细节见 source-expansion-20261024.md
+dytt,电影天堂,https://caiji.dyttzyapi.com/api.php/provide/vod/from/dyttm3u8,启用,本轮新增,两部样本解码与180秒拖动通过；细节见 source-expansion-20261024.md
+maoyan,猫眼资源,https://api.maoyanapi.top/api.php/provide/vod,启用,本轮新增,两部样本解码与180秒拖动通过；细节见 source-expansion-20261024.md
+iqiyi,爱奇艺资源,https://iqiyizyapi.com/api.php/provide/vod,启用,本轮新增,两部样本解码与180秒拖动通过；细节见 source-expansion-20261024.md
+kazumi-girigirilove,giriGiriLove,Kazumi 固定规则目录,启用,本轮新增,两片1080p实播与拖动通过
+kazumi-mutefun,mutefun,Kazumi 固定规则目录,启用,本轮新增,两片1080p实播与拖动通过；有站点水印
+kazumi-omofun,OmoFun,Kazumi 固定规则目录,启用,本轮新增,芙莉莲1080p实播通过；独立维护历史规则
+kazumi-fqdm,番茄动漫,Kazumi 固定规则目录,启用,本轮新增,海贼王1080p实播通过；芙莉莲默认线路失败；独立维护历史规则
+kazumi-dmghg,动漫共和国,Kazumi 固定规则目录,启用,本轮新增,芙莉莲1080p实播通过；海贼王样本失败；独立维护历史规则

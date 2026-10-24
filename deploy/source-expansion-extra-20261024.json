@@ -1,0 +1,62 @@
+[
+  {
+    "key": "jszy",
+    "name": "极速资源",
+    "kind": "json_catalog",
+    "endpoint": "https://jszyapi.com/api.php/provide/vod",
+    "enabled": true,
+    "installed": true,
+    "homeVisible": false,
+    "priority": 80
+  },
+  {
+    "key": "subo",
+    "name": "速播资源",
+    "kind": "json_catalog",
+    "endpoint": "https://subocaiji.com/api.php/provide/vod",
+    "enabled": true,
+    "installed": true,
+    "homeVisible": false,
+    "priority": 81
+  },
+  {
+    "key": "xinlang",
+    "name": "新浪资源",
+    "kind": "json_catalog",
+    "endpoint": "https://api.xinlangapi.com/xinlangapi.php/provide/vod",
+    "enabled": true,
+    "installed": true,
+    "homeVisible": false,
+    "priority": 82
+  },
+  {
+    "key": "hongniu",
+    "name": "红牛资源",
+    "kind": "json_catalog",
+    "endpoint": "https://www.hongniuzy2.com/api.php/provide/vod",
+    "enabled": false,
+    "installed": true,
+    "homeVisible": false,
+    "priority": 83
+  },
+  {
+    "key": "uku",
+    "name": "U酷资源",
+    "kind": "json_catalog",
+    "endpoint": "https://api.ukuapi88.com/api.php/provide/vod",
+    "enabled": false,
+    "installed": true,
+    "homeVisible": false,
+    "priority": 84
+  },
+  {
+    "key": "huya",
+    "name": "虎牙资源",
+    "kind": "json_catalog",
+    "endpoint": "https://www.huyaapi.com/api.php/provide/vod",
+    "enabled": false,
+    "installed": true,
+    "homeVisible": false,
+    "priority": 85
+  }
+]
