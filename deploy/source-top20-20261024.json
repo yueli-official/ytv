@@ -1,0 +1,175 @@
+{
+  "additions": [
+    {
+      "key": "jszy",
+      "name": "极速资源",
+      "kind": "json_catalog",
+      "endpoint": "https://jszyapi.com/api.php/provide/vod",
+      "enabled": true,
+      "installed": true,
+      "homeVisible": false,
+      "priority": 100
+    },
+    {
+      "key": "subo",
+      "name": "速播资源",
+      "kind": "json_catalog",
+      "endpoint": "https://subocaiji.com/api.php/provide/vod",
+      "enabled": true,
+      "installed": true,
+      "homeVisible": false,
+      "priority": 110
+    },
+    {
+      "key": "xinlang",
+      "name": "新浪资源",
+      "kind": "json_catalog",
+      "endpoint": "https://api.xinlangapi.com/xinlangapi.php/provide/vod",
+      "enabled": true,
+      "installed": true,
+      "homeVisible": false,
+      "priority": 120
+    },
+    {
+      "key": "haohua",
+      "name": "豪华资源",
+      "kind": "json_catalog",
+      "endpoint": "https://hhzyapi.com/api.php/provide/vod",
+      "enabled": true,
+      "installed": true,
+      "homeVisible": false,
+      "priority": 130
+    },
+    {
+      "key": "guangsu",
+      "name": "光速资源",
+      "kind": "json_catalog",
+      "endpoint": "https://api.guangsuapi.com/api.php/provide/vod",
+      "enabled": true,
+      "installed": true,
+      "homeVisible": false,
+      "priority": 140
+    },
+    {
+      "key": "jinying",
+      "name": "金鹰资源",
+      "kind": "json_catalog",
+      "endpoint": "https://jyzyapi.com/provide/vod/from/jinyingm3u8/at/json",
+      "enabled": true,
+      "installed": true,
+      "homeVisible": false,
+      "priority": 150
+    }
+  ],
+  "policy": [
+    {
+      "key": "ffzy",
+      "priority": 10,
+      "recommended": true
+    },
+    {
+      "key": "dytt",
+      "priority": 20,
+      "recommended": true
+    },
+    {
+      "key": "kazumi-7sefun",
+      "priority": 30,
+      "recommended": true
+    },
+    {
+      "key": "kazumi-moonci",
+      "priority": 40,
+      "recommended": true
+    },
+    {
+      "key": "kazumi-girigirilove",
+      "priority": 50,
+      "recommended": true
+    },
+    {
+      "key": "kazumi-akianime",
+      "priority": 60,
+      "recommended": false
+    },
+    {
+      "key": "mdzy",
+      "priority": 70,
+      "recommended": false
+    },
+    {
+      "key": "kazumi-omofun",
+      "priority": 80,
+      "recommended": false
+    },
+    {
+      "key": "kazumi-fqdm",
+      "priority": 90,
+      "recommended": false
+    },
+    {
+      "key": "jszy",
+      "priority": 100,
+      "recommended": false
+    },
+    {
+      "key": "subo",
+      "priority": 110,
+      "recommended": false
+    },
+    {
+      "key": "xinlang",
+      "priority": 120,
+      "recommended": false
+    },
+    {
+      "key": "haohua",
+      "priority": 130,
+      "recommended": false
+    },
+    {
+      "key": "guangsu",
+      "priority": 140,
+      "recommended": false
+    },
+    {
+      "key": "jinying",
+      "priority": 150,
+      "recommended": false
+    },
+    {
+      "key": "kazumi-mutefun",
+      "priority": 160,
+      "recommended": false
+    },
+    {
+      "key": "kazumi-dmghg",
+      "priority": 170,
+      "recommended": false
+    },
+    {
+      "key": "iqiyi",
+      "priority": 180,
+      "recommended": false
+    },
+    {
+      "key": "wujin",
+      "priority": 190,
+      "recommended": false
+    },
+    {
+      "key": "zuid",
+      "priority": 200,
+      "recommended": false
+    }
+  ],
+  "disable": [
+    "maoyan",
+    "zy360",
+    "kazumi-mxdm",
+    "kazumi-aafun",
+    "qgsuoni",
+    "yinghua",
+    "kazumi-xfdmneo"
+  ]
+}
