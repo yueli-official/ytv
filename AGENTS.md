@@ -40,3 +40,7 @@ Focus 是 Open Work 的恢复优先级，可有多个；未聚焦的 Open Work �
 新建工作台或完成升级验证后，在 deck 标题下写入实际加载的完整 Flightdeck 版本；普通保存与新建 Work 不刷新版本。
 `flightdeck/` 仅作本地记录：`.gitignore` 包含 `/flightdeck/`；已有跟踪记录保留本地文件并从 Git 索引移除。
 只维护工作台不代表执行 Work 下一步、提交、推送或发布。
+
+## 本机临时构建缓存
+
+Windows 冻结依赖安装和正式前端构建使用 `E:/cache/ytv/<任务ID>/`，按项目和任务隔离；发布后清理本任务依赖、编译缓存和可再生产物。发布包、源码快照、清单与验收证据继续归档在 `D:/coding/yueli-official/task-artifacts/ytv/<任务ID>/`。不将缓存、凭据或 Flightdeck 加入 Git。
