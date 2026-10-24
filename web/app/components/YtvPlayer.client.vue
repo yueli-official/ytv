@@ -24,9 +24,16 @@ const holdingSpeed = ref(false);
 const enhancementEnabled = ref(true);
 const enhancementState = ref<EnhancementState>('waiting');
 const preferenceError = ref('');
+const enhancementFailure = ref('');
+const enhancementHelpOpen = ref(false);
 let enhancement: ReturnType<typeof bindVideoEnhancement> | null = null;
-const enhancementLabel = computed(() => !enhancementEnabled.value ? '增强已关' : enhancementState.value === 'active' ? '增强已开' : enhancementState.value === 'unavailable' ? '增强不可用' : '增强待就绪');
+const enhancementLabel = computed(() => enhancementEnabled.value && enhancementState.value === 'unavailable' ? '画质增强失败' : '画质增强');
+function activateEnhancement() {
+  if (enhancementEnabled.value && enhancementState.value === 'unavailable') { enhancementHelpOpen.value = !enhancementHelpOpen.value; return; }
+  toggleEnhancement();
+}
 function toggleEnhancement() {
+  enhancementHelpOpen.value = false;
   enhancementEnabled.value = !enhancementEnabled.value;
   preferenceError.value = '';
   try { localStorage.setItem(enhancementPreferenceKey, String(enhancementEnabled.value)); }
@@ -69,14 +76,28 @@ onMounted(() => {
       element.setAttribute("aria-label", `${props.title} ${props.episodeLabel}`);
       element.style.cssText = "display:block;width:100%;height:100%;object-fit:contain";
       skin.value!.append(element);
-      const currentEnhancement = bindVideoEnhancement(element, skin.value!, state => { enhancementState.value = state; });
+      const currentEnhancement = bindVideoEnhancement(element, skin.value!, (state, reason) => { enhancementState.value = state; enhancementFailure.value = reason || ''; if (state !== 'unavailable') enhancementHelpOpen.value = false; });
       enhancement = currentEnhancement;
       currentEnhancement.setEnabled(enhancementEnabled.value);
       const hold = bindHoldSpeed(skin.value!, element, (active) => { holdingSpeed.value = active; });
       let releasePreferences = () => {};
       try { releasePreferences = bindPlayerPreferences(element as unknown as HTMLMediaElement, localStorage, hold.preferredRate); } catch { /* Playback works without browser storage. */ }
-      queueMicrotask(() => { if (element.isConnected) element.src = manifest.url; });
-      return { media: element, destroy: () => { currentEnhancement.dispose(); if (enhancement === currentEnhancement) enhancement = null; hold.dispose(); releasePreferences(); element.pause(); element.removeAttribute("src"); element.remove(); if (element.tagName === "VIDEO") element.load(); } };
+      const mediaRequest = new AbortController();
+      queueMicrotask(async () => {
+        // Direct video can play without CORS yet remain unreadable to WebGPU.
+        // Probe only headers/a byte range; never proxy or retain the video stream.
+        if (manifest.engine === 'direct' && navigator.gpu) {
+          const timeout = setTimeout(() => mediaRequest.abort(), 3000);
+          try {
+            const response = await fetch(manifest.url, { headers: { Range: 'bytes=0-0' }, credentials: 'omit', signal: mediaRequest.signal });
+            if (response.ok && element.isConnected) element.setAttribute('crossorigin', 'anonymous');
+            await response.body?.cancel();
+          } catch { /* Approved: keep original playback when frames cannot be read. */ }
+          finally { clearTimeout(timeout); }
+        }
+        if (element.isConnected) element.src = manifest.url;
+      });
+      return { media: element, destroy: () => { mediaRequest.abort(); currentEnhancement.dispose(); if (enhancement === currentEnhancement) enhancement = null; hold.dispose(); releasePreferences(); element.pause(); element.removeAttribute("src"); element.remove(); if (element.tagName === "VIDEO") element.load(); } };
     },
     storage: () => localStorage,
     onState: (value) => { snapshot.value = value; },
@@ -103,11 +124,18 @@ onBeforeUnmount(() => {
     <media-i18n lang="zh" class="block size-full">
       <component :is="'ytv-video-player'" ref="player" orientation-lock-type="landscape" :poster="poster || undefined" class="block size-full">
         <ytv-video-skin ref="skin" class="ytv-player-skin">
-          <button slot="enhancement" type="button" class="ytv-enhancement-button" :aria-pressed="enhancementEnabled" :aria-label="`画质增强：${enhancementLabel}`" @click.stop="toggleEnhancement">{{ enhancementLabel }}</button>
+          <button slot="enhancement" type="button" class="ytv-enhancement-button" :aria-pressed="enhancementEnabled" :data-enhancement-state="enhancementState" :aria-label="enhancementState === 'unavailable' && enhancementEnabled ? '画质增强失败，查看原因' : `画质增强：${enhancementEnabled ? '已开启' : '已关闭'}`" @click.stop="activateEnhancement">{{ enhancementLabel }}</button>
           <div class="ytv-gesture-feedback" :class="{ 'is-fullscreen': fullscreenActive }" aria-live="polite" aria-atomic="true"><span v-if="holdingSpeed" data-hold-speed>2 倍速播放 · 松开恢复</span></div>
         </ytv-video-skin>
       </component>
     </media-i18n>
+    <div v-if="enhancementHelpOpen" role="status" class="absolute bottom-14 right-3 z-30 max-w-[min(22rem,calc(100%-1.5rem))] rounded-lg border border-white/20 bg-black/95 p-3 text-xs leading-5 text-white">
+      <p>{{ enhancementFailure }}</p>
+      <div class="mt-2 flex justify-end gap-4">
+        <button type="button" class="text-white/70" @click="enhancementHelpOpen = false">收起</button>
+        <button type="button" class="text-[var(--ui-primary)]" @click="toggleEnhancement">关闭增强</button>
+      </div>
+    </div>
     <p v-if="preferenceError" role="status" class="absolute inset-x-3 top-3 z-30 rounded-lg bg-black/80 px-3 py-2 text-center text-xs text-white">{{ preferenceError }}</p>
     <p v-if="fullscreenMessage" role="status" class="absolute inset-x-3 top-3 z-30 rounded-lg bg-black/80 px-3 py-2 text-center text-xs text-white">{{ fullscreenMessage }}</p>
     <button v-if="['ready', 'paused', 'ended'].includes(snapshot.state)" type="button" data-primary-play :aria-label="snapshot.state === 'ended' ? '重新播放' : '播放'" class="absolute left-1/2 top-1/2 grid size-14 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-2xl border border-white/20 bg-black/65 text-white shadow-lg transition hover:border-white/50 hover:bg-black/85 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--ui-primary)] sm:size-16" @click="play"><UIcon :name="snapshot.state === 'ended' ? 'i-tabler-refresh' : 'i-tabler-player-play-filled'" class="size-5 sm:size-6" /></button>
@@ -130,7 +158,7 @@ onBeforeUnmount(() => {
 <style scoped>
 .ytv-player-skin { display: block; width: 100%; height: 100%; --media-accent-color: var(--ui-primary); --media-accent-text-color: #10212e; --media-object-fit: contain; --media-border-radius: 0; }
 .ytv-enhancement-button { flex-shrink:0; padding:6px; border:0; border-radius:6px; background:rgb(0 0 0 / 65%); color:white; font:500 12px/1.4 var(--font-sans); cursor:pointer; white-space:nowrap; }
-.ytv-enhancement-button[aria-pressed="true"] { color:var(--ui-primary); }
+.ytv-enhancement-button[aria-pressed="true"]:not([data-enhancement-state="unavailable"]) { color:var(--ui-primary); }
 .ytv-enhancement-button:focus-visible { outline:2px solid var(--ui-primary); outline-offset:2px; }
 .ytv-gesture-feedback { position: absolute; inset: 0; z-index: 20; pointer-events: none; display: flex; justify-content: center; align-items: flex-start; padding-top: 1rem; }
 .ytv-gesture-feedback span { border-radius: 999px; background: rgb(0 0 0 / 75%); padding: 0.5rem 1rem; color: white; font-size: 0.75rem; }

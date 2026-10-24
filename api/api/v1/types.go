@@ -111,14 +111,16 @@ type SearchGroupView struct {
 }
 
 type SearchRes struct {
-	Query     string             `json:"query"`
-	Page      int                `json:"page"`
-	Groups    []SearchGroupView  `json:"groups"`
-	Sources   []SourceResultView `json:"sources"`
-	Attempted int                `json:"attempted"`
-	Succeeded int                `json:"succeeded"`
-	Failed    int                `json:"failed"`
-	Complete  bool               `json:"complete"`
+	TotalPages int                `json:"totalPages"`
+	HasNext    bool               `json:"hasNext"`
+	Query      string             `json:"query"`
+	Page       int                `json:"page"`
+	Groups     []SearchGroupView  `json:"groups"`
+	Sources    []SourceResultView `json:"sources"`
+	Attempted  int                `json:"attempted"`
+	Succeeded  int                `json:"succeeded"`
+	Failed     int                `json:"failed"`
+	Complete   bool               `json:"complete"`
 }
 
 type GetTitleReq struct {

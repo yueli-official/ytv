@@ -82,6 +82,7 @@ func (controller *Public) Search(ctx context.Context, request *v1.SearchReq) (*v
 		return nil, mapError(err)
 	}
 	response := &v1.SearchRes{
+		TotalPages: page.TotalPages, HasNext: page.HasNext,
 		Query: page.Query.Text, Page: page.Query.Page, Attempted: page.Attempted,
 		Succeeded: page.Succeeded, Failed: page.Failed, Complete: page.Complete,
 		Groups:  make([]v1.SearchGroupView, 0, len(page.Groups)),
@@ -123,6 +124,7 @@ func (controller *Public) Discover(ctx context.Context, request *v1.DiscoverReq)
 		return nil, mapError(err)
 	}
 	response := &v1.SearchRes{
+		TotalPages: page.TotalPages, HasNext: page.HasNext,
 		Page: page.Query.Page, Attempted: page.Attempted, Succeeded: page.Succeeded,
 		Failed: page.Failed, Complete: page.Complete,
 		Groups: make([]v1.SearchGroupView, 0, len(page.Groups)), Sources: make([]v1.SourceResultView, 0, len(page.Sources)),

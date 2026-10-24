@@ -31,6 +31,8 @@ var (
 	approvedKazumiRules = map[string]bool{
 		"7sefun": true, "aafun": true, "akianime": true,
 		"moonci": true, "MXdm": true, "xfdmneo": true,
+		"giriGiriLove": true, "mutefun": true,
+		"omofun": true, "FQDM": true, "dmghg": true,
 	}
 )
 

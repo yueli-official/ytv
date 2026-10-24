@@ -61,13 +61,15 @@ type SourceResult struct {
 }
 
 type Page struct {
-	Query     Query
-	Groups    []Group
-	Sources   []SourceResult
-	Attempted int
-	Succeeded int
-	Failed    int
-	Complete  bool
+	TotalPages int
+	HasNext    bool
+	Query      Query
+	Groups     []Group
+	Sources    []SourceResult
+	Attempted  int
+	Succeeded  int
+	Failed     int
+	Complete   bool
 }
 
 type Options struct {
@@ -179,6 +181,8 @@ func (module *Module) discover(ctx context.Context, query Query, search bool) (P
 			}
 		} else {
 			page.Succeeded++
+			page.TotalPages = max(page.TotalPages, result.page.TotalPages)
+			page.HasNext = page.HasNext || result.page.NextPage > query.Page
 			for ordinal, title := range result.page.Items {
 				if seenLocators[title.Locator] {
 					continue
@@ -187,7 +191,7 @@ func (module *Module) discover(ctx context.Context, query Query, search bool) (P
 				key := displayGroupKey(title)
 				group := grouped[key]
 				if group == nil {
-					group = &Group{Key: key, Title: title.Name, Year: title.Year, Category: title.Category}
+					group = &Group{Key: key, Title: identityTitle(title.Name), Year: title.Year, Category: mediaCategory(title.Category)}
 					grouped[key] = group
 				}
 				group.Candidates = append(group.Candidates, Candidate{Title: title, Priority: result.definition.Priority, Ordinal: ordinal})
@@ -200,11 +204,14 @@ func (module *Module) discover(ctx context.Context, query Query, search bool) (P
 		})
 	}
 	page.Complete = page.Failed == 0
+	page.TotalPages = max(1, page.TotalPages)
 	if page.Succeeded == 0 && !verificationRequired {
 		return page, ErrAllSourcesFailed
 	}
 
+	grouped = mergeConfirmedCredits(grouped)
 	grouped = mergeIncompleteGroups(grouped)
+	grouped = mergeSameTitles(grouped)
 	for _, group := range grouped {
 		slices.SortFunc(group.Candidates, func(left, right Candidate) int {
 			if left.Priority != right.Priority {
@@ -215,6 +222,15 @@ func (module *Module) discover(ctx context.Context, query Query, search bool) (P
 		page.Groups = append(page.Groups, *group)
 	}
 	slices.SortFunc(page.Groups, func(left, right Group) int {
+		if query.Text != "" {
+			l, r := normalized(left.Title) == normalized(identityTitle(query.Text)), normalized(right.Title) == normalized(identityTitle(query.Text))
+			if l != r {
+				if l {
+					return -1
+				}
+				return 1
+			}
+		}
 		leftPriority := left.Candidates[0].Priority
 		rightPriority := right.Candidates[0].Priority
 		if leftPriority != rightPriority {
@@ -241,7 +257,7 @@ type sourceSearchResult struct {
 }
 
 func displayGroupKey(title source.Title) string {
-	parts := []string{normalized(title.Name), normalized(title.Year), normalized(title.Category)}
+	parts := []string{normalized(identityTitle(title.Name)), normalized(title.Year), normalized(mediaCategory(title.Category))}
 	return strings.Join(parts, ":")
 }
 
@@ -299,6 +315,120 @@ func mergeIncompleteGroups(groups map[string]*Group) map[string]*Group {
 			match.Candidates = append(match.Candidates, g.Candidates...)
 		} else {
 			result[g.Key] = g
+		}
+	}
+	return result
+}
+
+// Language editions retain their individual locators inside the film group.
+func identityTitle(name string) string {
+	name = strings.TrimSpace(name)
+	for _, suffix := range []string{"(国语)", "（国语）", "(粤语)", "（粤语）", "(国)", "（国）", "(粤)", "（粤）", "国语版", "粤语版", "国语", "粤语"} {
+		if strings.HasSuffix(name, suffix) {
+			return strings.TrimSpace(strings.TrimSuffix(name, suffix))
+		}
+	}
+	return name
+}
+func mediaCategory(category string) string {
+	category = strings.TrimSpace(category)
+	switch {
+	case strings.Contains(category, "动漫"), strings.Contains(category, "动画"):
+		return "动漫"
+	case strings.Contains(category, "短剧"):
+		return "短剧"
+	case strings.Contains(category, "综艺"):
+		return "综艺"
+	case strings.HasSuffix(category, "剧"), category == "电视剧":
+		return "电视剧"
+	case strings.HasSuffix(category, "片"), category == "电影":
+		return "电影"
+	default:
+		return category
+	}
+}
+func matchingCredits(a, b source.Title) bool {
+	names := func(raw string) map[string]bool {
+		result := map[string]bool{}
+		for _, name := range strings.FieldsFunc(raw, func(r rune) bool { return strings.ContainsRune(",，/、;；|", r) }) {
+			name = normalized(name)
+			if name != "" && name != "未知" && name != "内详" {
+				result[name] = true
+			}
+		}
+		return result
+	}
+	overlap := func(a, b string) int {
+		n := 0
+		right := names(b)
+		for name := range names(a) {
+			if right[name] {
+				n++
+			}
+		}
+		return n
+	}
+	return overlap(a.Directors, b.Directors) > 0 && overlap(a.Actors, b.Actors) >= 2
+}
+
+// A contradictory year alone is not enough to merge remakes. Require matching
+// directors and at least two cast members for the same movie title.
+func mergeConfirmedCredits(groups map[string]*Group) map[string]*Group {
+	keys := make([]string, 0, len(groups))
+	for k := range groups {
+		keys = append(keys, k)
+	}
+	slices.Sort(keys)
+	for i, k := range keys {
+		a := groups[k]
+		if a == nil || a.Category != "电影" {
+			continue
+		}
+		for _, other := range keys[i+1:] {
+			b := groups[other]
+			if b == nil || b.Category != "电影" || normalized(a.Title) != normalized(b.Title) {
+				continue
+			}
+			matched := false
+			for _, ca := range a.Candidates {
+				for _, cb := range b.Candidates {
+					if matchingCredits(ca.Title, cb.Title) {
+						matched = true
+					}
+				}
+			}
+			if matched {
+				a.Candidates = append(a.Candidates, b.Candidates...)
+				delete(groups, other)
+			}
+		}
+	}
+	return groups
+}
+
+// Display identity follows the viewer-facing title. Missing descriptions/posters
+// remain candidates of the same card instead of creating metadata-only duplicates.
+func mergeSameTitles(groups map[string]*Group) map[string]*Group {
+	keys := make([]string, 0, len(groups))
+	for key := range groups {
+		keys = append(keys, key)
+	}
+	slices.Sort(keys)
+	result := make(map[string]*Group)
+	for _, key := range keys {
+		group := groups[key]
+		identity := normalized(group.Title)
+		if target := result[identity]; target != nil {
+			target.Candidates = append(target.Candidates, group.Candidates...)
+			if target.Year == "" {
+				target.Year = group.Year
+			}
+			if target.Category == "" {
+				target.Category = group.Category
+			}
+		} else {
+			group.Key = identity
+			result[identity] = group
 		}
 	}
 	return result

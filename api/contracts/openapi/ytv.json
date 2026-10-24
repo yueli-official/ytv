@@ -1078,6 +1078,13 @@
           "succeeded": {
             "format": "int",
             "type": "integer"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int"
+          },
+          "hasNext": {
+            "type": "boolean"
           }
         },
         "type": "object"

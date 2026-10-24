@@ -62,12 +62,12 @@ func TestLoadKazumiRequiresImmutableRevision(t *testing.T) {
 }
 
 func TestLoadKazumiSnapshotDoesNotRequireNetwork(t *testing.T) {
-	result, err := LoadKazumiSnapshot("5fea5eb84768a2290ddedb156583ef20d9b43561")
+	result, err := LoadKazumiSnapshot("0972545266e7ac7cc06e7e522892239824f7d713")
 	if err != nil {
 		t.Fatalf("LoadKazumiSnapshot() error = %v", err)
 	}
-	if len(result.Definitions) != 6 || len(result.Skipped) != 10 {
-		t.Fatalf("definitions/skipped = %d/%d, want 6/10", len(result.Definitions), len(result.Skipped))
+	if len(result.Definitions) != 11 || len(result.Skipped) != 9 {
+		t.Fatalf("definitions/skipped = %d/%d, want 11/9", len(result.Definitions), len(result.Skipped))
 	}
 	for _, definition := range result.Definitions {
 		if definition.Catalog != "Kazumi" || !definition.InitiallyUninstalled {
@@ -91,7 +91,7 @@ func TestLoadKazumiOfficialSnapshot(t *testing.T) {
 	transport.TLSHandshakeTimeout = 20 * time.Second
 	client := &http.Client{Timeout: 25 * time.Second, Transport: transport}
 	result, err := LoadKazumi(context.Background(), KazumiOptions{
-		Client: client, Revision: "5fea5eb84768a2290ddedb156583ef20d9b43561", MaxParallel: 4,
+		Client: client, Revision: "0972545266e7ac7cc06e7e522892239824f7d713", MaxParallel: 4,
 	})
 	if err != nil {
 		t.Fatal(err)

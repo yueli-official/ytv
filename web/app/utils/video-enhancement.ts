@@ -5,7 +5,7 @@ export type EnhancementState = 'waiting' | 'active' | 'unavailable' | 'off';
 export const enhancementPreferenceKey = 'ytv:video-enhancement';
 
 // Own the renderer lifecycle: the package's demo renderer has no disposal API.
-export function bindVideoEnhancement(media: HTMLElement, host: HTMLElement, report: (state: EnhancementState) => void) {
+export function bindVideoEnhancement(media: HTMLElement, host: HTMLElement, report: (state: EnhancementState, reason?: string) => void) {
   let enabled = false;
   let disposed = false;
   let generation = 0;
@@ -15,11 +15,11 @@ export function bindVideoEnhancement(media: HTMLElement, host: HTMLElement, repo
     stop();
     stop = () => {};
     if (disposed || !enabled) { report('off'); return; }
-    if (!navigator.gpu) { report('unavailable'); return; }
+    if (!navigator.gpu) { report('unavailable', '当前浏览器未提供画质增强所需的 GPU 功能，已保留原画播放。'); return; }
     report('waiting');
     const video = getMediaElement(media);
     if (!(video instanceof HTMLVideoElement) || video.readyState < 2) return;
-    if (document.pictureInPictureElement === video) { report('unavailable'); return; }
+    if (document.pictureInPictureElement === video) { report('unavailable', '画中画使用原画播放，退出画中画后恢复增强。'); return; }
     let device: GPUDevice | undefined;
     let context: GPUCanvasContext | null = null;
     let frame = 0;
@@ -35,12 +35,12 @@ export function bindVideoEnhancement(media: HTMLElement, host: HTMLElement, repo
     };
     stop = cleanup;
     const valid = () => !disposed && enabled && current === generation;
-    const fail = () => { if (valid()) { ++generation; cleanup(); report('unavailable'); } };
+    const fail = (cause?: unknown) => { if (valid()) { ++generation; cleanup(); report('unavailable', cause instanceof DOMException && cause.name === 'SecurityError' ? '此视频未允许网页读取画面，无法进行画质增强，已保留原画播放。' : '画质增强未能运行，已保留原画播放。可关闭后重新开启尝试。'); } };
     try {
       if (!navigator.gpu || !video.requestVideoFrameCallback) throw new Error('GPU unavailable');
       const adapter = await navigator.gpu.requestAdapter();
       if (!valid()) return;
-      if (!adapter) throw new Error('GPU unavailable');
+      if (!adapter) { if (valid()) report('unavailable', '当前设备未提供可用的 GPU，已保留原画播放。'); return; }
       device = await adapter.requestDevice();
       if (!valid()) { cleanup(); return; }
       device.addEventListener('uncapturederror', fail);
@@ -87,10 +87,10 @@ export function bindVideoEnhancement(media: HTMLElement, host: HTMLElement, repo
             if (first) { first = false; canvas.style.visibility = 'visible'; report('active'); }
             frame = video.requestVideoFrameCallback(draw);
           }, fail);
-        } catch { fail(); }
+        } catch (cause) { fail(cause); }
       };
       draw();
-    } catch { fail(); }
+    } catch (cause) { fail(cause); }
   };
   const onReady = () => { void restart(); };
   media.addEventListener('loadeddata', onReady);

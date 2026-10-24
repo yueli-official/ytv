@@ -16,7 +16,7 @@ func TestLiveKazumiPlaybackContracts(t *testing.T) {
 	if os.Getenv("YTV_TEST_LIVE_KAZUMI_PLAYBACK") != "true" {
 		t.Skip("set YTV_TEST_LIVE_KAZUMI_PLAYBACK=true for the live playback audit")
 	}
-	catalog, err := rulecatalog.LoadKazumiSnapshot("5fea5eb84768a2290ddedb156583ef20d9b43561")
+	catalog, err := rulecatalog.LoadKazumiSnapshot("0972545266e7ac7cc06e7e522892239824f7d713")
 	if err != nil {
 		t.Fatal(err)
 	}

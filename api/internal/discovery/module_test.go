@@ -138,15 +138,19 @@ func TestBrowseUsesOnlySourcesVisibleOnHome(t *testing.T) {
 	}
 }
 
-func TestSearchGroupsMissingMetadataWithoutMergingAmbiguousTitles(t *testing.T) {
+func TestSearchGroupsSameTitlesRegardlessOfMissingMetadata(t *testing.T) {
 	cases := []struct {
 		name   string
 		titles []source.Title
 		want   int
 	}{
+		{"movie genres and language editions", []source.Title{{Name: "食神", Year: "1996", Category: "动作片"}, {Name: "食神(粤语)", Year: "1996", Category: "喜剧片"}, {Name: "食神", Year: "2008", Category: "台湾剧"}}, 1},
+		{"incorrect year with confirmed movie credits", []source.Title{{Name: "食神", Year: "1996", Category: "动作片", Actors: "周星驰,莫文蔚,吴孟达", Directors: "李力持,周星驰"}, {Name: "食神", Year: "2025", Category: "喜剧片", Actors: "周星驰,吴孟达", Directors: "周星驰"}}, 1},
+		{"remake with different credits", []source.Title{{Name: "同名", Year: "1996", Category: "动作片", Actors: "演员甲,演员乙", Directors: "导演甲"}, {Name: "同名", Year: "2025", Category: "喜剧片", Actors: "演员丙,演员丁", Directors: "导演乙"}}, 1},
+
 		{"missing Kazumi metadata", []source.Title{{Name: "线上游戏的老婆不可能是女生？", Year: "2016", Category: "日韩动漫"}, {Name: "线上游戏的老婆不可能是女生?"}}, 1},
-		{"different years", []source.Title{{Name: "同名", Year: "2016"}, {Name: "同名", Year: "2026"}, {Name: "同名"}}, 3},
-		{"different categories", []source.Title{{Name: "同名", Year: "2016", Category: "电影"}, {Name: "同名", Year: "2016", Category: "电视剧"}, {Name: "同名", Year: "2016"}}, 3},
+		{"different years", []source.Title{{Name: "同名", Year: "2016"}, {Name: "同名", Year: "2026"}, {Name: "同名"}}, 1},
+		{"different categories", []source.Title{{Name: "同名", Year: "2016", Category: "电影"}, {Name: "同名", Year: "2016", Category: "电视剧"}, {Name: "同名", Year: "2016"}}, 1},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {

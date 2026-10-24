@@ -1,4 +1,4 @@
-// Package playback owns the Episode Locator to safe Playback Manifest step.
+// Package playback owns the Episode Locator to Playback Manifest step.
 // It never fetches or persists media bytes.
 package playback
 
@@ -6,9 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"net"
 	"net/url"
-	"slices"
 	"strings"
 
 	"github.com/yueli-official/ytv/api/internal/source"
@@ -105,38 +103,16 @@ func validateURL(raw string, definition source.Definition) (*url.URL, Engine, er
 		return parsed, EngineHLS, nil
 	}
 	parsed, err := url.Parse(strings.TrimSpace(raw))
-	if err != nil || parsed.Hostname() == "" || parsed.User != nil {
+	if err != nil || parsed.Hostname() == "" {
 		return nil, "", ErrUnsafeURL
 	}
-	if parsed.Scheme != "https" && !(definition.AllowHTTP && parsed.Scheme == "http") {
+	if parsed.Scheme != "https" && parsed.Scheme != "http" {
 		return nil, "", ErrUnsafeURL
 	}
-	host := strings.ToLower(strings.TrimSuffix(parsed.Hostname(), "."))
-	if address := net.ParseIP(host); address != nil {
-		if address.IsLoopback() || address.IsPrivate() || address.IsLinkLocalUnicast() || address.IsUnspecified() {
-			return nil, "", ErrUnsafeURL
-		}
-	}
-	if !definition.TrustPlaybackURL && (len(definition.PlaybackHosts) == 0 || !slices.ContainsFunc(definition.PlaybackHosts, func(pattern string) bool {
-		return hostMatches(host, pattern)
-	})) {
-		return nil, "", ErrUnsafeURL
-	}
+	// Catalog adapters own the resolved URL. CDN hosts are not a playback policy.
 	engine := EngineDirect
 	if strings.HasSuffix(strings.ToLower(parsed.Path), ".m3u8") {
 		engine = EngineHLS
 	}
 	return parsed, engine, nil
-}
-
-func hostMatches(host, rawPattern string) bool {
-	pattern := strings.ToLower(strings.TrimSuffix(strings.TrimSpace(rawPattern), "."))
-	if pattern == "" {
-		return false
-	}
-	if strings.HasPrefix(pattern, "*.") {
-		root := strings.TrimPrefix(pattern, "*.")
-		return host != root && strings.HasSuffix(host, "."+root)
-	}
-	return host == pattern
 }

@@ -10,12 +10,12 @@ const { ytvFailureMessage, rememberSearch, route, api, sourceSettingsOpen, query
         <h1>{{ query ? `“${query}” 的搜索结果` : '搜索影视' }}</h1>
         <div v-if="query" data-search-summary class="ytv-search-summary min-h-6" role="status" aria-live="polite">
           <p v-if="showLoading">正在搜索 · 第 {{ page }} 页</p>
-          <p v-else-if="data">本页 {{ data.groups.length }} 个影片 · 第 {{ page }} 页</p>
+          <p v-else-if="data">本页 {{ data.groups.length }} 个影片 · 第 {{ page }} / {{ data.totalPages }} 页</p>
           <p v-if="data && !showLoading && !data.complete" class="ytv-search-degraded"><UIcon name="i-tabler-info-circle" />部分来源暂时不可用</p>
         </div>
         <div class="flex flex-wrap items-center gap-3">
         <button class="ytv-source-scope" @click="() => { sourceSettingsOpen = true; }"><UIcon name="i-tabler-database" />{{ sourceKeys.length ? `已选 ${sourceKeys.length} 个来源` : '全部已启用来源' }}<span class="mx-2 text-white/30">|</span><UIcon name="i-tabler-adjustments-horizontal" />来源设置</button>
-        <UButton v-if="query" label="重新搜索" icon="i-tabler-refresh" color="neutral" variant="ghost" size="sm" class="mt-4" :loading="pending" :disabled="pending" @click="retry" />
+        <UButton v-if="query" label="强制刷新搜索" icon="i-tabler-refresh" color="neutral" variant="ghost" size="sm" class="mt-4" :loading="pending" :disabled="pending" @click="retry" />
         </div>
         <SearchCommand v-if="!query" history-only :initial-sources="sourceKeys" />
         <details v-if="data?.sources.length && !showLoading" :open="verificationSources.length > 0 && !data.groups.length" class="mt-3 text-sm text-white/70">
@@ -50,8 +50,8 @@ const { ytvFailureMessage, rememberSearch, route, api, sourceSettingsOpen, query
 
       <nav v-if="query && (data?.groups.length || page > 1)" class="flex items-center justify-center gap-3" aria-label="搜索结果分页">
         <UButton label="上一页" icon="i-tabler-chevron-left" color="neutral" variant="soft" :disabled="page <= 1 || showLoading" :to="page > 1 ? pageLink(page - 1) : undefined" />
-        <span class="text-xs text-white/60">第 {{ page }} 页</span>
-        <UButton label="下一页" icon="i-tabler-chevron-right" trailing color="neutral" variant="soft" :disabled="!data?.groups.length || showLoading" :to="data?.groups.length ? pageLink(page + 1) : undefined" />
+        <span class="text-xs text-white/60">第 {{ page }} / {{ data?.totalPages }} 页</span>
+        <UButton label="下一页" icon="i-tabler-chevron-right" trailing color="neutral" variant="soft" :disabled="!data?.hasNext || showLoading" :to="data?.hasNext ? pageLink(page + 1) : undefined" />
       </nav>
     </div>
   </div>

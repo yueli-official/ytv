@@ -14,24 +14,28 @@ import (
 type Kazumi struct{}
 
 type kazumiDocument struct {
-	API               scalarInt       `json:"api"`
-	Name              string          `json:"name"`
-	BaseURL           string          `json:"baseURL"`
-	SearchURL         string          `json:"searchURL"`
-	SearchList        string          `json:"searchList"`
-	SearchName        string          `json:"searchName"`
-	SearchResult      string          `json:"searchResult"`
-	ChapterRoads      string          `json:"chapterRoads"`
-	ChapterResult     string          `json:"chapterResult"`
-	UserAgent         string          `json:"userAgent"`
-	Referer           string          `json:"referer"`
-	UsePost           bool            `json:"usePost"`
-	UseWebview        bool            `json:"useWebview"`
-	UseNativePlayer   bool            `json:"useNativePlayer"`
-	UseLegacyParser   bool            `json:"useLegacyParser"`
-	MultipleSources   bool            `json:"muliSources"`
-	AdBlocker         json.RawMessage `json:"adBlocker"`
-	AntiCrawlerConfig json.RawMessage `json:"antiCrawlerConfig"`
+	SearchMode        string            `json:"searchMode"`
+	ChapterMode       string            `json:"chapterMode"`
+	SearchAPI         *rules.SearchAPI  `json:"searchApiConfig"`
+	ChapterAPI        *rules.ChapterAPI `json:"chapterApiConfig"`
+	API               scalarInt         `json:"api"`
+	Name              string            `json:"name"`
+	BaseURL           string            `json:"baseURL"`
+	SearchURL         string            `json:"searchURL"`
+	SearchList        string            `json:"searchList"`
+	SearchName        string            `json:"searchName"`
+	SearchResult      string            `json:"searchResult"`
+	ChapterRoads      string            `json:"chapterRoads"`
+	ChapterResult     string            `json:"chapterResult"`
+	UserAgent         string            `json:"userAgent"`
+	Referer           string            `json:"referer"`
+	UsePost           bool              `json:"usePost"`
+	UseWebview        bool              `json:"useWebview"`
+	UseNativePlayer   bool              `json:"useNativePlayer"`
+	UseLegacyParser   bool              `json:"useLegacyParser"`
+	MultipleSources   bool              `json:"muliSources"`
+	AdBlocker         json.RawMessage   `json:"adBlocker"`
+	AntiCrawlerConfig json.RawMessage   `json:"antiCrawlerConfig"`
 	YTV               struct {
 		MediaXPath string `json:"mediaXPath"`
 	} `json:"ytv"`
@@ -52,11 +56,44 @@ func (Kazumi) Compile(document json.RawMessage) (Result, error) {
 	if err := requireAbsoluteHTTPS("baseURL", rule.BaseURL); err != nil {
 		return Result{}, err
 	}
-	for field, value := range map[string]string{
-		"searchURL": rule.SearchURL, "searchList": rule.SearchList,
-		"searchName": rule.SearchName, "searchResult": rule.SearchResult,
-		"chapterRoads": rule.ChapterRoads, "chapterResult": rule.ChapterResult,
-	} {
+	required := map[string]string{}
+	if rule.SearchMode == "api" {
+		if rule.SearchAPI == nil {
+			return Result{}, fmt.Errorf("searchApiConfig is required")
+		}
+		if err := validateAPI(rule.SearchAPI.Request); err != nil {
+			return Result{}, err
+		}
+		required["listPath"], required["namePath"], required["sourcePath"] = rule.SearchAPI.ListPath, rule.SearchAPI.NamePath, rule.SearchAPI.SourcePath
+	} else {
+		for field, value := range map[string]string{
+			"searchURL": rule.SearchURL, "searchList": rule.SearchList,
+			"searchName": rule.SearchName, "searchResult": rule.SearchResult,
+		} {
+			required[field] = value
+		}
+	}
+	if rule.ChapterMode == "api" {
+		if rule.ChapterAPI == nil {
+			return Result{}, fmt.Errorf("chapterApiConfig is required")
+		}
+		if err := validateAPI(rule.ChapterAPI.Request); err != nil {
+			return Result{}, err
+		}
+		if rule.ChapterAPI.Format != "delimited" && rule.ChapterAPI.Format != "nested" {
+			return Result{}, fmt.Errorf("unsupported chapter API format %q", rule.ChapterAPI.Format)
+		}
+		fields := map[string]string{"roadNamesPath": rule.ChapterAPI.RoadNamesPath, "roadEpisodesPath": rule.ChapterAPI.RoadEpisodesPath, "roadSeparator": rule.ChapterAPI.RoadSeparator, "episodeSeparator": rule.ChapterAPI.EpisodeSeparator, "fieldSeparator": rule.ChapterAPI.FieldSeparator}
+		if rule.ChapterAPI.Format == "nested" {
+			fields = map[string]string{"roadsPath": rule.ChapterAPI.RoadsPath, "episodesPath": rule.ChapterAPI.EpisodesPath, "episodeNamePath": rule.ChapterAPI.EpisodeNamePath, "episodeUrlPath": rule.ChapterAPI.EpisodeURLPath, "episodePage.url": rule.ChapterAPI.EpisodePage.URL}
+		}
+		for field, value := range fields {
+			required[field] = value
+		}
+	} else {
+		required["chapterRoads"], required["chapterResult"] = rule.ChapterRoads, rule.ChapterResult
+	}
+	for field, value := range required {
 		if strings.TrimSpace(value) == "" {
 			return Result{}, fmt.Errorf("%s is required", field)
 		}
@@ -98,14 +135,21 @@ func (Kazumi) Compile(document json.RawMessage) (Result, error) {
 	return Result{Plan: rules.Plan{
 		Format: "kazumi", FormatLevel: int(rule.API), Name: strings.TrimSpace(rule.Name),
 		BaseURL: strings.TrimSpace(rule.BaseURL), UserAgent: strings.TrimSpace(rule.UserAgent),
-		Search: rules.SearchPlan{Request: rules.RequestPlan{
+		Search: rules.SearchPlan{API: rule.SearchAPI, Request: rules.RequestPlan{
 			Method: method, URL: strings.TrimSpace(rule.SearchURL), Referer: strings.TrimSpace(rule.Referer),
 		}, ListXPath: rule.SearchList, NameXPath: rule.SearchName, LinkXPath: rule.SearchResult},
-		Title:             rules.TitlePlan{RoadsXPath: rule.ChapterRoads, EpisodesXPath: rule.ChapterResult, MultipleRoads: rule.MultipleSources},
+		Title:             rules.TitlePlan{API: rule.ChapterAPI, RoadsXPath: rule.ChapterRoads, EpisodesXPath: rule.ChapterResult, MultipleRoads: rule.MultipleSources},
 		Playback:          rules.PlaybackPlan{UseWebview: rule.UseWebview, UseNativePlayer: rule.UseNativePlayer, UseLegacyParser: rule.UseLegacyParser, MediaXPath: strings.TrimSpace(rule.YTV.MediaXPath)},
 		Capabilities:      capabilities,
 		VerificationXPath: verificationSelectors(rule.AntiCrawlerConfig),
 	}, Diagnostics: diagnostics}, nil
+}
+
+func validateAPI(request rules.APIRequest) error {
+	if request.Method != "GET" && !(request.Method == "POST" && request.BodyType == "json") {
+		return fmt.Errorf("unsupported rule API method %q", request.Method)
+	}
+	return requireAbsoluteHTTPS("API request URL", request.URL)
 }
 
 func verificationSelectors(raw json.RawMessage) []string {

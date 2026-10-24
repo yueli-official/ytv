@@ -52,6 +52,10 @@ func (*Adapter) Browse(context.Context, source.Definition, int) (source.Page, er
 }
 
 func (adapter *Adapter) Search(ctx context.Context, definition source.Definition, query source.Query) (source.Page, error) {
+	// These compiled search plans expose one result page, not a paged API.
+	if query.Page > 1 {
+		return source.Page{TotalPages: 1}, nil
+	}
 	plan, err := sourcePlan(definition)
 	if err != nil {
 		return source.Page{}, err
@@ -59,6 +63,9 @@ func (adapter *Adapter) Search(ctx context.Context, definition source.Definition
 	keyword := strings.TrimSpace(query.Text)
 	if keyword == "" {
 		return source.Page{}, fmt.Errorf("%w: search text is required", source.ErrInvalid)
+	}
+	if plan.Search.API != nil {
+		return adapter.searchAPI(ctx, definition, plan, keyword)
 	}
 	target := strings.ReplaceAll(plan.Search.Request.URL, "@keyword", url.QueryEscape(keyword))
 	document, finalURL, err := adapter.fetch(ctx, definition, plan, plan.Search.Request, target)
@@ -82,13 +89,16 @@ func (adapter *Adapter) Search(ctx context.Context, definition source.Definition
 			SourceName: definition.Name, Name: name,
 		})
 	}
-	return source.Page{Items: items, Total: len(items)}, nil
+	return source.Page{Items: items, Total: len(items), TotalPages: 1}, nil
 }
 
 func (adapter *Adapter) ResolveTitle(ctx context.Context, definition source.Definition, locator source.TitleLocator) (source.Title, error) {
 	plan, err := sourcePlan(definition)
 	if err != nil {
 		return source.Title{}, err
+	}
+	if plan.Title.API != nil {
+		return adapter.titleAPI(ctx, definition, plan, locator)
 	}
 	detailURL, err := decodeURL(locator.ExternalID)
 	if err != nil || locator.SourceKey != definition.Key || !sameHost(definition.Endpoint, detailURL) {
@@ -159,6 +169,21 @@ func (adapter *Adapter) ResolveEpisode(ctx context.Context, definition source.De
 		return title, episode, nil
 	}
 	plan, _ := sourcePlan(definition)
+	if plan.Playback.Extractor == "maccms_page" {
+		target, extractErr := adapter.extractMacCMSPage(ctx, definition, episodeURL)
+		if extractErr != nil {
+			return source.Title{}, source.Episode{}, extractErr
+		}
+		if adapter.browserCapture == nil {
+			return source.Title{}, source.Episode{}, fmt.Errorf("%w: browser player is unavailable", source.ErrUnavailable)
+		}
+		captured, captureErr := adapter.browserCapture.Resolve(ctx, browsercapture.Request{PageURL: target})
+		if captureErr != nil {
+			return source.Title{}, source.Episode{}, captureErr
+		}
+		episode.PlaybackURL = captured.URL
+		return title, episode, nil
+	}
 	if plan.Playback.Extractor == "maccms_ecplayer" {
 		mediaURL, extractErr := adapter.extractMacCMSECPlayer(ctx, definition, plan, episodeURL)
 		if extractErr != nil {

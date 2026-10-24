@@ -181,6 +181,17 @@ func decodeJavaScriptUnicodeEscapes(value string) string {
 }
 
 func (adapter *Adapter) extractMacCMSDirect(ctx context.Context, definition source.Definition, episodeURL string) (string, error) {
+	mediaURL, err := adapter.extractMacCMSPage(ctx, definition, episodeURL)
+	if err != nil {
+		return "", err
+	}
+	if !isDirectMedia(mediaURL) {
+		return "", fmt.Errorf("%w: MacCMS payload has no direct media URL", source.ErrUnavailable)
+	}
+	return mediaURL, nil
+}
+
+func (adapter *Adapter) extractMacCMSPage(ctx context.Context, definition source.Definition, episodeURL string) (string, error) {
 	page, err := adapter.fetchText(ctx, episodeURL, definition.Endpoint, definition.Endpoint)
 	if err != nil {
 		return "", err
@@ -194,8 +205,8 @@ func (adapter *Adapter) extractMacCMSDirect(ctx context.Context, definition sour
 		return "", fmt.Errorf("%w: decode MacCMS player payload", source.ErrUnavailable)
 	}
 	mediaURL, err := decodeMacPlayerURL(player.URL, player.Encrypt)
-	if err != nil || !isDirectMedia(mediaURL) {
-		return "", fmt.Errorf("%w: MacCMS payload has no direct media URL", source.ErrUnavailable)
+	if err != nil {
+		return "", fmt.Errorf("%w: MacCMS payload has no playback URL", source.ErrUnavailable)
 	}
 	return mediaURL, nil
 }

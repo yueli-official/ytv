@@ -15,9 +15,11 @@ import (
 var kazumiSnapshotJSON []byte
 
 type kazumiSnapshot struct {
-	Revision string                     `json:"revision"`
-	Index    []indexEntry               `json:"index"`
-	Rules    map[string]json.RawMessage `json:"rules"`
+	// Additional rules reviewed by YTV; these are not in the upstream active index.
+	SupplementalIndex []indexEntry               `json:"supplementalIndex"`
+	Revision          string                     `json:"revision"`
+	Index             []indexEntry               `json:"index"`
+	Rules             map[string]json.RawMessage `json:"rules"`
 }
 
 // LoadKazumiSnapshot compiles the deployment-owned, commit-pinned catalog
@@ -39,7 +41,8 @@ func LoadKazumiSnapshot(revision string) (LoadResult, error) {
 		Skipped:     make([]SkippedRule, 0),
 	}
 	seen := make(map[string]bool, len(snapshot.Index))
-	for order, entry := range snapshot.Index {
+	entries := append(snapshot.Index, snapshot.SupplementalIndex...)
+	for order, entry := range entries {
 		document, exists := snapshot.Rules[entry.Name]
 		if !exists {
 			loaded.Skipped = append(loaded.Skipped, SkippedRule{Name: entry.Name, Reason: "rule is missing from embedded snapshot"})

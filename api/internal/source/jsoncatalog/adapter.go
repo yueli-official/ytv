@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -55,10 +56,35 @@ func (adapter *Adapter) Search(ctx context.Context, definition source.Definition
 		page = 1
 	}
 	response, err := adapter.fetch(ctx, definition, map[string]string{
-		"ac": "videolist", "wd": text, "pg": strconv.Itoa(page),
+		"ac": "list", "wd": text, "pg": strconv.Itoa(page),
 	})
 	if err != nil {
 		return source.Page{}, err
+	}
+	// Search owns the result set and pagination. Some MacCMS providers ignore wd
+	// on detail actions and otherwise return their entire catalog here.
+	if len(response.List) > 0 {
+		ids := make([]string, 0, len(response.List))
+		for _, item := range response.List {
+			ids = append(ids, string(item.ID))
+		}
+		details, err := adapter.fetch(ctx, definition, map[string]string{
+			"ac": "videolist", "ids": strings.Join(ids, ","),
+		})
+		if err != nil {
+			return source.Page{}, err
+		}
+		byID := make(map[scalar]vodItem, len(details.List))
+		for _, item := range details.List {
+			byID[item.ID] = item
+		}
+		items := make([]vodItem, 0, len(response.List))
+		for _, item := range response.List {
+			if detail, exists := byID[item.ID]; exists {
+				items = append(items, detail)
+			}
+		}
+		response.List = items
 	}
 	return mapPage(definition, response, page), nil
 }
@@ -76,7 +102,7 @@ func mapPage(definition source.Definition, response catalogResponse, page int) s
 	if page < response.PageCount {
 		next = page + 1
 	}
-	return source.Page{Items: items, Total: response.Total, NextPage: next}
+	return source.Page{Items: items, Total: response.Total, NextPage: next, TotalPages: response.PageCount}
 }
 
 func (adapter *Adapter) ResolveTitle(ctx context.Context, definition source.Definition, locator source.TitleLocator) (source.Title, error) {
@@ -182,18 +208,20 @@ func (value *scalar) UnmarshalJSON(data []byte) error {
 }
 
 type vodItem struct {
-	ID       scalar `json:"vod_id"`
-	Name     string `json:"vod_name"`
-	Year     scalar `json:"vod_year"`
-	Category string `json:"type_name"`
-	Area     string `json:"vod_area"`
-	Language string `json:"vod_lang"`
-	Score    scalar `json:"vod_douban_score"`
-	Remarks  string `json:"vod_remarks"`
-	Summary  string `json:"vod_blurb"`
-	ImageURL string `json:"vod_pic"`
-	PlayURL  string `json:"vod_play_url"`
-	PlayFrom string `json:"vod_play_from"`
+	ID        scalar `json:"vod_id"`
+	Name      string `json:"vod_name"`
+	Year      scalar `json:"vod_year"`
+	Category  string `json:"type_name"`
+	Actors    string `json:"vod_actor"`
+	Directors string `json:"vod_director"`
+	Area      string `json:"vod_area"`
+	Language  string `json:"vod_lang"`
+	Score     scalar `json:"vod_douban_score"`
+	Remarks   string `json:"vod_remarks"`
+	Summary   string `json:"vod_blurb"`
+	ImageURL  string `json:"vod_pic"`
+	PlayURL   string `json:"vod_play_url"`
+	PlayFrom  string `json:"vod_play_from"`
 }
 
 func mapTitle(definition source.Definition, item vodItem) source.Title {
@@ -202,7 +230,7 @@ func mapTitle(definition source.Definition, item vodItem) source.Title {
 		Locator:    source.TitleLocator{SourceKey: definition.Key, ExternalID: strings.TrimSpace(string(item.ID))},
 		SourceName: definition.Name,
 		Name:       strings.TrimSpace(item.Name), Year: strings.TrimSpace(string(item.Year)),
-		Category: strings.TrimSpace(item.Category), Area: strings.TrimSpace(item.Area),
+		Actors: item.Actors, Directors: item.Directors, Category: strings.TrimSpace(item.Category), Area: strings.TrimSpace(item.Area),
 		Language: strings.TrimSpace(item.Language), Score: strings.TrimSpace(string(item.Score)), Remarks: strings.TrimSpace(item.Remarks),
 		Summary: strings.TrimSpace(item.Summary), ImageURL: source.AllowedImageURL(definition, item.ImageURL),
 		EpisodeCount: source.EpisodeTotal(episodes), Episodes: episodes,
@@ -253,5 +281,16 @@ func parseLines(raw, names string) []source.Episode {
 			result = append(result, episode)
 		}
 	}
+	// A catalog may put its share webpage before the native playback line.
+	// Prefer playable media while preserving locator keys and upstream order within each class.
+	direct := func(raw string) bool {
+		u, err := url.Parse(raw)
+		if err != nil {
+			return false
+		}
+		path := strings.ToLower(u.Path)
+		return strings.HasSuffix(path, ".m3u8") || strings.HasSuffix(path, ".mp4") || strings.HasSuffix(path, ".webm")
+	}
+	sort.SliceStable(result, func(i, j int) bool { return direct(result[i].PlaybackURL) && !direct(result[j].PlaybackURL) })
 	return result
 }

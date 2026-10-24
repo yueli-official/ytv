@@ -18,7 +18,7 @@ func TestLive7sefunReportedEpisode(t *testing.T) {
 	if os.Getenv("YTV_TEST_LIVE_7SEFUN") != "true" {
 		t.Skip("explicit live metadata resolution only")
 	}
-	catalog, err := rulecatalog.LoadKazumiSnapshot("5fea5eb84768a2290ddedb156583ef20d9b43561")
+	catalog, err := rulecatalog.LoadKazumiSnapshot("0972545266e7ac7cc06e7e522892239824f7d713")
 	if err != nil {
 		t.Fatal(err)
 	}

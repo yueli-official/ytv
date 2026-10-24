@@ -7,6 +7,8 @@ func ApplySpecialPlayback(plan *Plan) {
 		return
 	}
 	switch plan.Name {
+	case "FQDM":
+		plan.Playback.Extractor = "maccms_direct"
 	case "mutefun":
 		// Observed 2026-10-23: HTTP 200 MacCMS search verification page.
 		plan.VerificationXPath = []string{
@@ -28,7 +30,7 @@ func ApplySpecialPlayback(plan *Plan) {
 		plan.Playback.Extractor = "maccms_direct"
 		plan.Playback.PlaybackHosts = []string{"dl.playxf.top"}
 	case "moonci":
-		plan.Playback.Extractor = "maccms_direct"
+		plan.Playback.Extractor = "maccms_page"
 		plan.Playback.PlaybackHosts = []string{"dl.playxf.top"}
 	case "akianime":
 		plan.Playback.Extractor = "aniplayer"

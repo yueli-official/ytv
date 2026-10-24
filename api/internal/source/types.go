@@ -78,6 +78,8 @@ type Title struct {
 	Name         string
 	Year         string
 	Category     string
+	Actors       string
+	Directors    string
 	Area         string
 	Language     string
 	Score        string
@@ -89,9 +91,10 @@ type Title struct {
 }
 
 type Page struct {
-	Items    []Title
-	Total    int
-	NextPage int
+	TotalPages int
+	Items      []Title
+	Total      int
+	NextPage   int
 }
 
 type Health struct {

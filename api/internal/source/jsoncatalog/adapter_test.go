@@ -18,11 +18,18 @@ func (function roundTripFunc) Do(request *http.Request) (*http.Response, error) 
 
 func TestAdapterMapsCatalogWithoutLeakingProtocolFields(t *testing.T) {
 	client := roundTripFunc(func(request *http.Request) (*http.Response, error) {
-		if request.URL.Query().Get("wd") != "测试" || request.URL.Query().Get("pg") != "2" {
+		query := request.URL.Query()
+		if query.Get("ac") == "list" {
+			if query.Get("wd") != "测试" || query.Get("pg") != "2" {
+				t.Fatalf("search query = %s", request.URL.RawQuery)
+			}
+			return &http.Response{StatusCode: 200, Body: io.NopCloser(strings.NewReader(`{"pagecount":3,"total":7,"list":[{"vod_id":"42","vod_name":"演示影片"}]}`))}, nil
+		}
+		if query.Get("ac") != "videolist" || query.Get("ids") != "42" || query.Has("wd") || query.Has("pg") {
 			t.Fatalf("query = %s", request.URL.RawQuery)
 		}
 		return &http.Response{StatusCode: 200, Body: io.NopCloser(strings.NewReader(`{
-			"pagecount":3,"total":7,"list":[{"vod_id":"42","vod_name":"演示影片","vod_year":2026,
+			"pagecount":5376,"total":107520,"list":[{"vod_id":"42","vod_name":"演示影片","vod_year":2026,
 			"type_name":"科幻","vod_area":"测试地区","vod_lang":"中文","vod_remarks":"更新中",
 			"vod_douban_score":"8.6",
 			"vod_blurb":"合成内容","vod_pic":"https://images.example/42.jpg",
@@ -36,7 +43,7 @@ func TestAdapterMapsCatalogWithoutLeakingProtocolFields(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if page.Total != 7 || page.NextPage != 3 || len(page.Items) != 1 {
+	if page.Total != 7 || page.TotalPages != 3 || page.NextPage != 3 || len(page.Items) != 1 {
 		t.Fatalf("page = %#v", page)
 	}
 	item := page.Items[0]

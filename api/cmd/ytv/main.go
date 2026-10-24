@@ -80,7 +80,7 @@ func main() {
 	must(err)
 	if !includeFixture && environment("YTV_KAZUMI_RULES_ENABLED", "true") == "true" {
 		catalog, catalogErr := rulecatalog.LoadKazumiSnapshot(
-			environment("YTV_KAZUMI_RULES_REF", "5fea5eb84768a2290ddedb156583ef20d9b43561"),
+			environment("YTV_KAZUMI_RULES_REF", "0972545266e7ac7cc06e7e522892239824f7d713"),
 		)
 		if catalogErr != nil {
 			panic(catalogErr)

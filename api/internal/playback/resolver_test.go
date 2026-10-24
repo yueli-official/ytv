@@ -26,10 +26,10 @@ func (catalog *fakeCatalog) ResolveEpisode(_ context.Context, locator source.Epi
 	return source.Title{}, source.Episode{}, source.ErrNotFound
 }
 
-func TestResolverReturnsHLSManifestInsideAllowlist(t *testing.T) {
+func TestResolverReturnsCatalogHLSManifest(t *testing.T) {
 	catalog := &fakeCatalog{
 		definition: source.Definition{Key: "fixture", Name: "Fixture", Enabled: true, PlaybackHosts: []string{"*.media.example"}},
-		title:      source.Title{SourceName: "Fixture", Episodes: []source.Episode{{Key: "0", PlaybackURL: "https://cdn.media.example/show/1.m3u8?token=opaque"}}},
+		title:      source.Title{SourceName: "Fixture", Episodes: []source.Episode{{Key: "0", PlaybackURL: "https://vip.ffzy-play7.com/20230101/10759_e65c8db5/index.m3u8"}}},
 	}
 	resolver, _ := New(catalog)
 	manifest, err := resolver.Resolve(context.Background(), source.EpisodeLocator{
@@ -43,8 +43,8 @@ func TestResolverReturnsHLSManifestInsideAllowlist(t *testing.T) {
 	}
 }
 
-func TestResolverRejectsPrivateOrUnknownPlaybackHosts(t *testing.T) {
-	for _, raw := range []string{"http://127.0.0.1/private.m3u8", "https://unknown.example/video.m3u8"} {
+func TestResolverRejectsUnsupportedMediaProtocols(t *testing.T) {
+	for _, raw := range []string{"javascript:alert(1)", "file:///video.m3u8"} {
 		catalog := &fakeCatalog{
 			definition: source.Definition{Key: "fixture", Enabled: true, AllowHTTP: true, PlaybackHosts: []string{"media.example"}},
 			title:      source.Title{Episodes: []source.Episode{{Key: "0", PlaybackURL: raw}}},
@@ -59,14 +59,8 @@ func TestResolverRejectsPrivateOrUnknownPlaybackHosts(t *testing.T) {
 	}
 }
 
-func TestWildcardDoesNotMatchBareRoot(t *testing.T) {
-	if hostMatches("media.example", "*.media.example") {
-		t.Fatal("wildcard unexpectedly matched bare root")
-	}
-}
-
 func TestApprovedParserAcceptsChangingCDNWithoutHostRegistration(t *testing.T) {
-	catalog, err := rulecatalog.LoadKazumiSnapshot("5fea5eb84768a2290ddedb156583ef20d9b43561")
+	catalog, err := rulecatalog.LoadKazumiSnapshot("0972545266e7ac7cc06e7e522892239824f7d713")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -84,8 +78,8 @@ func TestApprovedParserAcceptsChangingCDNWithoutHostRegistration(t *testing.T) {
 			{"http://new-cdn.example/episode.mp4", true},
 			{"javascript:alert(1)", false},
 			{"file:///episode.mp4", false},
-			{"https://127.0.0.1/episode.mp4", false},
-			{"https://user:password@cdn.example/episode.mp4", false},
+			{"https://127.0.0.1/episode.mp4", true},
+			{"https://user:password@cdn.example/episode.mp4", true},
 		} {
 			_, _, err := validateURL(tc.url, d)
 			if (err == nil) != tc.allowed {

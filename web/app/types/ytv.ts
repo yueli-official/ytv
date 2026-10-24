@@ -51,6 +51,8 @@ export interface SearchGroup {
 }
 
 export interface DiscoveryResponse {
+  totalPages: number;
+  hasNext: boolean;
   query: string;
   page: number;
   groups: SearchGroup[];
