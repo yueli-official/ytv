@@ -15,11 +15,11 @@ export function bindVideoEnhancement(media: HTMLElement, host: HTMLElement, repo
     stop();
     stop = () => {};
     if (disposed || !enabled) { report('off'); return; }
-    if (!navigator.gpu) { report('unavailable', '当前浏览器未提供画质增强所需的 GPU 功能，已保留原画播放。'); return; }
+    if (!navigator.gpu) { report('unavailable', '当前浏览器未提供超分辨率所需的 GPU 功能，已保留原画播放。'); return; }
     report('waiting');
     const video = getMediaElement(media);
     if (!(video instanceof HTMLVideoElement) || video.readyState < 2) return;
-    if (document.pictureInPictureElement === video) { report('unavailable', '画中画使用原画播放，退出画中画后恢复增强。'); return; }
+    if (document.pictureInPictureElement === video) { report('unavailable', '画中画使用原画播放，退出画中画后恢复超分辨率。'); return; }
     let device: GPUDevice | undefined;
     let context: GPUCanvasContext | null = null;
     let frame = 0;
@@ -35,7 +35,7 @@ export function bindVideoEnhancement(media: HTMLElement, host: HTMLElement, repo
     };
     stop = cleanup;
     const valid = () => !disposed && enabled && current === generation;
-    const fail = (cause?: unknown) => { if (valid()) { ++generation; cleanup(); report('unavailable', cause instanceof DOMException && cause.name === 'SecurityError' ? '此视频未允许网页读取画面，无法进行画质增强，已保留原画播放。' : '画质增强未能运行，已保留原画播放。可关闭后重新开启尝试。'); } };
+    const fail = (cause?: unknown) => { if (valid()) { ++generation; cleanup(); report('unavailable', cause instanceof DOMException && cause.name === 'SecurityError' ? '此视频未允许网页读取画面，无法进行超分辨率处理，已保留原画播放。' : '超分辨率未能运行，已保留原画播放。可关闭后重新开启尝试。'); } };
     try {
       if (!navigator.gpu || !video.requestVideoFrameCallback) throw new Error('GPU unavailable');
       const adapter = await navigator.gpu.requestAdapter();
@@ -45,18 +45,22 @@ export function bindVideoEnhancement(media: HTMLElement, host: HTMLElement, repo
       if (!valid()) { cleanup(); return; }
       device.addEventListener('uncapturederror', fail);
       void device.lost.then(fail);
-      const { CNNx2M } = await import('anime4k-webgpu');
+      const { ModeA } = await import('anime4k-webgpu');
       if (!valid()) { cleanup(); return; }
       const width = video.videoWidth, height = video.videoHeight;
       if (!width || !height || width * 2 > device.limits.maxTextureDimension2D || height * 2 > device.limits.maxTextureDimension2D) throw new Error('Unsupported size');
-      canvas.width = width * 2;
-      canvas.height = height * 2;
+      const bounds = host.getBoundingClientRect();
+      const scale = Math.min(2, Math.min(bounds.width / width, bounds.height / height) * window.devicePixelRatio);
+      canvas.width = Math.max(1, Math.round(width * scale));
+      canvas.height = Math.max(1, Math.round(height * scale));
       context = canvas.getContext('webgpu');
       if (!context) throw new Error('GPU canvas unavailable');
       const format = navigator.gpu.getPreferredCanvasFormat();
       context.configure({ device, format, alphaMode: 'opaque' });
       const input = device.createTexture({ size: [width, height], format: 'rgba16float', usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST | GPUTextureUsage.RENDER_ATTACHMENT });
-      const enhance = new CNNx2M({ device, inputTexture: input });
+      // Mode A restores edges before scaling, matching the Anime4K processing
+      // stages used by Kazumi rather than applying only its final upscaler.
+      const enhance = new ModeA({ device, inputTexture: input, nativeDimensions: { width, height }, targetDimensions: { width: canvas.width, height: canvas.height } });
       const module = device.createShaderModule({ code: `
         struct Vertex { @builtin(position) position: vec4f, @location(0) uv: vec2f }
         @vertex fn vertex(@builtin(vertex_index) i: u32) -> Vertex {
@@ -64,12 +68,12 @@ export function bindVideoEnhancement(media: HTMLElement, host: HTMLElement, repo
           return Vertex(vec4f(uv * vec2f(2., -2.) + vec2f(-1., 1.), 0., 1.), uv);
         }
         @group(0) @binding(0) var image: texture_2d<f32>;
+        @group(0) @binding(1) var imageSampler: sampler;
         @fragment fn fragment(v: Vertex) -> @location(0) vec4f {
-          let size = vec2f(textureDimensions(image));
-          return textureLoad(image, vec2i(clamp(v.uv * size, vec2f(0.), size - 1.)), 0);
+          return textureSample(image, imageSampler, v.uv);
         }` });
       const pipeline = device.createRenderPipeline({ layout: 'auto', vertex: { module, entryPoint: 'vertex' }, fragment: { module, entryPoint: 'fragment', targets: [{ format }] }, primitive: { topology: 'triangle-list' } });
-      const group = device.createBindGroup({ layout: pipeline.getBindGroupLayout(0), entries: [{ binding: 0, resource: enhance.getOutputTexture().createView() }] });
+      const group = device.createBindGroup({ layout: pipeline.getBindGroupLayout(0), entries: [{ binding: 0, resource: enhance.getOutputTexture().createView() }, { binding: 1, resource: device.createSampler({ minFilter: 'linear', magFilter: 'linear' }) }] });
       host.append(canvas);
       let first = true;
       const draw = () => {
@@ -97,8 +101,11 @@ export function bindVideoEnhancement(media: HTMLElement, host: HTMLElement, repo
   media.addEventListener('resize', onReady);
   media.addEventListener('enterpictureinpicture', onReady);
   media.addEventListener('leavepictureinpicture', onReady);
+  const resize = new ResizeObserver(onReady);
+  resize.observe(host);
+  window.addEventListener('resize', onReady);
   return {
     setEnabled(value: boolean) { enabled = value; void restart(); },
-    dispose() { disposed = true; ++generation; stop(); media.removeEventListener('loadeddata', onReady); media.removeEventListener('resize', onReady); media.removeEventListener('enterpictureinpicture', onReady); media.removeEventListener('leavepictureinpicture', onReady); },
+    dispose() { disposed = true; ++generation; stop(); resize.disconnect(); window.removeEventListener('resize', onReady); media.removeEventListener('loadeddata', onReady); media.removeEventListener('resize', onReady); media.removeEventListener('enterpictureinpicture', onReady); media.removeEventListener('leavepictureinpicture', onReady); },
   };
 }

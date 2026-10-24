@@ -27,7 +27,7 @@ const preferenceError = ref('');
 const enhancementFailure = ref('');
 const enhancementHelpOpen = ref(false);
 let enhancement: ReturnType<typeof bindVideoEnhancement> | null = null;
-const enhancementLabel = computed(() => enhancementEnabled.value && enhancementState.value === 'unavailable' ? '画质增强失败' : '画质增强');
+const enhancementLabel = computed(() => enhancementEnabled.value && enhancementState.value === 'unavailable' ? '超分辨率失败' : `超分辨率：${enhancementEnabled.value ? '开启' : '关闭'}`);
 function activateEnhancement() {
   if (enhancementEnabled.value && enhancementState.value === 'unavailable') { enhancementHelpOpen.value = !enhancementHelpOpen.value; return; }
   toggleEnhancement();
@@ -124,7 +124,7 @@ onBeforeUnmount(() => {
     <media-i18n lang="zh" class="block size-full">
       <component :is="'ytv-video-player'" ref="player" orientation-lock-type="landscape" :poster="poster || undefined" class="block size-full">
         <ytv-video-skin ref="skin" class="ytv-player-skin">
-          <button slot="enhancement" type="button" class="ytv-enhancement-button" :aria-pressed="enhancementEnabled" :data-enhancement-state="enhancementState" :aria-label="enhancementState === 'unavailable' && enhancementEnabled ? '画质增强失败，查看原因' : `画质增强：${enhancementEnabled ? '已开启' : '已关闭'}`" @click.stop="activateEnhancement">{{ enhancementLabel }}</button>
+          <button slot="enhancement" type="button" class="ytv-enhancement-button" :aria-pressed="enhancementEnabled" :data-enhancement-state="enhancementState" :aria-label="enhancementState === 'unavailable' && enhancementEnabled ? '超分辨率失败，查看原因' : enhancementLabel" @click.stop="activateEnhancement">{{ enhancementLabel }}</button>
           <div class="ytv-gesture-feedback" :class="{ 'is-fullscreen': fullscreenActive }" aria-live="polite" aria-atomic="true"><span v-if="holdingSpeed" data-hold-speed>2 倍速播放 · 松开恢复</span></div>
         </ytv-video-skin>
       </component>
@@ -133,7 +133,7 @@ onBeforeUnmount(() => {
       <p>{{ enhancementFailure }}</p>
       <div class="mt-2 flex justify-end gap-4">
         <button type="button" class="text-white/70" @click="enhancementHelpOpen = false">收起</button>
-        <button type="button" class="text-[var(--ui-primary)]" @click="toggleEnhancement">关闭增强</button>
+        <button type="button" class="text-[var(--ui-primary)]" @click="toggleEnhancement">关闭超分辨率</button>
       </div>
     </div>
     <p v-if="preferenceError" role="status" class="absolute inset-x-3 top-3 z-30 rounded-lg bg-black/80 px-3 py-2 text-center text-xs text-white">{{ preferenceError }}</p>
