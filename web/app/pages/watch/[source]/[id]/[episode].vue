@@ -2,6 +2,11 @@
 import Playlist from "~/components/public/shared/Playlist.vue";
 const {mobile}=usePublicLayout();
 const episodesOpen=ref(false);
+const detailTabs = [
+  { label: '来源评价', value: 'reviews', slot: 'reviews', icon: 'i-tabler-message-star' },
+  { label: '剧情简介', value: 'summary', slot: 'summary' },
+  { label: '播放帮助', value: 'help', slot: 'help' }
+];
 const player = ref<{ enterFullscreen: () => Promise<void> } | null>(null);
 function enterFullscreen() { void player.value?.enterFullscreen(); }
 definePageMeta({ colorMode: "dark" });
@@ -87,26 +92,28 @@ useSeoMeta({ title: () => data.value ? `${data.value.title.name} · ${currentEpi
         <div class="ytv-watch-meta">
           <div class="min-w-0 space-y-3"><h1>{{ data.title.name }}<span class="ml-3 text-base font-normal text-white/75">{{ currentEpisodeTitle }}</span></h1><div class="flex flex-wrap gap-x-5 gap-y-2 text-sm text-white/70"><p>{{ [data.title.year, data.title.category, data.title.language].filter(Boolean).join(' · ') }}</p><NuxtLink :to="titleLink" class="text-inherit no-underline hover:text-white">影片详情</NuxtLink><NuxtLink v-if="contextQuery.from" :to="contextQuery.from" class="text-inherit no-underline hover:text-white">返回搜索结果</NuxtLink></div></div>
           <div v-if="!mobile" class="flex flex-wrap gap-3">
-            <UButton v-if="previousEpisode && !mobile" label="上一集" icon="i-tabler-player-skip-back" :to="playbackLink(previousEpisode.key)" color="neutral" variant="ghost" class="ytv-secondary" />
-            <UButton v-if="nextEpisode" label="下一集" trailing-icon="i-tabler-player-skip-forward" :to="playbackLink(nextEpisode.key)" color="neutral" class="ytv-primary" />
+            <UButton v-if="previousEpisode && !mobile" label="上一集" icon="i-tabler-chevron-left" :to="playbackLink(previousEpisode.key)" color="neutral" variant="ghost" class="ytv-secondary" />
+            <UButton v-if="nextEpisode" label="下一集" trailing-icon="i-tabler-chevron-right" :to="playbackLink(nextEpisode.key)" color="neutral" class="ytv-primary" />
             <UButton :label="theatre ? '退出宽屏' : '宽屏'" icon="i-tabler-layout-bottombar-collapse" color="neutral" variant="ghost" class="ytv-secondary hidden lg:inline-flex" :aria-pressed="theatre" @click="toggleTheatre" />
           </div>
         </div>
         <div v-if="mobile" class="mobile-watch-actions">
           <UButton label="全屏观看" icon="i-tabler-maximize" color="neutral" variant="outline" size="sm" @click="enterFullscreen" />
-          <UButton v-if="nextEpisode" label="下一集" icon="i-tabler-player-skip-forward" :to="playbackLink(nextEpisode.key)" color="neutral" variant="outline" size="sm" />
+          <UButton v-if="nextEpisode" label="下一集" icon="i-tabler-chevron-right" :to="playbackLink(nextEpisode.key)" color="neutral" variant="outline" size="sm" />
           <UButton label="选集" icon="i-tabler-list" color="neutral" variant="outline" size="sm" @click="() => { episodesOpen=true; }"/>
           <UButton :to="{path:'/search',query:{q:data.title.name}}" label="换源" icon="i-tabler-switch-horizontal" color="neutral" variant="outline" size="sm"/>
         </div>
         <USlideover v-if="mobile" v-model:open="episodesOpen" side="bottom" title="选集" description="选择播放线路与集数" :ui="{content:'bg-[#141e28] text-white max-h-[80dvh]',body:'p-4'}"><template #body><Playlist compact v-model:line="selectedLine" v-model:range="rangeStart" :title="data.title" :movie="movie" :episodes="visibleEpisodes" :total="episodes.length" :line-options="lineOptions" :line-name="currentLine?.name" :ranges="ranges" :episode-key="episodeKey" :playback-link="playbackLink"/></template></USlideover>
         <div class="ytv-watch-help space-y-4">
-          <section aria-label="当前来源评价" class="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-white/10 px-4 py-3">
-            <div class="min-w-0"><p class="break-words text-sm text-white/75">当前来源 · {{ data.title.sourceName }}</p><SourceBadges :recommended="currentSource?.recommended" :reviews="currentSource?.reviews" /></div>
-            <SourceReviewControl :key="sourceKey" :source-key="sourceKey" :source-name="data.title.sourceName" :total="currentSource?.reviews?.total" />
-          </section>
           <div v-if="theatre" class="flex flex-wrap items-center gap-3 rounded-xl border border-white/10 p-4"><span class="text-white/70">线路</span><USelect v-if="lines.length > 1" v-model="selectedLine" :items="lineOptions" aria-label="播放线路" class="w-44" /><span v-else class="text-white/70">{{ currentLine?.name }}</span><UButton v-if="!movie" label="展开选集" color="neutral" variant="ghost" @click="showEpisodes" /></div>
-          <details class="ytv-fold"><summary>播放操作</summary><p v-if="mobile" class="mt-3 text-white/70">点“全屏观看”放大画面，支持的设备会自动横屏；未旋转时请横放手机。轻点画面显示控件，双击中央切换全屏。</p><p class="mt-3 leading-8 text-white/70">播放时按住画面可临时 2 倍速，松开恢复原倍速。双击画面左侧快退 10 秒，右侧快进 10 秒；也可拖动进度条。电脑上先点击播放器，再用 ← / → 跳转，空格播放或暂停，F 全屏。倍速、字幕和音轨可在播放器设置中选择，具体选项取决于片源。</p></details>
-          <details class="ytv-fold"><summary>剧情简介</summary><p class="mt-3 max-w-5xl leading-8 text-white/70">{{ data.title.summary || '当前来源暂未提供简介。' }}</p></details>
+          <UTabs :items="detailTabs" default-value="reviews" variant="link" :unmount-on-hide="false" class="ytv-watch-tabs" :ui="{ list: 'justify-start border-b border-[var(--ytv-line)]', trigger: 'grow-0 px-4 py-3 text-sm', content: 'pt-4' }">
+            <template #reviews>
+              <SourceReviewControl :key="sourceKey" :source-key="sourceKey" :source-name="data.title.sourceName" :total="currentSource?.reviews?.total" />
+              <div v-if="currentSource?.reviews?.total" class="mt-4 flex flex-wrap items-center gap-3 text-xs text-muted"><span>大家的评价</span><SourceBadges :reviews="currentSource.reviews" /></div>
+            </template>
+            <template #summary><div class="ytv-watch-tab-copy"><h2>剧情简介</h2><p>{{ data.title.summary || '当前来源暂未提供简介。' }}</p></div></template>
+            <template #help><div class="ytv-watch-tab-copy"><h2>播放帮助</h2><p v-if="mobile">点“全屏观看”放大画面，支持的设备会自动横屏；未旋转时请横放手机。轻点画面显示控件，双击中央切换全屏。</p><p>播放时按住画面可临时 2 倍速，松开恢复原倍速。双击画面左侧快退 10 秒，右侧快进 10 秒；也可拖动进度条。</p><p v-if="!mobile">先点击播放器，再用 ← / → 跳转，空格播放或暂停，F 全屏。</p><p>倍速、字幕和音轨可在播放器设置中选择，具体选项取决于片源。</p></div></template>
+          </UTabs>
         </div>
       </div>
     </div>
@@ -114,6 +121,8 @@ useSeoMeta({ title: () => data.value ? `${data.value.title.name} · ${currentEpi
 </template>
 
 <style scoped>
+.ytv-watch-tab-copy{max-width:900px;padding:4px 0 20px;display:grid;gap:12px;font-size:14px;line-height:1.9;color:var(--ui-text-muted)}
+.ytv-watch-tab-copy h2{font-size:16px;font-weight:600;color:var(--ui-text-highlighted)}
 @media(max-width:767px), (pointer:coarse) and (max-height:767px) and (max-width:1024px){
 .ytv-watch>.ytv-container{width:100%;padding:12px 0 24px}
 .ytv-watch>.ytv-container>button,.ytv-watch>.ytv-container>a{margin-left:12px}

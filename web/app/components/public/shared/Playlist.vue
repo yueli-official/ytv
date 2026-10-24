@@ -15,7 +15,7 @@ const range=defineModel<number>('range',{required:true});
           </div>
           <div class="ytv-playlist-rows">
             <NuxtLink v-for="episode in episodes" :key="episode.key" :to="playbackLink(episode.key)" data-player-episode-row class="ytv-episode" :class="{ selected: episode.key === episodeKey }" :aria-current="episode.key === episodeKey ? 'page' : undefined">
-              <UIcon :name="episode.key === episodeKey ? 'i-tabler-player-play-filled' : 'i-tabler-player-play'" class="size-5 shrink-0" /><span class="min-w-0 break-words">{{ movie ? episode.title.replace(/^第\s*1\s*集$/u, '正片') || '正片' : episode.title }}</span>
+              <UIcon v-if="episode.key === episodeKey" name="i-tabler-player-play-filled" class="ytv-episode-icon size-3 shrink-0" /><span class="min-w-0 break-words">{{ movie ? episode.title.replace(/^第\s*1\s*集$/u, '正片') || '正片' : episode.title }}</span>
             </NuxtLink>
           </div>
         </div></template>
@@ -23,5 +23,5 @@ const range=defineModel<number>('range',{required:true});
 .mobile-playlist .ytv-playlist-head{padding:0 0 16px;font-size:13px}
 .mobile-playlist .ytv-playlist-rows{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;padding:0;max-height:none}
 .mobile-playlist .ytv-episode{min-height:44px;justify-content:center;font-size:12px;padding:6px 3px}
-.mobile-playlist .ytv-episode>span:first-child{display:none}
+.mobile-playlist .ytv-episode-icon{display:none}
 </style>

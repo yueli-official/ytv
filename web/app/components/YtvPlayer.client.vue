@@ -91,7 +91,7 @@ onBeforeUnmount(() => {
       </component>
     </media-i18n>
     <p v-if="fullscreenMessage" role="status" class="absolute inset-x-3 top-3 z-30 rounded-lg bg-black/80 px-3 py-2 text-center text-xs text-white">{{ fullscreenMessage }}</p>
-    <button v-if="['ready', 'paused', 'ended'].includes(snapshot.state)" type="button" data-primary-play :aria-label="snapshot.state === 'ended' ? '重新播放' : '播放'" class="absolute left-1/2 top-1/2 grid size-14 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border border-white/25 bg-black/55 text-white shadow-xl backdrop-blur-sm transition hover:scale-105 hover:bg-[var(--ui-primary)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--ui-primary)] sm:size-16" @click="play"><UIcon :name="snapshot.state === 'ended' ? 'i-tabler-refresh' : 'i-tabler-player-play-filled'" class="size-6 sm:size-7" /></button>
+    <button v-if="['ready', 'paused', 'ended'].includes(snapshot.state)" type="button" data-primary-play :aria-label="snapshot.state === 'ended' ? '重新播放' : '播放'" class="absolute left-1/2 top-1/2 grid size-14 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-2xl border border-white/20 bg-black/65 text-white shadow-lg transition hover:border-white/50 hover:bg-black/85 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--ui-primary)] sm:size-16" @click="play"><UIcon :name="snapshot.state === 'ended' ? 'i-tabler-refresh' : 'i-tabler-player-play-filled'" class="size-5 sm:size-6" /></button>
     <div v-if="snapshot.state === 'resolving' || snapshot.state === 'loading'" class="pointer-events-none absolute inset-0 grid place-items-center bg-black/60">
       <div class="grid justify-items-center gap-3 text-sm text-white/70" role="status"><UIcon name="i-tabler-loader-2" class="size-6 animate-spin text-[var(--ui-primary)] motion-reduce:animate-none" />{{ snapshot.message }}</div>
     </div>
@@ -109,7 +109,7 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
-.ytv-player-skin { display: block; width: 100%; height: 100%; --media-accent-color: #9dd5f5; --media-accent-text-color: #10212e; --media-object-fit: contain; --media-border-radius: 0; }
+.ytv-player-skin { display: block; width: 100%; height: 100%; --media-accent-color: var(--ui-primary); --media-accent-text-color: #10212e; --media-object-fit: contain; --media-border-radius: 0; }
 .ytv-gesture-feedback { position: absolute; inset: 0; z-index: 20; pointer-events: none; display: flex; justify-content: center; align-items: flex-start; padding-top: 1rem; }
 .ytv-gesture-feedback span { border-radius: 999px; background: rgb(0 0 0 / 75%); padding: 0.5rem 1rem; color: white; font-size: 0.75rem; }
 .ytv-gesture-feedback.is-fullscreen { padding-top: 4rem; }
