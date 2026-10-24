@@ -1,5 +1,17 @@
 # 2026-10-23 电影站升级上线
 
+## 超分辨率修复发布（2026-10-25）
+
+已部署 `ytv-super-resolution-20261025-12`，源码提交 `46a9fd8`（包含 `f3da9c0`）。统一控件为“超分辨率：开启 / 关闭”，失败为“超分辨率失败”；默认开启、浏览器保存偏好与已批准的失败保留原画行为不变。
+
+用户提供的电影天堂 `dytt/84586/3` 实测为1920×1080，旧CNNx2M确实运行，但只有放大，且小窗口固定生成4K再缩小。现改为 Anime4K-WebGPU Mode A，先修复线条，再按显示尺寸及屏幕像素密度决定放大；最终呈现使用线性采样。对照[上游 Kazumi 着色器配置](https://github.com/Predidit/Kazumi/blob/main/lib/utils/constants.dart)确认其包含 Restore 阶段，网页采用相近阶段，不宣称与mpv渲染结果相同。同一人物画面600秒处人工检查眼睑、头发边缘更清楚。另修复全屏皮肤区域与普通host尺寸不同，画布现在读取实际区域并在进出全屏时重建。
+
+冻结依赖、批准依赖基线、类型检查、生产构建和配套发布门禁通过。候选和正式站的108个JS HTTP摘要均匹配。CLI Playwright覆盖桌面1440/DPR1、手机视口390/DPR3、真实该集600秒后连续GPU帧、关闭销毁画布、刷新保存关闭、再次开启和进出全屏，无pageerror。正式站8秒观测约23.6/23.9处理帧每秒，GPU完成等待均值约18.4/18.3ms；这是本机同一GPU的两种视口，不是实体手机基准。桌面画布由1009×568调整为全屏1440×810，手机模拟1159×652调整为1170×658。实际候选/正式桌面及手机截图已人工检查；没有用自动截图比较代替视觉判断。未测实体手机、Safari、所有片源或整集持续性能。
+
+只替换Web，镜像 `yueli/ytv-web:super-resolution-20261025-12`，image ID `sha256:b357ef63eadea28717d9b0ec0f883f7787bafb65fafbe6e22705403933589f60`。API源码、镜像、二进制摘要及容器ID核验与上轮一致，未重启。两端healthy/restart0；20个来源、评价和私有运行配置不变，v11 clean，无迁移。备份已验证可读。
+
+配套清单 `/projects/yuelili.com/ytv/deployment-release.json`，备份 `/projects/yuelili.com/backups/ytv-super-resolution-20261025-12`；证据 `D:/coding/yueli-official/task-artifacts/ytv/super-resolution-20261025-12/production-release.json`、`production-browser.json`、`production-http.json`及`production-mobile.png`。候选容器、远端组装目录、SSH13626隧道与临时比较服务已停止/清理；本次E盘依赖和编译缓存回收状态见同目录`cleanup.json`，共享开发服务占用的原生硬链接不强删，不停共享服务。回滚只恢复本次备份.env并重建ytv-web、核验旧Web和原API；不恢复数据库。代码和发布记录均本地提交，未push。
+
 ## 搜索合并、缓存与分页发布（2026-10-25）
 
 已发布 `ytv-search-cache-20261025-11` 到 https://tv.yuelili.com。Web/API 均从完整提交 `65766bafd1a0a53d5fbb8412cbd6e8fe66196f71` 构建；此前搜索修复提交 `c8ab8a9`，其余代码、研究文档、测试与依赖已一并提交。未 Git push。正式共享前端依赖已同步 Workspace 当前批准基线 `32339ab7339bbcccbcecbb920cd556e5d689b309b906e2ee6979ba83b3de78ad`。
