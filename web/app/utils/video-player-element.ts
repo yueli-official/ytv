@@ -16,6 +16,9 @@ class YtvVideoSkinElement extends NeutralVideoSkinElement {
     const template = NeutralVideoSkinElement.template!.cloneNode(true) as HTMLTemplateElement;
     const container = template.content.firstElementChild as HTMLElement;
     container.style.setProperty("--media-controls-gradient", "none");
+    const enhancementSlot = document.createElement('slot');
+    enhancementSlot.name = 'enhancement';
+    template.content.querySelector('.video-controls-end')!.prepend(enhancementSlot);
     return template;
   })();
 }

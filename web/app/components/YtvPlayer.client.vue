@@ -8,6 +8,7 @@ import "@videojs/html/i18n/locales/zh/register";
 import { createPlaybackSession, type PlaybackMedia, type PlaybackSelection, type PlaybackSnapshot } from "~/utils/playback-session";
 import type { LocalPlaybackProgress } from "~/utils/local-progress";
 import { bindPlayerPreferences } from "~/utils/player-preferences";
+import { bindVideoEnhancement, enhancementPreferenceKey, type EnhancementState } from "~/utils/video-enhancement";
 import { bindHoldSpeed } from "~/utils/hold-speed";
 import { ytvFailureMessage } from "~/utils/ytv-failure";
 import { mergeViewerProgress } from "~/utils/viewer-progress";
@@ -20,6 +21,18 @@ const skin = ref<HTMLElement | null>(null);
 const player = ref<YtvVideoPlayerElement | null>(null);
 const fullscreenMessage = ref("");
 const holdingSpeed = ref(false);
+const enhancementEnabled = ref(true);
+const enhancementState = ref<EnhancementState>('waiting');
+const preferenceError = ref('');
+let enhancement: ReturnType<typeof bindVideoEnhancement> | null = null;
+const enhancementLabel = computed(() => !enhancementEnabled.value ? '增强已关' : enhancementState.value === 'active' ? '增强已开' : enhancementState.value === 'unavailable' ? '增强不可用' : '增强待就绪');
+function toggleEnhancement() {
+  enhancementEnabled.value = !enhancementEnabled.value;
+  preferenceError.value = '';
+  try { localStorage.setItem(enhancementPreferenceKey, String(enhancementEnabled.value)); }
+  catch { preferenceError.value = '浏览器未能保存设置，本次观看仍有效。'; }
+  enhancement?.setEnabled(enhancementEnabled.value);
+}
 const fullscreenActive = ref(false);
 const snapshot = ref<PlaybackSnapshot>({ state: "idle", message: "" });
 let session: ReturnType<typeof createPlaybackSession> | null = null;
@@ -41,6 +54,7 @@ async function enterFullscreen() {
 defineExpose({ enterFullscreen });
 
 onMounted(() => {
+  try { enhancementEnabled.value = localStorage.getItem(enhancementPreferenceKey) !== 'false'; } catch { /* Default preference remains enabled. */ }
   session = createPlaybackSession({
     describeError: cause => ytvFailureMessage(cause, "没有取得可播放的地址，请重试或选择其他线路。"),
     resolve: (value) => api.playback(value.sourceKey, value.externalId, value.episodeKey),
@@ -55,11 +69,14 @@ onMounted(() => {
       element.setAttribute("aria-label", `${props.title} ${props.episodeLabel}`);
       element.style.cssText = "display:block;width:100%;height:100%;object-fit:contain";
       skin.value!.append(element);
+      const currentEnhancement = bindVideoEnhancement(element, skin.value!, state => { enhancementState.value = state; });
+      enhancement = currentEnhancement;
+      currentEnhancement.setEnabled(enhancementEnabled.value);
       const hold = bindHoldSpeed(skin.value!, element, (active) => { holdingSpeed.value = active; });
       let releasePreferences = () => {};
       try { releasePreferences = bindPlayerPreferences(element as unknown as HTMLMediaElement, localStorage, hold.preferredRate); } catch { /* Playback works without browser storage. */ }
       queueMicrotask(() => { if (element.isConnected) element.src = manifest.url; });
-      return { media: element, destroy: () => { hold.dispose(); releasePreferences(); element.pause(); element.removeAttribute("src"); element.remove(); if (element.tagName === "VIDEO") element.load(); } };
+      return { media: element, destroy: () => { currentEnhancement.dispose(); if (enhancement === currentEnhancement) enhancement = null; hold.dispose(); releasePreferences(); element.pause(); element.removeAttribute("src"); element.remove(); if (element.tagName === "VIDEO") element.load(); } };
     },
     storage: () => localStorage,
     onState: (value) => { snapshot.value = value; },
@@ -86,10 +103,12 @@ onBeforeUnmount(() => {
     <media-i18n lang="zh" class="block size-full">
       <component :is="'ytv-video-player'" ref="player" orientation-lock-type="landscape" :poster="poster || undefined" class="block size-full">
         <ytv-video-skin ref="skin" class="ytv-player-skin">
+          <button slot="enhancement" type="button" class="ytv-enhancement-button" :aria-pressed="enhancementEnabled" :aria-label="`画质增强：${enhancementLabel}`" @click.stop="toggleEnhancement">{{ enhancementLabel }}</button>
           <div class="ytv-gesture-feedback" :class="{ 'is-fullscreen': fullscreenActive }" aria-live="polite" aria-atomic="true"><span v-if="holdingSpeed" data-hold-speed>2 倍速播放 · 松开恢复</span></div>
         </ytv-video-skin>
       </component>
     </media-i18n>
+    <p v-if="preferenceError" role="status" class="absolute inset-x-3 top-3 z-30 rounded-lg bg-black/80 px-3 py-2 text-center text-xs text-white">{{ preferenceError }}</p>
     <p v-if="fullscreenMessage" role="status" class="absolute inset-x-3 top-3 z-30 rounded-lg bg-black/80 px-3 py-2 text-center text-xs text-white">{{ fullscreenMessage }}</p>
     <button v-if="['ready', 'paused', 'ended'].includes(snapshot.state)" type="button" data-primary-play :aria-label="snapshot.state === 'ended' ? '重新播放' : '播放'" class="absolute left-1/2 top-1/2 grid size-14 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-2xl border border-white/20 bg-black/65 text-white shadow-lg transition hover:border-white/50 hover:bg-black/85 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--ui-primary)] sm:size-16" @click="play"><UIcon :name="snapshot.state === 'ended' ? 'i-tabler-refresh' : 'i-tabler-player-play-filled'" class="size-5 sm:size-6" /></button>
     <div v-if="snapshot.state === 'resolving' || snapshot.state === 'loading'" class="pointer-events-none absolute inset-0 grid place-items-center bg-black/60">
@@ -110,6 +129,9 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .ytv-player-skin { display: block; width: 100%; height: 100%; --media-accent-color: var(--ui-primary); --media-accent-text-color: #10212e; --media-object-fit: contain; --media-border-radius: 0; }
+.ytv-enhancement-button { flex-shrink:0; padding:6px; border:0; border-radius:6px; background:rgb(0 0 0 / 65%); color:white; font:500 12px/1.4 var(--font-sans); cursor:pointer; white-space:nowrap; }
+.ytv-enhancement-button[aria-pressed="true"] { color:var(--ui-primary); }
+.ytv-enhancement-button:focus-visible { outline:2px solid var(--ui-primary); outline-offset:2px; }
 .ytv-gesture-feedback { position: absolute; inset: 0; z-index: 20; pointer-events: none; display: flex; justify-content: center; align-items: flex-start; padding-top: 1rem; }
 .ytv-gesture-feedback span { border-radius: 999px; background: rgb(0 0 0 / 75%); padding: 0.5rem 1rem; color: white; font-size: 0.75rem; }
 .ytv-gesture-feedback.is-fullscreen { padding-top: 4rem; }

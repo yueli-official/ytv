@@ -27,6 +27,12 @@ importers:
       '@videojs/html':
         specifier: 10.2.0
         version: 10.2.0(@videojs/hlsjs-video@10.2.0)(react@19.3.1)
+      '@videojs/media':
+        specifier: 10.2.0
+        version: 10.2.0
+      '@webgpu/types':
+        specifier: ^0.1.74
+        version: 0.1.74
       '@yueli/http-runtime':
         specifier: file:vendor/yueli-http-runtime-0.2.2.tgz
         version: file:vendor/yueli-http-runtime-0.2.2.tgz
@@ -39,6 +45,9 @@ importers:
       '@yueli/ui':
         specifier: file:vendor/yueli-ui-0.9.0-preview.20261017.styles.1.tgz
         version: file:vendor/yueli-ui-0.9.0-preview.20261017.styles.1.tgz(7d38b3b5bb53e39e5789e53b281cb4cb)
+      anime4k-webgpu:
+        specifier: 1.0.0
+        version: 1.0.0(@webgpu/types@0.1.74)
       nuxt:
         specifier: 4.5.1
         version: 4.5.1(@babel/plugin-syntax-jsx@7.29.7(@babel/core@7.29.7))(@babel/plugin-syntax-typescript@7.29.7(@babel/core@7.29.7))(@oxc-project/types@0.147.0)(@types/node@24.13.3)(@vue/compiler-sfc@3.5.42)(db0@0.3.4)(esbuild@0.28.2)(ioredis@5.11.1)(lightningcss@1.33.0)(magicast@0.5.4)(rollup-plugin-visualizer@7.1.1(rolldown@1.2.6)(rollup@4.63.1))(rollup@4.63.1)(srvx@0.11.22)(terser@5.51.2)(typescript@6.0.3)(vite@8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(yaml@2.9.0))(vue-tsc@3.3.7(typescript@6.0.3))(yaml@2.9.0)
@@ -1899,6 +1908,9 @@ packages:
     peerDependencies:
       vue: 3.5.39
 
+  '@webgpu/types@0.1.74':
+    resolution: {integrity: sha512-lgiI4hbuLcI9unnm2cL/tvCaQU45dp0xcLWJh5uB/9MBGvIA4F8XIk7nSiBeg+K4xWGYwgZKn80LmERI5CxoTA==}
+
   '@yueli/http-runtime@file:vendor/yueli-http-runtime-0.2.2.tgz':
     resolution: {integrity: sha512-FJiANKxrxqCUyIsZZe6x3bbtZCWWzoE4DMl2goYBkccxynLP+wkv8vKYF09wCoUBPp3fgbD3s+UfAMsYX6u6ZQ==, tarball: file:vendor/yueli-http-runtime-0.2.2.tgz}
     version: 0.2.2
@@ -1963,6 +1975,11 @@ packages:
 
   alien-signals@3.2.1:
     resolution: {integrity: sha512-I8FjmltrfnDFoZedi5CG8DghVYNhzb/Ijluz7tCSJH0xpd0484Kowhbb1XDYOxfJpU1p5wnM2X54dA+IfGyD1g==}
+
+  anime4k-webgpu@1.0.0:
+    resolution: {integrity: sha512-syZZyDRHYukFnDLxdES4AuMHzKwxlu5Lo52yhEEc1hwKQmvza8DGC62/VDPrrWOu4KArU5jh/0yFJQBwetGuxg==}
+    peerDependencies:
+      '@webgpu/types': ^0.1.38
 
   ansi-regex@5.0.1:
     resolution: {integrity: sha512-quJQXlTSUGL2LH9SUXo8VwsY4soanhgo6LNSm84E1LBcE8s3O0wpdiRzyR9z/ZZJMlMWv37qOOb9pdJlMUEKFQ==}
@@ -6716,6 +6733,8 @@ snapshots:
     dependencies:
       vue: 3.5.39(typescript@6.0.3)
 
+  '@webgpu/types@0.1.74': {}
+
   '@yueli/http-runtime@file:vendor/yueli-http-runtime-0.2.2.tgz': {}
 
   '@yueli/identity-nuxt@file:vendor/yueli-identity-nuxt-0.2.3-preview.20261017.styles.1.tgz(db20626b8fcf144f8371309a32a0ce2a)':
@@ -6777,6 +6796,10 @@ snapshots:
   agent-base@7.1.4: {}
 
   alien-signals@3.2.1: {}
+
+  anime4k-webgpu@1.0.0(@webgpu/types@0.1.74):
+    dependencies:
+      '@webgpu/types': 0.1.74
 
   ansi-regex@5.0.1: {}
 
