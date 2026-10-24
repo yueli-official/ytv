@@ -11,7 +11,7 @@
 .ytv-container { width:min(92%,1600px); margin-inline:auto; }
 .ytv-header { position:relative; z-index:30; border-bottom:1px solid var(--ytv-line); background:#080b10e8; }
 .ytv-topbar { display:flex; align-items:center; min-height:70px; gap:48px; }
-.ytv-wordmark { display:inline-flex; flex-shrink:0; color:white; font-size:34px; font-weight:750; letter-spacing:-.04em; text-decoration:none; }
+.ytv-wordmark { display:inline-flex; flex-shrink:0; color:var(--ui-primary); font-size:34px; font-weight:750; letter-spacing:-.04em; text-decoration:none; }
 .ytv-nav { display:flex; align-self:stretch; gap:32px; }
 .ytv-nav-link { position:relative; display:flex; align-items:center; min-height:44px; color:#d1d9e0; font-size:16px; text-decoration:none; white-space:nowrap; }
 .ytv-nav-link:hover,.ytv-nav-link.active { color:white; }
