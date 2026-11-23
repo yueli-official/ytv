@@ -66,7 +66,7 @@ test("admin source catalog failure offers retry instead of false empty success",
 test("admin source edits persist and console survives refresh", async ({ page }, info) => {
   await login(page);
   await page.reload({ waitUntil: "networkidle" });
-  await expect(page.locator("[data-admin-trend-chart]")).toHaveCount(3);
+  await expect(page.getByRole("img", { name: /^独立访客趋势/u })).toBeVisible();
   await page.screenshot({ path: info.outputPath("console.png"), fullPage: true, animations: "disabled" });
   await page.goto("/manage/sources", { waitUntil: "networkidle" });
   const response = await page.request.get("/api/v1/admin/sources");

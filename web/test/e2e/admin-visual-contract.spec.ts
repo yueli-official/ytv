@@ -36,7 +36,12 @@ test("shared console shell renders without hydration or component warnings", asy
   await page.goto("/manage", { waitUntil: "networkidle" });
   await expect(page.locator("[data-admin-console]")).toBeVisible();
   await expect(page.locator("[data-admin-console-canvas]")).toBeVisible();
-  await expect(page.locator("[data-admin-trend-chart]")).toHaveCount(3);
+  await expect(page.getByRole("img", { name: /^独立访客趋势/u })).toBeVisible();
+  await page.getByRole("tab", { name: "浏览量", exact: true }).click();
+  await expect(page.getByRole("img", { name: /^浏览量趋势/u })).toBeVisible();
+  await page.getByRole("tab", { name: "7 天" }).click();
+  await expect(page.getByText("近 7 天访客日", { exact: true })).toBeVisible();
+  await expect(page.getByRole("img", { name: /^浏览量趋势/u })).toBeVisible();
 
   if ((page.viewportSize()?.width || 0) >= 1024) {
     const sidebar = page.locator("[data-admin-sidebar-appearance]");
