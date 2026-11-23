@@ -1,8 +1,8 @@
 /* Approved public cinema composition. Foundation owns administration styling. */
 .ytv-public {
- --ui-primary:#d9b86c; --ui-bg:#080b10; --ui-bg-muted:#10151d; --ui-bg-elevated:#181f29;
+ --ui-primary:#ffc533; --ui-bg:#080b10; --ui-bg-muted:#10151d; --ui-bg-elevated:#181f29;
  --ui-text:#dce2ea; --ui-text-muted:#9aa5b5; --ui-text-highlighted:#f3f5f8; --ui-border:#28313e;
- --ytv-canvas:#080b10; --ytv-panel:#10151d; --ytv-line:rgb(161 180 205 / .14); --ytv-accent-hover:#ebce91; --ytv-on-accent:#201b10; --ytv-selected:#292316;
+ --ytv-canvas:#080b10; --ytv-panel:#10151d; --ytv-line:rgb(161 180 205 / .14); --ytv-accent-hover:#ffd45d; --ytv-on-accent:#17130b; --ytv-selected:color-mix(in srgb,var(--ui-primary) 12%,var(--ui-bg));
  --font-sans:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI Variable","Segoe UI","PingFang SC","Microsoft YaHei UI","Microsoft YaHei",sans-serif;
  background:var(--ytv-canvas); color:var(--ui-text); font-size:15px; line-height:1.6; font-family:var(--font-sans); -webkit-font-smoothing:antialiased;
 }
@@ -20,7 +20,7 @@
 .ytv-top-actions { display:flex; align-items:center; gap:28px; margin-left:auto; }
 .ytv-source-trigger { display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:44px; color:#e1e7ed; font-size:16px; white-space:nowrap; cursor:pointer; }
 .ytv-mobile-menu { display:none; }
-.ytv-skip { position:fixed; z-index:100; top:8px; left:16px; padding:12px; background:var(--ui-primary); color:#10212e; transform:translateY(-180%); }
+.ytv-skip { position:fixed; z-index:100; top:8px; left:16px; padding:12px; background:var(--ui-primary); color:var(--ytv-on-accent); transform:translateY(-180%); }
 .ytv-skip:focus { transform:translateY(0); }
 .ytv-primary { background:var(--ui-primary); color:var(--ytv-on-accent); border-radius:8px; padding:10px 20px; min-height:42px; font-size:14px; font-weight:600; justify-content:center;  @media(min-width:768px) { font-size:14px; min-height:38px; padding:8px 16px; } }
 .ytv-primary:hover { background:var(--ytv-accent-hover); }
@@ -50,7 +50,7 @@
 .ytv-section-note { color:#adb9c4; font-size:14px; }
 .ytv-segment { display:inline-flex; gap:8px; }
 .ytv-segment button { min-height:36px; padding:6px 20px; border:1px solid var(--ytv-line); border-radius:999px; font-size:14px; color:#cbd5df; cursor:pointer; }
-.ytv-segment button[aria-pressed='true'] { color:#0c2231; background:var(--ui-primary); font-weight:600; }
+.ytv-segment button[aria-pressed='true'] { color:var(--ytv-on-accent); background:var(--ui-primary); font-weight:600; }
 .ytv-poster-grid { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:18px; }
 .ytv-trending-rail { display:grid; grid-auto-flow:column; grid-auto-columns:calc((100% - 90px) / 6); gap:18px; overflow-x:auto; overscroll-behavior-x:contain; scroll-snap-type:x mandatory; scrollbar-width:none; padding-bottom:4px; }
 .ytv-trending-rail::-webkit-scrollbar { display:none; }
@@ -63,11 +63,11 @@
 .ytv-new-label { position:absolute; top:8px; left:8px; padding:3px 6px; color:white; background:#101923d9; border-radius:3px; font-size:10px; }
 .ytv-poster-caption { display:grid; gap:5px; padding-top:10px; }
 .ytv-poster-caption h3 { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:16px; font-weight:600; }
-.ytv-poster-score { font-size:17px; color:#ffce46; font-variant-numeric:tabular-nums; }
+.ytv-poster-score { font-size:17px; color:var(--ui-primary); font-variant-numeric:tabular-nums; }
 .ytv-rail-arrow { position:absolute; z-index:5; top:40%; display:inline-flex; align-items:center; justify-content:center; width:40px; height:40px; border-radius:50%; background:#233340; color:white; }
 .ytv-source-grid { display:grid; grid-auto-flow:column; grid-auto-columns:calc((100% - 42px)/4); gap:14px; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:thin; scrollbar-color:#304453 transparent; padding-bottom:6px; }
 .ytv-source-card { display:flex; align-items:center; gap:18px; padding:8px; border:1px solid var(--ytv-line); border-radius:9px; background:var(--ytv-panel); color:inherit; text-decoration:none; height:100%; scroll-snap-align:start; }
-.ytv-source-card:hover { border-color:#d9b86c70; }
+.ytv-source-card:hover { border-color:color-mix(in srgb,var(--ui-primary) 44%,transparent); }
 .ytv-source-card .ytv-poster-image { width:78px; flex-shrink:0; }
 .ytv-quiet-notice { display:flex; align-items:center; flex-wrap:wrap; gap:8px; padding:12px 14px; border-radius:8px; background:#192632; color:#cad6e0; font-size:14px; }
 .ytv-quiet-notice button { margin-left:auto; color:var(--ui-primary); cursor:pointer; }
@@ -97,7 +97,7 @@
 .ytv-episode-grid { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:12px; }
 .ytv-episode { display:flex; align-items:center; justify-content:center; gap:10px; min-height:54px; padding:10px; border:1px solid var(--ytv-line); border-radius:7px; background:#ffffff04; color:#eef3f7; font-size:17px; text-align:center; text-decoration:none;  @media(min-width:768px) { min-height:44px; font-size:14px; padding:8px; } }
 .ytv-episode:hover { border-color:var(--ui-primary); }
-.ytv-episode.selected { background:var(--ytv-selected); border-color:#d9b86c55; color:#ebcf94; }
+.ytv-episode.selected { background:var(--ytv-selected); border-color:color-mix(in srgb,var(--ui-primary) 33%,transparent); color:var(--ui-primary); }
 .ytv-history-head { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:24px; padding-block:32px 8px; }
 .ytv-history-head h1 { font-size:36px; font-weight:600;  @media(min-width:768px) { font-size:28px; } }
 .ytv-history-tools { display:flex; align-items:center; flex-wrap:wrap; gap:24px; }

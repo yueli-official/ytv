@@ -52,7 +52,7 @@ async function submit(withdraw = false) {
 </template>
 
 <style scoped>
-.source-vote{display:grid;gap:16px;padding:22px;border:1px solid #d9b86c38;border-radius:12px;background:linear-gradient(115deg,#d9b86c0b,transparent 60%),var(--ytv-panel)}
+.source-vote{display:grid;gap:16px;padding:22px;border:1px solid color-mix(in srgb,var(--ui-primary) 22%,transparent);border-radius:12px;background:linear-gradient(115deg,color-mix(in srgb,var(--ui-primary) 4%,transparent),transparent 60%),var(--ytv-panel)}
 .source-vote-intro{display:flex;align-items:center;gap:12px}
 .source-vote-symbol{display:grid;place-items:center;width:38px;height:38px;border-radius:10px;background:var(--ytv-selected);color:var(--ui-primary);flex-shrink:0}
 .source-vote-intro h3{font-size:17px;font-weight:600;color:var(--ui-text-highlighted)}
