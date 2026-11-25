@@ -17,6 +17,7 @@ const navigation = computed<readonly AdminNavigationItem[]>(() => [
 ]);
 
 const currentLabel = computed(() => navigation.value.find((item) => item.active)?.label || "控制台");
+const { loggedIn: headerLoggedIn } = useAuth();
 </script>
 
 <template>
@@ -36,7 +37,7 @@ const currentLabel = computed(() => navigation.value.find((item) => item.active)
     data-ytv-admin-shell
   >
     <template #topbar-right>
-      <ConsumerManageAccountControl home-to="" show-appearance trigger-mode="inline" />
+      <ConsumerManageAccountControl :trigger-mode="headerLoggedIn ? 'collapsed' : 'inline'" home-to="" show-appearance />
     </template>
     <slot />
   </AdminConsoleLayout>

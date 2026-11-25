@@ -5,6 +5,7 @@ const emit=defineEmits<{sources:[]}>();
 const route=useRoute();
 const navigation=[{label:'发现',to:'/'},{label:'播放历史',to:'/history'}];
 function openSourceSettings(){emit('sources');}
+const { loggedIn: headerLoggedIn } = useAuth();
 </script>
 <template>
       <header class="ytv-header">
@@ -17,7 +18,7 @@ function openSourceSettings(){emit('sources');}
           <div class="ytv-top-actions">
             <button type="button" aria-label="来源设置" class="ytv-source-trigger" @click="openSourceSettings"><UIcon name="i-tabler-adjustments-horizontal" class="size-5" /><span>来源设置</span></button>
             <YSiteLauncher />
-            <ConsumerAccountControl :context-actions="accountActions" />
+            <ConsumerAccountControl :trigger-mode="headerLoggedIn ? 'collapsed' : 'inline'" :context-actions="accountActions" />
           </div>
         </div>
       </header>
