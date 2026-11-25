@@ -6,7 +6,7 @@ services:
     init: true
     shm_size: 512mb
     env_file: [./api.env]
-    networks: [default, core-db]
+    networks: [default, core-db, traffic]
     security_opt: ["no-new-privileges:true"]
     cap_drop: [ALL]
     healthcheck:
@@ -30,6 +30,9 @@ services:
       timeout: 5s
       retries: 12
 networks:
+  traffic:
+    external: true
+    name: ${TRAFFIC_NETWORK:?set TRAFFIC_NETWORK}
   core-db:
     external: true
     name: yueli-core-db
