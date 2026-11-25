@@ -1,0 +1,285 @@
+{
+  "passed": true,
+  "release": "ytv-spa-20261114-2",
+  "webImage": "yueli/ytv-web:spa-20261114-2",
+  "webImageId": "sha256:e422b3a396a2d5e3ae2aefff10da7014eaf0109253baac0c960b4f97d2c83613",
+  "sourceArchiveSha256": "70aacdcf71d23bac99e4334875227fd869488b577254ee15ac913a9198e520d6",
+  "webArchiveSha256": "a43fce90da2ff5df95b304a0499ff4eb3b5f3e98ab08f444c46627e34178d60c",
+  "production": {
+    "passed": true,
+    "release": "ytv-spa-20261114-2",
+    "webImageId": "sha256:e422b3a396a2d5e3ae2aefff10da7014eaf0109253baac0c960b4f97d2c83613",
+    "webContainerId": "31a40251b8f4843116b4aab09982ba5f4caa66a17e467bab7fd78b09d399d9b3",
+    "apiImageId": "sha256:058a8c3b2f562603c487905f2727e388aa20644bfc151ebc484418843a57a3c5",
+    "apiContainerId": "2d3dae4e88272c1d17e38f6b42ec99c819fb75b3d15b1393bd1236509d1f80aa",
+    "apiUnchanged": true,
+    "unrelatedContainersUnchanged": true,
+    "environmentAndPortsUnchanged": true,
+    "health": "healthy",
+    "restarts": 0,
+    "staticAssetsVerified": 119,
+    "checks": [
+      {
+        "path": "/",
+        "status": 200,
+        "spaShell": true
+      },
+      {
+        "path": "/history",
+        "status": 200,
+        "spaShell": true
+      },
+      {
+        "path": "/search?q=test",
+        "status": 200,
+        "spaShell": true
+      },
+      {
+        "path": "/title/ffzy/1629",
+        "status": 200,
+        "spaShell": true
+      },
+      {
+        "path": "/watch/ffzy/1629/line1-0",
+        "status": 200,
+        "spaShell": true
+      },
+      {
+        "path": "/manage",
+        "status": 200,
+        "spaShell": true
+      },
+      {
+        "path": "/healthz",
+        "status": 200
+      },
+      {
+        "path": "/api/v1/meta",
+        "status": 200
+      },
+      {
+        "path": "/api/v1/sources",
+        "status": 200
+      }
+    ],
+    "elapsedSeconds": 22.78188705444336,
+    "rollbackEnv": "/projects/yuelili.com/backups/ytv-spa-20261114-1/.env",
+    "databaseMigrations": []
+  },
+  "checks": {
+    "typecheck": true,
+    "testFiles": 9,
+    "testsPassed": 23,
+    "productionBuild": true,
+    "candidateBrowserCases": 28,
+    "productionBrowserCases": 26,
+    "productionVisualCases": 8,
+    "manualVisualReviewed": true,
+    "actualPlayback": [
+      {
+        "name": "real-playback",
+        "width": 1440,
+        "mode": "dark",
+        "video": {
+          "width": 1280,
+          "height": 504,
+          "time": 91.239366,
+          "paused": false
+        }
+      },
+      {
+        "name": "real-playback",
+        "width": 390,
+        "mode": "dark",
+        "video": {
+          "width": 1280,
+          "height": 504,
+          "time": 90.877055,
+          "paused": false
+        }
+      }
+    ]
+  },
+  "comparison": {
+    "before-live": {
+      "warmMiB": 96.5390625,
+      "idleMiB": 142.4921875,
+      "peakMiB": 146.96484375,
+      "rssSamplePeakMiB": 191.67578125,
+      "htmlMedianMs": 218.36708602495492,
+      "cpuUserMs": 1551.765,
+      "cpuSystemMs": 211.277
+    },
+    "spa-final": {
+      "warmMiB": 40.71484375,
+      "idleMiB": 40.90625,
+      "peakMiB": 41.4375,
+      "rssSamplePeakMiB": 90.2109375,
+      "htmlMedianMs": 5.294608883559704,
+      "cpuUserMs": 368.156,
+      "cpuSystemMs": 44.252
+    }
+  },
+  "idleMemorySavedMiB": 101.5859375,
+  "idleMemorySavedPercent": 71.29228576128077,
+  "observation": {
+    "passed": true,
+    "seconds": 90,
+    "samples": [
+      {
+        "time": "21:31:35",
+        "workingMiB": 55.52,
+        "swapMiB": 0.0,
+        "peakMiB": 67.94,
+        "health": "healthy",
+        "restartCount": 0,
+        "oomKilled": false,
+        "probeExitCodes": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "shim": [
+          {
+            "pid": 1312273,
+            "fds": 24
+          }
+        ],
+        "pidFiles": 1
+      },
+      {
+        "time": "21:32:05",
+        "workingMiB": 58.23,
+        "swapMiB": 0.0,
+        "peakMiB": 74.21,
+        "health": "healthy",
+        "restartCount": 0,
+        "oomKilled": false,
+        "probeExitCodes": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "shim": [
+          {
+            "pid": 1312273,
+            "fds": 24
+          }
+        ],
+        "pidFiles": 1
+      },
+      {
+        "time": "21:32:35",
+        "workingMiB": 59.82,
+        "swapMiB": 0.0,
+        "peakMiB": 77.13,
+        "health": "healthy",
+        "restartCount": 0,
+        "oomKilled": false,
+        "probeExitCodes": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "shim": [
+          {
+            "pid": 1312273,
+            "fds": 24
+          }
+        ],
+        "pidFiles": 1
+      },
+      {
+        "time": "21:33:06",
+        "workingMiB": 60.55,
+        "swapMiB": 0.0,
+        "peakMiB": 77.75,
+        "health": "healthy",
+        "restartCount": 0,
+        "oomKilled": false,
+        "probeExitCodes": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "shim": [
+          {
+            "pid": 1312273,
+            "fds": 24
+          }
+        ],
+        "pidFiles": 1
+      }
+    ]
+  },
+  "evidenceSha256": {
+    "candidate-browser.json": "ea4f2393f32cae7ea217a6a5d4f1f6c5798fe09d2b6c617eb27644a0f9b45dd2",
+    "browser-production/result.json": "8db3e1c7cdad2b83cd0b8ae7c3c30f61e26abf871801f79feccd6b39686a1f9a",
+    "browser-production-visual/result.json": "97ec1f867dbf485be1bafcfc767134a12e621715436aebe77b6066caf52216a4",
+    "benchmark-before-live.json": "cf845698cc97de95ac5a5e067bda73eefc62b1c3fc4d7f0dc6ee72b34f86c7d5",
+    "benchmark-spa-final.json": "3cd4bc58046936b98100ead2a5b82569d4200e4f1cd58172751c871e88e635bb",
+    "observation.json": "765bcdd4d3bdb9462fda6d1c83edc9df6062163d606657621e0398cef050dab8",
+    "visual-reviewed.json": "279d8c6d14372ca4d22fa9e059f6dd92ae1743ecbc87cbbb0087ba66e4eceae3"
+  },
+  "cleanupRemote": {
+    "completed": true,
+    "removedTaskPaths": [
+      "image",
+      "image-2",
+      "ytv-spa-bench-before-metrics",
+      "ytv-spa-bench-before-live-metrics",
+      "ytv-spa-bench-spa-metrics",
+      "ytv-spa-bench-spa-final-metrics",
+      "memory.mjs"
+    ],
+    "unlinkedLinksWithoutTraversal": 18,
+    "removedUnreleasedImage": "yueli/ytv-web:spa-20261114-1",
+    "ownedContainersRemaining": 0,
+    "temporaryEnvFiles": 0,
+    "archivesAndBackupsRetained": true,
+    "sharedCachesUntouched": true
+  },
+  "scope": {
+    "ssr": false,
+    "nitroAuthBffRetained": true,
+    "apiUnchanged": true,
+    "databaseMigrations": [],
+    "commit": false,
+    "push": false
+  },
+  "limitations": [
+    "HTML-only controlled comparison excludes browser follow-up API/JS/images",
+    "90-second observation; no long-run memory bound",
+    "No real authenticated administrator writes or admin refresh verification",
+    "Browser mobile viewport, not physical phone",
+    "Production-equivalent candidate and real live services; no local Workspace composition"
+  ],
+  "cleanupLocal": {
+    "target": "D:\\coding\\yueli-official\\task-artifacts\\ytv\\spa-20261114-1\\source",
+    "snapshot": "e0f61329c63faab9eaebd7225e1954ff3747dd236f639637211917cc4f0f5f1b",
+    "files": 36610,
+    "links": 2644,
+    "directories": 6800,
+    "bytes": 467082167,
+    "sourceArchiveVerified": true,
+    "completed": true,
+    "removedEntries": 46054,
+    "deletedOneOffTests": [
+      "browser.mjs"
+    ],
+    "sharedCachesUntouched": true,
+    "archivesAndScreenshotsRetained": true,
+    "taskTunnelStopped": true,
+    "taskTunnelSessionId": 18142,
+    "taskTunnelExitCode": 1,
+    "taskTunnelStopIntentional": true
+  }
+}

@@ -1,0 +1,88 @@
+{
+  "passed": true,
+  "release": "ytv-source-repair-20261117-3",
+  "apiImageId": "sha256:a5a6528e05a50e6805bf2c277649839e671c9a7f4b1c68321dbd961e35c568fb",
+  "apiContainerId": "48ad83fd2be573d7be4fda535a82ebe299f690474f8aac523ca2402b64d2b16f",
+  "webImageId": "sha256:a891265b957c7be0be2b7f600bf70d0e80d3d52deed95152842d907f56f668d5",
+  "webContainerId": "569fc340f86449eebad221820e5226c66a0f4d4647d5b9346b6df9612ef31ff6",
+  "environmentAndPortsUnchanged": true,
+  "unrelatedContainersUnchanged": true,
+  "staticAssetsVerified": 2,
+  "staticAssetsReused": 117,
+  "webContainerReused": true,
+  "activeSources": 13,
+  "disabledSources": [
+    "ffzy",
+    "jinying",
+    "piaoling",
+    "kazumi-mutefun",
+    "kazumi-dmghg",
+    "kazumi-moonci",
+    "haohua"
+  ],
+  "checks": [
+    {
+      "path": "/api/v1/sources",
+      "status": 200,
+      "activeCount": 13
+    },
+    {
+      "check": "SAO-title",
+      "status": 200,
+      "correctName": true
+    },
+    {
+      "check": "Baxian-playlist",
+      "status": 200,
+      "bytes": 280956
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "currentHtmlAssets": true
+    },
+    {
+      "path": "/search",
+      "status": 200,
+      "currentHtmlAssets": true
+    },
+    {
+      "path": "/manage",
+      "status": 200,
+      "currentHtmlAssets": true
+    },
+    {
+      "path": "/watch/kazumi-7sefun/aHR0cHM6Ly93d3cuN3NlZnVuLnRvcC92b2RkZXRhaWwvMzg2MDcuaHRtbA/aHR0cHM6Ly93d3cuN3NlZnVuLnRvcC92b2RwbGF5LzM4NjA3LTEtMS5odG1s",
+      "status": 200,
+      "currentHtmlAssets": true
+    }
+  ],
+  "elapsedSeconds": 6.669873513747007,
+  "databaseBackup": {
+    "passed": true,
+    "serverVersion": "18.4 (Debian 18.4-1.pgdg12+1)",
+    "backup": "/projects/yuelili.com/backups/ytv-source-repair-20261117-1/ytv-before-source-repair.pgdump",
+    "bytes": 3288500,
+    "sha256": "2b689027733fd9d7fe2c1754e869ee3a68a73339ce843deff246cb0facac3bc7",
+    "restoreListEntries": 194,
+    "migrationCatalogs": [
+      "public.schema_migrations"
+    ],
+    "newMigrations": [],
+    "migrationSourceBytesComparedToOriginalDeployment": true
+  },
+  "migrationCatalog": {
+    "columns": [
+      "version",
+      "dirty"
+    ],
+    "rows": [
+      {
+        "version": 11,
+        "dirty": false
+      }
+    ]
+  },
+  "newMigrations": [],
+  "rollbackEnv": "/projects/yuelili.com/backups/ytv-source-repair-20261117-1/scope-refinement/.env"
+}

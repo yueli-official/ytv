@@ -1,0 +1,142 @@
+{
+  "release": "ytv-player-gestures-20261117-2",
+  "production": {
+    "passed": true,
+    "release": "ytv-player-gestures-20261117-2",
+    "apiContainerReused": true,
+    "apiImageId": "sha256:a5a6528e05a50e6805bf2c277649839e671c9a7f4b1c68321dbd961e35c568fb",
+    "apiContainerId": "48ad83fd2be573d7be4fda535a82ebe299f690474f8aac523ca2402b64d2b16f",
+    "webImageId": "sha256:81a6c7c587591b8fbac45ad33711e9ee7675823603ac77394eb0b6e3b23cc0a6",
+    "webContainerId": "f7f34cbcf866ed9dd03225d0b2448bafd701f1080c1d64e66f9fb59907b891be",
+    "environmentAndPortsUnchanged": true,
+    "unrelatedContainersUnchanged": true,
+    "staticAssetsVerified": 117,
+    "activeSources": 13,
+    "disabledSources": [
+      "ffzy",
+      "jinying",
+      "piaoling",
+      "kazumi-mutefun",
+      "kazumi-dmghg",
+      "kazumi-moonci",
+      "haohua"
+    ],
+    "checks": [
+      {
+        "path": "/api/v1/sources",
+        "status": 200,
+        "activeSources": 13
+      },
+      {
+        "path": "/",
+        "status": 200,
+        "currentAssets": true
+      },
+      {
+        "path": "/search",
+        "status": 200,
+        "currentAssets": true
+      },
+      {
+        "path": "/manage",
+        "status": 200,
+        "currentAssets": true
+      },
+      {
+        "path": "/watch/kazumi-7sefun/aHR0cHM6Ly93d3cuN3NlZnVuLnRvcC92b2RkZXRhaWwvMzg2MDcuaHRtbA/aHR0cHM6Ly93d3cuN3NlZnVuLnRvcC92b2RwbGF5LzM4NjA3LTEtMS5odG1s",
+        "status": 200,
+        "currentAssets": true
+      }
+    ],
+    "elapsedSeconds": 9.940158013254404,
+    "newMigrations": [],
+    "databaseOperations": false,
+    "rollbackEnv": "/projects/yuelili.com/backups/ytv-gestures-20261117-2/.env"
+  },
+  "preparation": {
+    "webTypecheckPassed": true,
+    "webBuildPassed": true,
+    "webUnitTests": 23,
+    "buildPhase": 4,
+    "browser": {
+      "passed": true,
+      "exitCode": 0,
+      "stats": {
+        "startTime": "2026-11-16T20:50:44.175Z",
+        "duration": 56642.098,
+        "expected": 4,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      }
+    },
+    "android": {
+      "platform": "MuMu Android12 Chromium110; actual candidate Nuxt player",
+      "seekForward": 167.999999,
+      "seekBackward": 119.999999,
+      "brightness": {
+        "filter": "brightness(1.45)",
+        "feedback": "brightness",
+        "time": 119.999999
+      },
+      "volumeUp": {
+        "volume": 0.6999999230845178,
+        "feedback": "volume",
+        "time": 119.999999
+      },
+      "volumeDown": 0.39999999999999997,
+      "heldRate": 2,
+      "restoredRate": 1.5,
+      "savedRate": 1.5,
+      "holdThenSeek": {
+        "advanced": 137.633043,
+        "result": 161.690026
+      },
+      "fullscreen": true,
+      "fullscreenHeldRate": 2,
+      "pageErrors": [],
+      "storageRestored": true
+    },
+    "visual": {
+      "passed": true,
+      "imageId": "sha256:81a6c7c587591b8fbac45ad33711e9ee7675823603ac77394eb0b6e3b23cc0a6",
+      "images": [
+        "mobile-seek-preview.png",
+        "mobile-volume.png",
+        "mobile-fullscreen-hold.png",
+        "desktop-hold.png",
+        "mumu-brightness.png",
+        "mumu-fullscreen-hold.png",
+        "mumu-seek-preview.png"
+      ],
+      "method": "view_image: actual candidate desktop, mobile viewport and MuMu screenshots personally inspected"
+    },
+    "apiSourceAndBinaryReused": true,
+    "limitations": [
+      "Android emulator and Chromium desktop/mobile viewport; physical phone and iOS not tested",
+      "Brightness adjusts picture, not system backlight; browsers blocking volume writes instruct use of hardware keys",
+      "Production-equivalent candidate; local Workspace composition unavailable and signed-in administration not revalidated"
+    ]
+  },
+  "sourceSnapshotSha256": "f232c380e2069678a33f6c4eced38193db355a2c46ff6293307fb21083beea0a",
+  "webArtifactSha256": "d3a6edec7d6fa730746d75f6cc3fb6b50414b8f00542bb5025d82865d8e8b0be",
+  "cleanup": {
+    "passed": true,
+    "productionHealthy": true,
+    "candidateRemoved": "8beae7597247e200735c97f1a880968171dcc0015fb46d5943a7deae09ad8b14",
+    "reproducibleDirectoriesRemoved": [
+      "source",
+      "image",
+      "image-2",
+      "image-3",
+      "image-4",
+      "audit/results"
+    ],
+    "unpublishedImagesRemoved": [
+      "yueli/ytv-web:gestures-20261117-1",
+      "yueli/ytv-web:gestures-20261117-2"
+    ],
+    "dependencyCacheRetained": "/projects/yuelili.com/.deploy/ytv-gestures-20261117/pnpm-store",
+    "publishedArchivesAndRollbackImagesRetained": true
+  }
+}
