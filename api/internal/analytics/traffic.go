@@ -71,8 +71,8 @@ type Traffic struct {
 func NewTraffic(baseURL, token string, clock func() time.Time) (*Traffic, error) {
 	base, err := url.Parse(baseURL)
 	if err != nil || base.Hostname() == "" || base.User != nil || base.ForceQuery || base.RawQuery != "" || base.Fragment != "" ||
-		(base.Scheme != "https" && !(base.Scheme == "http" && isLoopback(base.Hostname()))) {
-		return nil, errors.New("ytv/analytics: collector URL must use HTTPS or loopback HTTP, without credentials, query or fragment")
+		(base.Scheme != "https" && !(base.Scheme == "http" && (isLoopback(base.Hostname()) || base.Host == "platform-traffic:8096"))) {
+		return nil, errors.New("ytv/analytics: collector URL must use HTTPS, loopback HTTP or the private platform collector, without credentials, query or fragment")
 	}
 	if len(token) < 32 || len(token) > 128 || strings.ContainsFunc(token, func(c rune) bool {
 		return !(c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z' || c >= '0' && c <= '9' || c == '-' || c == '_')
