@@ -36,10 +36,8 @@ test("shared console shell renders without hydration or component warnings", asy
   await page.goto("/manage", { waitUntil: "networkidle" });
   await expect(page.locator("[data-admin-console]")).toBeVisible();
   await expect(page.locator("[data-admin-console-canvas]")).toBeVisible();
-  await expect(page.getByRole("link", { name: "查看流量统计" })).toHaveAttribute("href", /\/sites\/tv(?:\?|$)/u);
-  await expect(page.getByRole("heading", { name: "搜索洞察" })).toBeVisible();
-  await page.getByRole("tab", { name: "7 天" }).click();
-  await expect(page.getByText("近 7 天搜索", { exact: true })).toBeVisible();
+  await expect(page.getByRole("link", { name: "查看搜索分析" })).toHaveAttribute("href", /\/sites\/tv\?tab=search$/u);
+  await expect(page.getByRole("link", { name: "管理数据源" })).toBeVisible();
 
   if ((page.viewportSize()?.width || 0) >= 1024) {
     const sidebar = page.locator("[data-admin-sidebar-appearance]");

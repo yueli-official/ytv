@@ -160,6 +160,7 @@ type ResolvePlaybackRes struct {
 }
 
 type RecordPageViewReq struct {
+	Referrer   string `json:"referrer,omitempty"`
 	g.Meta     `path:"/api/v1/traffic/views" method:"post" tags:"Traffic" summary:"Record one public page view"`
 	EventID    string    `json:"eventId" v:"required|length:16,200"`
 	Path       string    `json:"path" v:"required|max-length:200"`

@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"database/sql"
+	"github.com/yueli-official/foundation/go/traffic"
 	"net/http"
 	"os"
 	"strings"
@@ -130,6 +131,12 @@ func main() {
 	must(err)
 	searchService, err := searchanalytics.New(searchStore, nil)
 	must(err)
+	searchService.WithRecorder(func(ctx context.Context, event searchanalytics.Event) (bool, error) {
+		return false, trafficService.RecordSearch(ctx, traffic.SearchObservation{
+			ID: event.ID, Term: event.Query, OccurredAt: event.OccurredAt, ResultCount: event.ResultCount,
+			Failed: event.FailedSourceCount > 0, DurationMS: event.Duration.Milliseconds(),
+		})
+	})
 	progressStore, err := progress.NewPostgresStore(database)
 	must(err)
 	progressService, err := progress.New(progressStore, nil)

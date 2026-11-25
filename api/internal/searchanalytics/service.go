@@ -63,8 +63,9 @@ type Store interface {
 }
 
 type Service struct {
-	store Store
-	clock func() time.Time
+	record func(context.Context, Event) (bool, error)
+	store  Store
+	clock  func() time.Time
 }
 
 func New(store Store, clock func() time.Time) (*Service, error) {
@@ -74,7 +75,12 @@ func New(store Store, clock func() time.Time) (*Service, error) {
 	if clock == nil {
 		clock = time.Now
 	}
-	return &Service{store: store, clock: clock}, nil
+	return &Service{store: store, clock: clock, record: store.Record}, nil
+}
+
+func (service *Service) WithRecorder(record func(context.Context, Event) (bool, error)) *Service {
+	service.record = record
+	return service
 }
 
 func (service *Service) Record(ctx context.Context, event Event) (RecordResult, error) {
@@ -103,7 +109,7 @@ func (service *Service) Record(ctx context.Context, event Event) (RecordResult, 
 	if event.OccurredAt.After(service.clock().Add(5 * time.Minute)) {
 		return RecordResult{}, fmt.Errorf("%w: search event cannot be in the future", ErrInvalid)
 	}
-	replay, err := service.store.Record(ctx, event)
+	replay, err := service.record(ctx, event)
 	if err != nil {
 		return RecordResult{}, err
 	}

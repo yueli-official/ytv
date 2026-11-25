@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "baselineSha256": "5085bc0bcd4078c6095869b015ba3d98178a89a9c217cdc06c87ed1cdeca461d",
+  "baselineSha256": "4586d789008f21cea23a003d438b99240725bf91fb4ece5cd7670c560da2bd0b",
   "packages": {
     "@yueli/asset-nuxt": {
       "repository": "asset",
@@ -34,8 +34,8 @@
     },
     "@yueli/nuxt-runtime": {
       "repository": "foundation",
-      "version": "0.1.5-preview.20261016.dependency-baseline.1",
-      "sha256": "d84118a8a780f5297d777eb81fc68aec40998d6de4ca30ff641de7b963bc5a0d"
+      "version": "0.1.5-preview.20261125.traffic.1",
+      "sha256": "880bdfd4cf9490ee5dd794fdd33a3366d6f967ad61d9b9a15e45a668ce2f2a6e"
     },
     "@yueli/shortlink-nuxt": {
       "repository": "shortlink",

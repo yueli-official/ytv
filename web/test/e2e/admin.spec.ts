@@ -21,21 +21,19 @@ test("bootstrap administrator reaches the shared shell and central traffic link"
   await login(page);
   await expect(page.locator("[data-admin-shell]")).toBeVisible();
   await expect(page.getByRole("heading", { name: "控制台" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "查看流量统计" })).toHaveAttribute("href", /\/sites\/tv(?:\?|$)/u);
-  await expect(page.getByRole("heading", { name: "搜索洞察" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "查看搜索分析" })).toHaveAttribute("href", /\/sites\/tv\?tab=search$/u);
+  await expect(page.getByRole("link", { name: "管理数据源" })).toHaveAttribute("href", "/manage/sources");
   const cookies = await page.context().cookies();
   expect(cookies.some((cookie) => /^ys_ytv-main_[0-9a-f]{12}$/u.test(cookie.name))).toBe(true);
 });
 
-test("a public query appears in administrator search analytics", async ({ page }) => {
+test("public search and the centralized search report have working entry points", async ({ page }) => {
   const query = `霜线验收${Date.now()}`;
   await page.goto(`/search?q=${encodeURIComponent(query)}`, { waitUntil: "networkidle" });
   await expect(page.getByText("没有找到相关影片", { exact: true })).toBeVisible();
   await login(page);
   await page.goto("/manage");
-  await expect(page.getByRole("heading", { name: "搜索洞察" })).toBeVisible();
-  await expect(page.getByText(query, { exact: true })).toBeVisible();
-  await expect(page.getByText("近 14 天搜索", { exact: true })).toBeVisible();
+  await expect(page.getByRole("link", { name: "查看搜索分析" })).toHaveAttribute("href", /\/sites\/tv\?tab=search$/u);
 });
 
 test("signed-in source preference survives reload", async ({ page }) => {

@@ -3,6 +3,7 @@ package httpapi
 import (
 	"context"
 	"errors"
+	"github.com/yueli-official/foundation/go/traffic"
 	"net/http"
 	"net/url"
 	"strings"
@@ -225,6 +226,7 @@ func (controller *Public) ResolvePlayback(ctx context.Context, request *v1.Resol
 func (controller *Public) RecordPageView(ctx context.Context, request *v1.RecordPageViewReq) (*v1.RecordPageViewRes, error) {
 	result, err := controller.core.traffic.RecordPage(ctx, analytics.RecordInput{
 		EventID: request.EventID, ResourceID: request.Path, VisitorID: request.VisitorID, OccurredAt: request.OccurredAt,
+		Page: &traffic.PageAttribution{Referrer: request.Referrer},
 	})
 	if err != nil {
 		return nil, mapError(err)

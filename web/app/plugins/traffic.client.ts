@@ -9,10 +9,12 @@ export default defineNuxtPlugin(() => {
   async function record(path: string) {
     if (!path.startsWith("/") || path.startsWith("/manage") || path.startsWith("/auth") || path.startsWith("/api/")) return;
     if (lastPath === path) return;
+    const referrer = lastPath ? "internal" : document.referrer ? new URL(document.referrer).hostname : "";
     lastPath = path;
     await api.recordPageView({
       eventId: createBrowserUUID(),
       path,
+      referrer,
       visitorId: browserVisitorID(),
       occurredAt: new Date().toISOString()
     }).catch(() => undefined);

@@ -47,7 +47,7 @@ export function useYtvApi() {
     playback(sourceKey: string, externalId: string, episodeKey: string) {
       return api.request<PlaybackManifest>(`/api/v1/playback/${encodeURIComponent(sourceKey)}/${encodeURIComponent(externalId)}/${encodeURIComponent(episodeKey)}`, { auth: "optional" });
     },
-    recordPageView(input: { eventId: string; path: string; visitorId: string; occurredAt: string }) {
+    recordPageView(input: { eventId: string; path: string; referrer?: string; visitorId: string; occurredAt: string }) {
       return api.request<{ counted: boolean; replay: boolean }>("/api/v1/traffic/views", {
         method: "POST", body: input as unknown as JsonValue, auth: "optional"
       });

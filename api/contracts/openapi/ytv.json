@@ -673,6 +673,10 @@
             "maxLength": 200,
             "type": "string"
           },
+          "referrer": {
+            "format": "string",
+            "type": "string"
+          },
           "visitorId": {
             "format": "string",
             "maxLength": 128,

@@ -16,6 +16,8 @@ import (
 	"strings"
 	"time"
 	"unicode/utf8"
+
+	"github.com/yueli-official/foundation/go/traffic"
 )
 
 var (
@@ -30,6 +32,7 @@ const (
 )
 
 type RecordInput struct {
+	Page       *traffic.PageAttribution
 	EventID    string
 	ResourceID string
 	VisitorID  string
@@ -104,6 +107,9 @@ func (service *Traffic) RecordPage(ctx context.Context, input RecordInput) (Reco
 		return RecordResult{}, fmt.Errorf("%w: page path is not public", ErrInvalid)
 	}
 	input.ResourceID = path
+	if input.Page != nil {
+		input.Page.Path = path
+	}
 	return service.record(ctx, pageView, input)
 }
 
@@ -138,7 +144,9 @@ func (service *Traffic) record(ctx context.Context, metric string, input RecordI
 		Resource   string    `json:"resource"`
 		OccurredAt time.Time `json:"occurredAt"`
 		VisitorKey string    `json:"visitorKey,omitempty"`
-	}{eventID, metric, opaqueKey(input.ResourceID), occurredAt, visitorKey})
+
+		Page *traffic.PageAttribution `json:"page,omitempty"`
+	}{eventID, metric, opaqueKey(input.ResourceID), occurredAt, visitorKey, input.Page})
 	if err != nil {
 		return RecordResult{}, fmt.Errorf("%w: invalid event timestamp", ErrInvalid)
 	}
@@ -148,6 +156,16 @@ func (service *Traffic) record(ctx context.Context, metric string, input RecordI
 		return RecordResult{}, err
 	}
 	return result, nil
+}
+
+func (service *Traffic) RecordSearch(ctx context.Context, event traffic.SearchObservation) error {
+	ctx, cancel := context.WithTimeout(ctx, 500*time.Millisecond)
+	defer cancel()
+	payload, err := json.Marshal(event)
+	if err != nil {
+		return err
+	}
+	return service.request(ctx, http.MethodPost, service.base.JoinPath("v1", "site-data", "search"), payload, &struct{}{})
 }
 
 func (service *Traffic) Overview(ctx context.Context, days int) (Overview, error) {
