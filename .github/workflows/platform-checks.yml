@@ -3,10 +3,13 @@ on:
   push:
     branches: [main, master]
   pull_request:
+  workflow_dispatch:
 permissions:
   contents: read
 jobs:
   api:
+    # 私有 Foundation 依赖随本地发布验收。
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     defaults:
       run:
