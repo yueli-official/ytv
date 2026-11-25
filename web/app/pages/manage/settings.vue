@@ -11,7 +11,7 @@ useSeoMeta({ title: "站点设置" });
 
 const api = useYtvApi();
 const { data, error, refresh } = await useAsyncData("ytv-admin-site-profile", () => api.adminSiteProfile());
-const form = reactive({ name: "", description: "", revision: 0 });
+const form = reactive({ name: "", description: "", revision: 0, logoUrl: "", faviconUrl: "" });
 const schema = z.object({
   name: z.string().trim().min(1, "请输入站点名称").max(80, "站点名称不能超过 80 个字符"),
   description: z.string().max(300, "站点简介不能超过 300 个字符")
@@ -26,6 +26,8 @@ watch(data, (value) => {
   form.name = value.profile.name;
   form.description = value.profile.description;
   form.revision = value.profile.revision;
+  form.logoUrl = value.profile.logoUrl ?? "";
+  form.faviconUrl = value.profile.faviconUrl ?? "";
 }, { immediate: true });
 
 async function saveProfile(_event?: FormSubmitEvent<z.output<typeof schema>>) {
@@ -36,6 +38,7 @@ async function saveProfile(_event?: FormSubmitEvent<z.output<typeof schema>>) {
     await saveFeedback.run(async () => {
       const result = await api.updateSiteProfile(form);
       form.revision = result.profile.revision;
+      await refreshNuxtData("ytv-branding");
     });
   } catch (error) {
     const feedback = ytvFailureFeedback(error, "站点资料没有保存，请稍后重试。", { "/name": "name", "/description": "description" });
@@ -66,6 +69,8 @@ async function saveProfile(_event?: FormSubmitEvent<z.output<typeof schema>>) {
       <UForm id="ytv-site-profile-form" :schema="schema" :state="form" class="grid gap-4" @submit="saveProfile">
         <UFormField label="站点名称" name="name" :error="fieldErrors.name?.[0]"><UInput v-model="form.name" class="w-full" maxlength="80" /></UFormField>
         <UFormField label="站点简介" name="description" :error="fieldErrors.description?.[0]"><UTextarea v-model="form.description" class="w-full" :rows="4" maxlength="300" /></UFormField>
+        <UFormField label="网站 Logo" name="logoUrl" help="填写公开 HTTPS 图片地址，留空使用默认标识。"><UInput v-model="form.logoUrl" inputmode="url" maxlength="2048" class="w-full" /></UFormField>
+        <UFormField label="浏览器标签页图标" name="faviconUrl" help="填写公开 HTTPS 图片地址，留空使用默认图标。"><UInput v-model="form.faviconUrl" inputmode="url" maxlength="2048" class="w-full" /></UFormField>
         <p v-if="saveError" class="text-sm text-error" role="alert">{{ saveError }}</p>
       <details v-if="technical" class="text-xs text-muted"><summary>技术详情</summary><code class="break-all select-all">{{ technical.code }} {{ technical.traceId }}</code></details>
       </UForm>

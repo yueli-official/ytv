@@ -17,12 +17,12 @@ async function login(page: Page) {
   await page.waitForURL(/\/manage(?:\?|$)/u);
 }
 
-test("bootstrap administrator reaches the shared shell and real traffic", async ({ page }) => {
+test("bootstrap administrator reaches the shared shell and central traffic link", async ({ page }) => {
   await login(page);
   await expect(page.locator("[data-admin-shell]")).toBeVisible();
   await expect(page.getByRole("heading", { name: "控制台" })).toBeVisible();
-  await expect(page.getByText("累计浏览", { exact: true })).toBeVisible();
-  await expect(page.getByText("累计播放启动", { exact: true })).toBeVisible();
+  await expect(page.getByRole("link", { name: "查看流量统计" })).toHaveAttribute("href", /\/sites\/tv(?:\?|$)/u);
+  await expect(page.getByRole("heading", { name: "搜索洞察" })).toBeVisible();
   const cookies = await page.context().cookies();
   expect(cookies.some((cookie) => /^ys_ytv-main_[0-9a-f]{12}$/u.test(cookie.name))).toBe(true);
 });

@@ -17,7 +17,7 @@
 .ytv-nav-link:hover,.ytv-nav-link.active { color:white; }
 .ytv-nav-link.active::after { content:''; position:absolute; inset:auto 0 5px; height:3px; border-radius:3px; background:var(--ui-primary); }
 .ytv-top-search { flex:1; max-width:550px; min-width:140px; margin-left:auto; }
-.ytv-top-actions { display:flex; align-items:center; gap:28px; margin-left:auto; }
+.ytv-top-actions { display:flex; align-items:center; gap:8px; margin-left:auto; }
 .ytv-source-trigger { display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:44px; color:#e1e7ed; font-size:16px; white-space:nowrap; cursor:pointer; }
 .ytv-mobile-menu { display:none; }
 .ytv-skip { position:fixed; z-index:100; top:8px; left:16px; padding:12px; background:var(--ui-primary); color:var(--ytv-on-accent); transform:translateY(-180%); }
@@ -117,11 +117,6 @@
 .ytv-watch-meta { grid-column:1/-1; display:flex; justify-content:space-between; align-items:center; gap:20px; flex-wrap:wrap; margin-block:8px; }
 .ytv-watch-meta h1 { font-size:32px; font-weight:600;  @media(min-width:768px) { font-size:26px; } }
 .ytv-watch-help { grid-column:1/-1; }
-.ytv-playlist { min-width:0; border:1px solid var(--ytv-line); border-radius:10px; background:var(--ytv-panel); }
-.ytv-playlist-head { padding:20px; display:grid; gap:12px;  @media(min-width:768px) { padding:16px; gap:10px; } }
-.ytv-playlist-head h2 { font-size:20px; font-weight:600;  @media(min-width:768px) { font-size:17px; } }
-.ytv-playlist-rows { max-height:390px; display:grid; gap:7px; overflow-y:auto; padding:0 16px 16px; scrollbar-width:thin; }
-.ytv-playlist-rows .ytv-episode { justify-content:flex-start; min-height:46px;  @media(min-width:768px) { min-height:40px; } }
 .ytv-fold { padding:16px 22px; border:1px solid var(--ytv-line); border-radius:9px; background:#ffffff02; }
 .ytv-fold summary { cursor:pointer; font-size:16px; font-weight:600; color:#edf2f6; }
 @media(max-width:1100px) {

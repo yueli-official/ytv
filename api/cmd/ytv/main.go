@@ -12,8 +12,6 @@ import (
 	_ "github.com/lib/pq"
 	"github.com/yueli-official/foundation/go/authorization"
 	authorizationpostgres "github.com/yueli-official/foundation/go/authorization/postgres"
-	"github.com/yueli-official/foundation/go/traffic"
-	trafficpostgres "github.com/yueli-official/foundation/go/traffic/postgres"
 	"github.com/yueli-official/ytv/api/internal/analytics"
 	"github.com/yueli-official/ytv/api/internal/authz"
 	"github.com/yueli-official/ytv/api/internal/discovery"
@@ -91,9 +89,12 @@ func main() {
 			}
 		}
 	}
-	jsonAdapter, err := jsoncatalog.New(&http.Client{Timeout: 5 * time.Second})
+	// Catalog responses can include thousands of episodes. Discovery still owns
+	// its shorter request context; title/playback reads need time for the body.
+	const sourceMetadataTimeout = 20 * time.Second
+	jsonAdapter, err := jsoncatalog.New(&http.Client{Timeout: sourceMetadataTimeout})
 	must(err)
-	htmlAdapter, err := htmlcatalog.New(&http.Client{Timeout: 5 * time.Second})
+	htmlAdapter, err := htmlcatalog.New(&http.Client{Timeout: sourceMetadataTimeout})
 	must(err)
 	var captureResolver *browsercapture.ChromeResolver
 	if environment("YTV_BROWSER_CAPTURE_ENABLED", "true") == "true" {
@@ -104,7 +105,7 @@ func main() {
 		must(err)
 		defer captureResolver.Close()
 	}
-	declarativeAdapter, err := declarative.NewWithBrowserCapture(&http.Client{Timeout: 5 * time.Second}, captureResolver)
+	declarativeAdapter, err := declarative.NewWithBrowserCapture(&http.Client{Timeout: sourceMetadataTimeout}, captureResolver)
 	must(err)
 	registry, err := source.NewRegistry(definitions, map[source.Kind]source.Adapter{
 		source.KindJSONCatalog: jsonAdapter,
@@ -121,19 +122,9 @@ func main() {
 	must(err)
 	playbackResolver, err := playback.New(registry)
 	must(err)
-	pageTrafficCatalog, err := traffic.Compile(analytics.Definition(analytics.PageResourceKind))
-	must(err)
-	pageTraffic, err := trafficpostgres.New(ctx, pageTrafficCatalog, trafficpostgres.Options{
-		DB: database, InstanceKey: "ytv:" + environment("YTV_SITE_KEY", "ytv-main") + ":pages",
-	})
-	must(err)
-	playbackTrafficCatalog, err := traffic.Compile(analytics.Definition(analytics.PlaybackResourceKind))
-	must(err)
-	playbackTraffic, err := trafficpostgres.New(ctx, playbackTrafficCatalog, trafficpostgres.Options{
-		DB: database, InstanceKey: "ytv:" + environment("YTV_SITE_KEY", "ytv-main") + ":playback",
-	})
-	must(err)
-	trafficService, err := analytics.NewTraffic(pageTraffic, pageTrafficCatalog, playbackTraffic, playbackTrafficCatalog, nil)
+	trafficService, err := analytics.NewTraffic(
+		requiredEnvironment("YTV_TRAFFIC_COLLECTOR_URL"), requiredEnvironment("YTV_TRAFFIC_WRITE_TOKEN"), nil,
+	)
 	must(err)
 	searchStore, err := searchanalytics.NewPostgresStore(database)
 	must(err)

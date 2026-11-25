@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "baselineSha256": "32339ab7339bbcccbcecbb920cd556e5d689b309b906e2ee6979ba83b3de78ad",
+  "baselineSha256": "5085bc0bcd4078c6095869b015ba3d98178a89a9c217cdc06c87ed1cdeca461d",
   "packages": {
     "@yueli/asset-nuxt": {
       "repository": "asset",
-      "version": "0.4.0-preview.20261025.reading.1",
-      "sha256": "ea1ee44e0dc57bf2bd6a85f1b139a0410d0bf94b63db9da96c9eb4d1df1e5556"
+      "version": "0.7.0-preview.20261028.previews.1",
+      "sha256": "c40768b86d02803172f115ca921c7b79de948cd03848631605d0347963722cdc"
     },
     "@yueli/content-nuxt": {
       "repository": "foundation",
-      "version": "0.3.0-preview.20261025.reading.1",
-      "sha256": "aaef1a3e3bcaff3bf7e3b34146026940f05a5cfc0b90855d5e58b025611445d7"
+      "version": "0.3.6-preview.20261124.contacts.1",
+      "sha256": "1a70332ea7f12c2c28996bc24e4e859d7658a7e2418082176efe5d50a9c5b46b"
     },
     "@yueli/discovery-nuxt": {
       "repository": "foundation",
@@ -29,8 +29,8 @@
     },
     "@yueli/identity-nuxt": {
       "repository": "identity",
-      "version": "0.2.3-preview.20261025.reading.1",
-      "sha256": "49ddeaf779d6f94929e56ca62a0013b32763d16bca421c7b0afda6edb748af48"
+      "version": "0.2.8-preview.20261124.contacts.1",
+      "sha256": "7c124a0904558d446b88b464ecd163aa65503e013cfab43a6d080b416a79b433"
     },
     "@yueli/nuxt-runtime": {
       "repository": "foundation",
@@ -49,8 +49,8 @@
     },
     "@yueli/ui": {
       "repository": "foundation",
-      "version": "0.9.0-preview.20261025.reading.2",
-      "sha256": "19c12ccd1a8e33729455e3520920d34435e9c3d54cbf09f689e9fa1e62d35ce4"
+      "version": "0.10.4-preview.20261124.contacts.1",
+      "sha256": "19a724432a5b16bbecbb9a7c2917c472958f378cc3f4138927751a2241e94068"
     }
   }
 }

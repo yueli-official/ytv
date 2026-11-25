@@ -57,13 +57,6 @@ export function useYtvApi() {
         method: "POST", body: input as unknown as JsonValue, auth: "optional"
       });
     },
-    adminTraffic(days = 14) {
-      return api.request<{
-        days: number;
-        pages: { allTimeViews: number; allTimeUniqueVisitorDays: number; recentViews: number; recentUniqueVisitorDays: number; series: Array<{ day: string; views: number; uniqueVisitorDays: number }> };
-        playback: { allTimeViews: number; allTimeUniqueVisitorDays: number; recentViews: number; recentUniqueVisitorDays: number; series: Array<{ day: string; views: number; uniqueVisitorDays: number }> };
-      }>("/api/v1/admin/traffic", { query: { days }, auth: "required" });
-    },
     adminSearches(days = 14, limit = 10) {
       return api.request<SearchAnalyticsOverview>("/api/v1/admin/searches", {
         query: { days, limit }, auth: "required"
@@ -127,10 +120,13 @@ export function useYtvApi() {
         method: "PUT", body: { disabledSourceKeys, revision } as unknown as JsonValue, auth: "required", replayAfterReauth: "never"
       });
     },
+    siteBranding() {
+      return api.request<{ logoUrl: string; faviconUrl: string }>("/api/v1/site/branding", { auth: "optional" });
+    },
     adminSiteProfile() {
       return api.request<{ profile: SiteProfile }>("/api/v1/admin/site-profile", { auth: "required" });
     },
-    updateSiteProfile(input: { name: string; description: string; revision: number }) {
+    updateSiteProfile(input: { name: string; description: string; revision: number; logoUrl?: string; faviconUrl?: string }) {
       return api.request<{ profile: SiteProfile }>("/api/v1/admin/site-profile", {
         method: "PUT", body: input as unknown as JsonValue, auth: "required", replayAfterReauth: "never"
       });

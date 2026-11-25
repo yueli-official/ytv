@@ -2,7 +2,12 @@
 import { zh_cn } from "@nuxt/ui/locale";
 import { FeedbackToastRegion } from "@yueli/ui/feedback/pattern";
 
-useHead({ htmlAttrs: { lang: "zh-CN" } });
+const api = useYtvApi();
+const { data: branding } = await useAsyncData("ytv-branding", () => api.siteBranding());
+useHead(() => ({
+  htmlAttrs: { lang: "zh-CN" },
+  link: [{ rel: "icon", href: branding.value?.faviconUrl || "/favicon.svg" }],
+}));
 </script>
 
 <template>

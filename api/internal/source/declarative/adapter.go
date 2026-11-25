@@ -138,8 +138,9 @@ func (adapter *Adapter) ResolveTitle(ctx context.Context, definition source.Defi
 	}
 	name := definition.Name
 	if plan.Title.NameXPath != "" {
-		if extracted := queryValue(document, plan.Title.NameXPath); extracted != "" {
-			name = extracted
+		name = queryValue(document, plan.Title.NameXPath)
+		if name == "" {
+			return source.Title{}, fmt.Errorf("%w: title name did not match", source.ErrUnavailable)
 		}
 	}
 	return source.Title{Locator: locator, SourceName: definition.Name, Name: name, EpisodeCount: source.EpisodeTotal(episodes), Episodes: episodes}, nil
@@ -297,7 +298,7 @@ func (adapter *Adapter) fetch(ctx context.Context, definition source.Definition,
 	// status failure. A verified challenge must not become an empty result.
 	document, err := htmlquery.Parse(io.LimitReader(response.Body, maxResponseBytes+1))
 	if err != nil {
-		return nil, "", fmt.Errorf("%w: parse declarative response", source.ErrUnavailable)
+		return nil, "", fmt.Errorf("%w: parse declarative response: %v", source.ErrUnavailable, err)
 	}
 	if requirement := (verification.DOM{Kind: verification.Image, All: plan.VerificationXPath}).Detect(verification.Response{Document: document}); requirement != nil {
 		return nil, "", requirement

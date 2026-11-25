@@ -1,5 +1,5 @@
 // Package playback owns the Episode Locator to Playback Manifest step.
-// It never fetches or persists media bytes.
+// It only fetches approved playlist metadata, never video segments or media files.
 package playback
 
 import (
@@ -25,12 +25,13 @@ const (
 )
 
 type Manifest struct {
-	Locator    source.EpisodeLocator
-	SourceName string
-	URL        string
-	Engine     Engine
-	Timeline   string
-	MediaType  string
+	Locator      source.EpisodeLocator
+	SourceName   string
+	URL          string
+	Engine       Engine
+	Timeline     string
+	MediaType    string
+	PlaylistText string
 }
 
 type Catalog interface {
@@ -62,10 +63,18 @@ func (resolver *Resolver) Resolve(ctx context.Context, locator source.EpisodeLoc
 	if err != nil {
 		return Manifest{}, err
 	}
+	playlistText := ""
+	if definition.Key == "kazumi-7sefun" && mediaURL.Scheme == "https" && mediaURL.Host == "yun.92cj.com" && strings.HasPrefix(mediaURL.Path, "/video/dmhls/") && engine == EngineHLS {
+		playlistText, err = readPlaylist(ctx, mediaURL)
+		if err != nil {
+			return Manifest{}, err
+		}
+	}
 	return Manifest{
 		Locator: locator, SourceName: title.SourceName, URL: mediaURL.String(), Engine: engine,
-		Timeline:  locator.Title.SourceKey + ":" + locator.Title.ExternalID,
-		MediaType: mediaType(mediaURL, engine),
+		Timeline:     locator.Title.SourceKey + ":" + locator.Title.ExternalID,
+		MediaType:    mediaType(mediaURL, engine),
+		PlaylistText: playlistText,
 	}, nil
 }
 

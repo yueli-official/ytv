@@ -22,15 +22,22 @@ type Doer interface {
 }
 
 type Adapter struct {
-	client Doer
-	clock  func() time.Time
+	client     Doer
+	pageClient Doer
+	clock      func() time.Time
 }
 
 func New(client Doer) (*Adapter, error) {
 	if client == nil {
 		return nil, fmt.Errorf("json catalog adapter requires an HTTP client")
 	}
-	return &Adapter{client: client, clock: time.Now}, nil
+	pageClient := client
+	if original, ok := client.(*http.Client); ok {
+		bounded := *original
+		bounded.CheckRedirect = func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }
+		pageClient = &bounded
+	}
+	return &Adapter{client: client, pageClient: pageClient, clock: time.Now}, nil
 }
 
 func (adapter *Adapter) Browse(ctx context.Context, definition source.Definition, page int) (source.Page, error) {
@@ -130,6 +137,12 @@ func (adapter *Adapter) ResolveEpisode(ctx context.Context, definition source.De
 	}
 	for _, episode := range title.Episodes {
 		if episode.Key == locator.EpisodeKey {
+			if !isDirectMedia(episode.PlaybackURL) && isReviewedSharePage(definition.Key, episode.PlaybackURL) {
+				episode.PlaybackURL, err = adapter.resolveSharePage(ctx, definition.Key, episode.PlaybackURL)
+				if err != nil {
+					return source.Title{}, source.Episode{}, err
+				}
+			}
 			return title, episode, nil
 		}
 	}
@@ -283,14 +296,8 @@ func parseLines(raw, names string) []source.Episode {
 	}
 	// A catalog may put its share webpage before the native playback line.
 	// Prefer playable media while preserving locator keys and upstream order within each class.
-	direct := func(raw string) bool {
-		u, err := url.Parse(raw)
-		if err != nil {
-			return false
-		}
-		path := strings.ToLower(u.Path)
-		return strings.HasSuffix(path, ".m3u8") || strings.HasSuffix(path, ".mp4") || strings.HasSuffix(path, ".webm")
-	}
-	sort.SliceStable(result, func(i, j int) bool { return direct(result[i].PlaybackURL) && !direct(result[j].PlaybackURL) })
+	sort.SliceStable(result, func(i, j int) bool {
+		return isDirectMedia(result[i].PlaybackURL) && !isDirectMedia(result[j].PlaybackURL)
+	})
 	return result
 }

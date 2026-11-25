@@ -9,7 +9,6 @@
 ![Go](https://img.shields.io/badge/Go-1.21+-00ADD8?style=flat&logo=go)
 ![Vue](https://img.shields.io/badge/Vue-3.x-4FC08D?style=flat&logo=vue.js)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=flat&logo=typescript)
-![License](https://img.shields.io/badge/License-MIT-green?style=flat)
 
 ---
 
@@ -225,7 +224,7 @@ docker-compose up -d
 
 ## 📄 开源协议
 
-本项目采用 MIT 协议开源，详见 [LICENSE](LICENSE) 文件。
+当前 checkout 没有项目根 LICENSE 文件，旧版说明中的 MIT 标记不能作为本仓库的授权依据。规则快照等第三方内容按各自目录保留的许可核对，不据此推断整个产品许可。
 
 ---
 

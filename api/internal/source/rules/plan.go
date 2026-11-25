@@ -72,6 +72,7 @@ type SearchAPI struct {
 	SourceTemplate string     `json:"sourceTemplate"`
 }
 type ChapterAPI struct {
+	NamePath         string     `json:"namePath"`
 	RoadsPath        string     `json:"roadsPath"`
 	RoadNamePath     string     `json:"roadNamePath"`
 	EpisodesPath     string     `json:"episodesPath"`

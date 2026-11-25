@@ -1,9 +1,16 @@
+import { fileURLToPath } from "node:url";
+
 const cookieSecure =
   process.env.NUXT_COOKIE_SECURE === undefined
     ? process.env.NODE_ENV === "production"
     : process.env.NUXT_COOKIE_SECURE === "true";
 
 export default defineNuxtConfig({
+  routeRules: {
+    "/api/v1/site/branding": { headers: { "access-control-allow-origin": "*" } },
+  },
+  ssr: false,
+  spaLoadingTemplate: fileURLToPath(new URL("./app/spa-loading-template.html", import.meta.url)),
   vue: { compilerOptions: { isCustomElement: (tag) => ["video-player", "video-neutral-skin", "ytv-video-skin", "hlsjs-video", "media-i18n"].includes(tag) } },
   devtools: { enabled: process.env.NUXT_DEVTOOLS === "true" },
   extends: ["@yueli/identity-nuxt"],
@@ -35,8 +42,6 @@ export default defineNuxtConfig({
   app: {
     head: {
       link: [
-        { rel: "icon", type: "image/x-icon", href: "/favicon.ico?v=20261124-gold" },
-        { rel: "icon", type: "image/svg+xml", sizes: "any", href: "/favicon.svg?v=20261124-gold" },
         { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png?v=20261124-gold" },
       ],
       htmlAttrs: { lang: "zh-CN" },
@@ -75,6 +80,7 @@ export default defineNuxtConfig({
     ytvAudience: "ytv-api",
     sealSecret: process.env.NUXT_SEAL_SECRET || "dev-ytv-seal-secret-change-me-0123456789abcdef",
     public: {
+      trafficSiteUrl: "",
       oidcIssuer: process.env.NUXT_PUBLIC_OIDC_ISSUER || "http://localhost:3000",
       oidcClientId: process.env.NUXT_PUBLIC_OIDC_CLIENT_ID || "ytv-main-web",
       oidcRedirectUri: process.env.NUXT_PUBLIC_OIDC_REDIRECT_URI || "http://localhost:3013/auth/callback",

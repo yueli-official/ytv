@@ -10,7 +10,6 @@ import (
 
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/yueli-official/foundation/go/auth"
-	"github.com/yueli-official/foundation/go/traffic"
 	v1 "github.com/yueli-official/ytv/api/api/v1"
 	"github.com/yueli-official/ytv/api/internal/analytics"
 	"github.com/yueli-official/ytv/api/internal/apierr"
@@ -219,6 +218,7 @@ func (controller *Public) ResolvePlayback(ctx context.Context, request *v1.Resol
 	return &v1.ResolvePlaybackRes{
 		SourceName: manifest.SourceName, EpisodeKey: manifest.Locator.EpisodeKey,
 		URL: manifest.URL, Engine: string(manifest.Engine), Timeline: manifest.Timeline, MediaType: manifest.MediaType,
+		PlaylistText: manifest.PlaylistText,
 	}, nil
 }
 
@@ -355,7 +355,7 @@ func (controller *Administrator) GetTrafficOverview(ctx context.Context, request
 	}
 	return &v1.GetTrafficOverviewRes{
 		Days:  overview.Days,
-		Pages: trafficChannelView(overview.Pages), Playback: trafficChannelView(overview.Playback),
+		Pages: trafficChannelView(overview.Pages), Playback: trafficChannelView(*overview.Playback),
 	}, nil
 }
 
@@ -504,7 +504,7 @@ func (controller *Administrator) UpdateSiteProfile(ctx context.Context, request 
 	if _, err := controller.core.requireAdministrator(ctx); err != nil {
 		return nil, err
 	}
-	profile, err := controller.core.profile.Update(ctx, request.Name, request.Description, request.Revision)
+	profile, err := controller.core.profile.UpdateWithBranding(ctx, request.Name, request.Description, request.Revision, request.BrandImagePatch)
 	if err != nil {
 		return nil, mapError(err)
 	}
@@ -562,12 +562,12 @@ func trafficChannelView(channel analytics.ChannelOverview) v1.TrafficChannelView
 	points := make([]v1.TrafficPointView, 0, len(channel.Series))
 	for _, point := range channel.Series {
 		points = append(points, v1.TrafficPointView{
-			Day: point.Day.String(), Views: point.Totals.Views, UniqueVisitorDays: point.Totals.UniqueVisitorDays,
+			Day: point.Day, Views: point.Views, UniqueVisitorDays: point.UniqueVisitors,
 		})
 	}
 	return v1.TrafficChannelView{
-		AllTimeViews: channel.AllTime.Views, AllTimeUniqueVisitorDays: channel.AllTime.UniqueVisitorDays,
-		RecentViews: channel.Recent.Views, RecentUniqueVisitorDays: channel.Recent.UniqueVisitorDays,
+		AllTimeViews: channel.AllTimeViews, AllTimeUniqueVisitorDays: channel.AllTimeVisitorDays,
+		RecentViews: channel.Views, RecentUniqueVisitorDays: channel.VisitorDays,
 		Series: points,
 	}
 }
@@ -623,21 +623,22 @@ func sourcePreferenceView(value sourcepreference.Preference) v1.SourcePreference
 
 func siteProfileView(value siteprofile.Profile) v1.SiteProfileView {
 	return v1.SiteProfileView{
-		SiteKey: value.SiteKey, Name: value.Name, Description: value.Description,
+		BrandImageURLs: value.BrandImageURLs,
+		SiteKey:        value.SiteKey, Name: value.Name, Description: value.Description,
 		Revision: value.Revision, UpdatedAt: value.UpdatedAt,
 	}
 }
 
 func mapError(err error) error {
-	var trafficError *traffic.Error
-	if errors.As(err, &trafficError) && trafficError.Kind == traffic.ErrorInvalidInput {
-		return apierr.Wrap(apierr.CodeInvalidInput, err)
-	}
 	switch {
 	case errors.Is(err, analytics.ErrInvalid), errors.Is(err, progress.ErrInvalid), errors.Is(err, searchanalytics.ErrInvalid), errors.Is(err, siteprofile.ErrInvalid), errors.Is(err, sourcecontrol.ErrInvalid), errors.Is(err, sourcepreference.ErrInvalid), errors.Is(err, discovery.ErrInvalid), errors.Is(err, source.ErrInvalid):
 		return apierr.Wrap(apierr.CodeInvalidInput, err)
 	case errors.Is(err, trending.ErrInvalid):
 		return apierr.Wrap(apierr.CodeInvalidInput, err)
+	case errors.Is(err, analytics.ErrConflict):
+		return apierr.Wrap(apierr.CodeConflict, err)
+	case errors.Is(err, analytics.ErrUnavailable):
+		return apierr.Wrap(apierr.CodeGatewayUnavailable, err)
 	case errors.Is(err, source.ErrNotFound), errors.Is(err, playback.ErrEpisodeNotFound):
 		return apierr.Wrap(apierr.CodeNotFound, err)
 	case errors.Is(err, verification.ErrRequired):

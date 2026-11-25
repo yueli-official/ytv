@@ -8,6 +8,7 @@ func ApplySpecialPlayback(plan *Plan) {
 	}
 	switch plan.Name {
 	case "FQDM":
+		plan.Title.NameXPath = "//h1[1]"
 		plan.Playback.Extractor = "maccms_direct"
 	case "mutefun":
 		// Observed 2026-10-23: HTTP 200 MacCMS search verification page.
@@ -21,6 +22,10 @@ func ApplySpecialPlayback(plan *Plan) {
 		plan.Playback.ParserURL = "https://dp.no3acg.com/player/ec.php?code=qw&if=1"
 		plan.Playback.PlaybackHosts = []string{"*.svp.tencent-cloud.com", "v1.adkwai.com"}
 		plan.Title.NameXPath = "//div[@class='video-p-name']/text()[1]"
+	case "giriGiriLove":
+		if plan.Title.API != nil {
+			plan.Title.API.NamePath = "$.info.vod_name"
+		}
 	case "aafun":
 		plan.Title = TitlePlan{
 			RoadsXPath:    "//div[contains(@class, 'hl-play-source')]//ul[contains(@class, 'hl-plays-list')]",
@@ -30,12 +35,16 @@ func ApplySpecialPlayback(plan *Plan) {
 		plan.Playback.Extractor = "maccms_direct"
 		plan.Playback.PlaybackHosts = []string{"dl.playxf.top"}
 	case "moonci":
+		plan.Title.NameXPath = "//h2[contains(concat(' ', normalize-space(@class), ' '), ' hl-dc-title ')]"
 		plan.Playback.Extractor = "maccms_page"
 		plan.Playback.PlaybackHosts = []string{"dl.playxf.top"}
 	case "akianime":
+		plan.Title.NameXPath = "(//h2[not(@class)])[1]"
 		plan.Playback.Extractor = "aniplayer"
 		plan.Playback.ParserURL = "https://aniplayer.xn--gmqr9gevarqk8t.cn/"
 		plan.Playback.PlaybackHosts = []string{"*.cmecloud.cn"}
+	case "omofun":
+		plan.Title.NameXPath = "//h1[1]"
 	case "xfdmneo":
 		plan.Playback.Extractor = "maccms_direct"
 		plan.Playback.PlaybackHosts = []string{"play.xfvod.pro"}

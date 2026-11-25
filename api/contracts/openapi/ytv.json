@@ -287,6 +287,23 @@
         },
         "type": "object"
       },
+      "github.com.yueli-official.ytv.api.api.v1.GetSiteBrandingReq": {
+        "properties": {},
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.GetSiteBrandingRes": {
+        "properties": {
+          "faviconUrl": {
+            "format": "string",
+            "type": "string"
+          },
+          "logoUrl": {
+            "format": "string",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
       "github.com.yueli-official.ytv.api.api.v1.GetSiteProfileReq": {
         "properties": {},
         "type": "object"
@@ -501,6 +518,32 @@
               "description": ""
             },
             "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.PatchSiteBrandingReq": {
+        "properties": {
+          "faviconUrl": {
+            "format": "*string",
+            "type": "string"
+          },
+          "logoUrl": {
+            "format": "*string",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "github.com.yueli-official.ytv.api.api.v1.PatchSiteBrandingRes": {
+        "properties": {
+          "faviconUrl": {
+            "format": "string",
+            "type": "string"
+          },
+          "logoUrl": {
+            "format": "string",
+            "type": "string"
           }
         },
         "type": "object"
@@ -739,6 +782,10 @@
             "type": "string"
           },
           "mediaType": {
+            "format": "string",
+            "type": "string"
+          },
+          "playlistText": {
             "format": "string",
             "type": "string"
           },
@@ -1059,6 +1106,10 @@
             },
             "type": "array"
           },
+          "hasNext": {
+            "format": "bool",
+            "type": "boolean"
+          },
           "page": {
             "format": "int",
             "type": "integer"
@@ -1080,11 +1131,8 @@
             "type": "integer"
           },
           "totalPages": {
-            "type": "integer",
-            "format": "int"
-          },
-          "hasNext": {
-            "type": "boolean"
+            "format": "int",
+            "type": "integer"
           }
         },
         "type": "object"
@@ -1113,6 +1161,14 @@
       "github.com.yueli-official.ytv.api.api.v1.SiteProfileView": {
         "properties": {
           "description": {
+            "format": "string",
+            "type": "string"
+          },
+          "faviconUrl": {
+            "format": "string",
+            "type": "string"
+          },
+          "logoUrl": {
             "format": "string",
             "type": "string"
           },
@@ -1406,6 +1462,14 @@
           "description": {
             "format": "string",
             "maxLength": 300,
+            "type": "string"
+          },
+          "faviconUrl": {
+            "format": "*string",
+            "type": "string"
+          },
+          "logoUrl": {
+            "format": "*string",
             "type": "string"
           },
           "name": {
@@ -2363,6 +2427,56 @@
         "summary": "Search enabled source catalogs",
         "tags": [
           "Discovery"
+        ]
+      }
+    },
+    "/api/v1/site/branding": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.GetSiteBrandingRes",
+                  "description": ""
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "summary": "Get public site branding",
+        "tags": [
+          "Public"
+        ]
+      },
+      "patch": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.PatchSiteBrandingReq",
+                "description": ""
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/github.com.yueli-official.ytv.api.api.v1.PatchSiteBrandingRes",
+                  "description": ""
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "summary": "Update site branding",
+        "tags": [
+          "Administration"
         ]
       }
     },

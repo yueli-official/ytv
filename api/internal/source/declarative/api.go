@@ -160,8 +160,15 @@ func (adapter *Adapter) titleAPI(ctx context.Context, definition source.Definiti
 	if err != nil {
 		return source.Title{}, err
 	}
+	name := definition.Name
+	if spec.NamePath != "" {
+		name = jsonText(jsonValue(document, spec.NamePath))
+		if name == "" {
+			return source.Title{}, fmt.Errorf("%w: rule API title name missing", source.ErrUnavailable)
+		}
+	}
 	if spec.Format == "nested" {
-		return nestedTitle(definition, locator, spec, document, id)
+		return nestedTitle(definition, locator, spec, document, id, name)
 	}
 	roads := strings.Split(jsonText(jsonValue(document, spec.RoadEpisodesPath)), spec.RoadSeparator)
 	names := strings.Split(jsonText(jsonValue(document, spec.RoadNamesPath)), spec.RoadSeparator)
@@ -187,10 +194,10 @@ func (adapter *Adapter) titleAPI(ctx context.Context, definition source.Definiti
 	if len(episodes) == 0 {
 		return source.Title{}, fmt.Errorf("%w: rule API has no episodes", source.ErrUnavailable)
 	}
-	return source.Title{Locator: locator, Name: definition.Name, SourceName: definition.Name, Episodes: episodes, EpisodeCount: source.EpisodeTotal(episodes)}, nil
+	return source.Title{Locator: locator, Name: name, SourceName: definition.Name, Episodes: episodes, EpisodeCount: source.EpisodeTotal(episodes)}, nil
 }
 
-func nestedTitle(definition source.Definition, locator source.TitleLocator, spec *rules.ChapterAPI, document any, id string) (source.Title, error) {
+func nestedTitle(definition source.Definition, locator source.TitleLocator, spec *rules.ChapterAPI, document any, id, name string) (source.Title, error) {
 	value := jsonValue(document, spec.RoadsPath)
 	roads := []any{value}
 	if strings.HasSuffix(spec.RoadsPath, "[*]") {
@@ -232,5 +239,5 @@ func nestedTitle(definition source.Definition, locator source.TitleLocator, spec
 	if len(episodes) == 0 {
 		return source.Title{}, fmt.Errorf("%w: API episodes missing", source.ErrUnavailable)
 	}
-	return source.Title{Locator: locator, Name: definition.Name, SourceName: definition.Name, Episodes: episodes, EpisodeCount: source.EpisodeTotal(episodes)}, nil
+	return source.Title{Locator: locator, Name: name, SourceName: definition.Name, Episodes: episodes, EpisodeCount: source.EpisodeTotal(episodes)}, nil
 }

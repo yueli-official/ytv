@@ -1,28 +1,33 @@
 package analytics
 
 import (
+	"bytes"
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
+	"net"
+	"net/http"
+	"net/url"
+	"strconv"
 	"strings"
 	"time"
 	"unicode/utf8"
-
-	"github.com/yueli-official/foundation/go/traffic"
 )
 
-var ErrInvalid = errors.New("invalid analytics input")
+var (
+	ErrInvalid     = errors.New("invalid analytics input")
+	ErrConflict    = errors.New("analytics event conflicts")
+	ErrUnavailable = errors.New("traffic collector unavailable")
+)
 
 const (
-	PageResourceKind     traffic.ResourceKind = "page"
-	PlaybackResourceKind traffic.ResourceKind = "episode"
+	pageView      = "page_view"
+	playbackStart = "playback_start"
 )
-
-type Recorder interface {
-	traffic.Recorder
-	traffic.VisitorTokenizer
-	traffic.Reader
-}
 
 type RecordInput struct {
 	EventID    string
@@ -32,62 +37,74 @@ type RecordInput struct {
 }
 
 type RecordResult struct {
-	Counted bool
-	Replay  bool
+	Counted bool `json:"counted"`
+	Replay  bool `json:"replay"`
+}
+
+type Point struct {
+	Day            string `json:"day"`
+	Views          int64  `json:"views"`
+	UniqueVisitors int64  `json:"uniqueVisitors"`
 }
 
 type ChannelOverview struct {
-	AllTime traffic.Totals
-	Recent  traffic.Totals
-	Series  []traffic.SeriesPoint
+	AllTimeViews       int64   `json:"allTimeViews"`
+	AllTimeVisitorDays int64   `json:"allTimeVisitorDays"`
+	Views              int64   `json:"views"`
+	VisitorDays        int64   `json:"visitorDays"`
+	Series             []Point `json:"series"`
 }
 
 type Overview struct {
-	Days     int
-	Pages    ChannelOverview
-	Playback ChannelOverview
+	Days     int              `json:"days"`
+	Pages    ChannelOverview  `json:"pages"`
+	Playback *ChannelOverview `json:"playback"`
 }
 
 type Traffic struct {
-	pages           Recorder
-	playback        Recorder
-	pageCatalog     *traffic.Catalog
-	playbackCatalog *traffic.Catalog
-	clock           func() time.Time
+	base  *url.URL
+	token string
+	http  *http.Client
+	clock func() time.Time
 }
 
-func Definition(kind traffic.ResourceKind) traffic.Definition {
-	return traffic.Definition{
-		Version:       traffic.DefinitionVersion,
-		TimeZone:      "Asia/Shanghai",
-		ResourceKinds: []traffic.ResourceKindDefinition{{Key: kind}},
-		Limits: traffic.Limits{
-			MaxPastAge:             30 * 24 * time.Hour,
-			ReceiptRetention:       30 * 24 * time.Hour,
-			VisitorMarkerRetention: 31 * 24 * time.Hour,
-		},
+func NewTraffic(baseURL, token string, clock func() time.Time) (*Traffic, error) {
+	base, err := url.Parse(baseURL)
+	if err != nil || base.Hostname() == "" || base.User != nil || base.ForceQuery || base.RawQuery != "" || base.Fragment != "" ||
+		(base.Scheme != "https" && !(base.Scheme == "http" && isLoopback(base.Hostname()))) {
+		return nil, errors.New("ytv/analytics: collector URL must use HTTPS or loopback HTTP, without credentials, query or fragment")
 	}
-}
-
-func NewTraffic(pages Recorder, pageCatalog *traffic.Catalog, playback Recorder, playbackCatalog *traffic.Catalog, clock func() time.Time) (*Traffic, error) {
-	if pages == nil || pageCatalog == nil || playback == nil || playbackCatalog == nil {
-		return nil, errors.New("ytv/analytics: page and playback traffic modules are required")
+	if len(token) < 32 || len(token) > 128 || strings.ContainsFunc(token, func(c rune) bool {
+		return !(c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z' || c >= '0' && c <= '9' || c == '-' || c == '_')
+	}) {
+		return nil, errors.New("ytv/analytics: collector credential must be a 32–128 character base64url string")
 	}
 	if clock == nil {
 		clock = time.Now
 	}
-	return &Traffic{pages: pages, pageCatalog: pageCatalog, playback: playback, playbackCatalog: playbackCatalog, clock: clock}, nil
+	client := &http.Client{
+		Timeout: 1500 * time.Millisecond,
+		CheckRedirect: func(*http.Request, []*http.Request) error {
+			return http.ErrUseLastResponse
+		},
+	}
+	return &Traffic{base: base, token: token, http: client, clock: clock}, nil
+}
+
+func isLoopback(host string) bool {
+	return strings.EqualFold(host, "localhost") || net.ParseIP(host).IsLoopback()
 }
 
 func (service *Traffic) RecordPage(ctx context.Context, input RecordInput) (RecordResult, error) {
 	path := strings.TrimSpace(input.ResourceID)
-	if path == "" || !strings.HasPrefix(path, "/") || strings.HasPrefix(path, "//") || strings.Contains(path, "\\") || len(path) > 200 {
+	if !strings.HasPrefix(path, "/") || strings.HasPrefix(path, "//") || strings.ContainsAny(path, "\\?#") || len(path) > 200 {
 		return RecordResult{}, fmt.Errorf("%w: page path is invalid", ErrInvalid)
 	}
 	if strings.HasPrefix(path, "/manage") || strings.HasPrefix(path, "/auth") || strings.HasPrefix(path, "/api/") {
 		return RecordResult{}, fmt.Errorf("%w: page path is not public", ErrInvalid)
 	}
-	return service.record(ctx, service.pages, PageResourceKind, input)
+	input.ResourceID = path
+	return service.record(ctx, pageView, input)
 }
 
 func (service *Traffic) RecordPlayback(ctx context.Context, input RecordInput) (RecordResult, error) {
@@ -96,72 +113,113 @@ func (service *Traffic) RecordPlayback(ctx context.Context, input RecordInput) (
 		return RecordResult{}, fmt.Errorf("%w: playback resource is invalid", ErrInvalid)
 	}
 	input.ResourceID = resourceID
-	return service.record(ctx, service.playback, PlaybackResourceKind, input)
+	return service.record(ctx, playbackStart, input)
 }
 
-func (service *Traffic) record(ctx context.Context, module Recorder, kind traffic.ResourceKind, input RecordInput) (RecordResult, error) {
+func (service *Traffic) record(ctx context.Context, metric string, input RecordInput) (RecordResult, error) {
+	eventID := strings.TrimSpace(input.EventID)
+	if eventID == "" || len(eventID) > 200 || strings.ContainsRune(eventID, '\x00') {
+		return RecordResult{}, fmt.Errorf("%w: event ID is invalid", ErrInvalid)
+	}
 	occurredAt := input.OccurredAt.UTC()
 	if occurredAt.IsZero() {
 		occurredAt = service.clock().UTC()
 	}
-	observation := traffic.Observation{
-		EventID:    traffic.EventID(strings.TrimSpace(input.EventID)),
-		Resource:   traffic.Resource{Kind: kind, ID: strings.TrimSpace(input.ResourceID)},
-		OccurredAt: occurredAt,
-		Class:      traffic.VisitHuman,
-	}
+	visitorKey := ""
 	if visitorID := strings.TrimSpace(input.VisitorID); visitorID != "" {
-		if utf8.RuneCountInString(visitorID) < 16 || utf8.RuneCountInString(visitorID) > 128 {
+		if length := utf8.RuneCountInString(visitorID); length < 16 || length > 128 {
 			return RecordResult{}, fmt.Errorf("%w: visitor ID must contain 16 to 128 characters", ErrInvalid)
 		}
-		token, err := module.TokenizeVisitor(ctx, occurredAt, []byte("browser\x00"+visitorID))
-		if err != nil {
-			return RecordResult{}, err
-		}
-		observation.HasVisitor = true
-		observation.VisitorToken = token
+		visitorKey = opaqueKey(visitorID)
 	}
-	result, err := module.Record(ctx, observation)
+	payload, err := json.Marshal(struct {
+		ID         string    `json:"id"`
+		Metric     string    `json:"metric"`
+		Resource   string    `json:"resource"`
+		OccurredAt time.Time `json:"occurredAt"`
+		VisitorKey string    `json:"visitorKey,omitempty"`
+	}{eventID, metric, opaqueKey(input.ResourceID), occurredAt, visitorKey})
 	if err != nil {
+		return RecordResult{}, fmt.Errorf("%w: invalid event timestamp", ErrInvalid)
+	}
+	var result RecordResult
+	target := service.base.JoinPath("v1", "events")
+	if err := service.request(ctx, http.MethodPost, target, payload, &result); err != nil {
 		return RecordResult{}, err
 	}
-	return RecordResult{Counted: result.Counted, Replay: result.Replay}, nil
+	return result, nil
 }
 
 func (service *Traffic) Overview(ctx context.Context, days int) (Overview, error) {
-	if days == 0 {
+	switch days {
+	case 0:
 		days = 14
-	}
-	if days != 7 && days != 14 && days != 30 {
+	case 7, 14, 30:
+	default:
 		return Overview{}, fmt.Errorf("%w: days must be 7, 14, or 30", ErrInvalid)
 	}
-	pages, err := service.channelOverview(ctx, service.pages, service.pageCatalog, days)
-	if err != nil {
+	target := service.base.JoinPath("v1", "site-report")
+	target.RawQuery = url.Values{"days": {strconv.Itoa(days)}}.Encode()
+	var report Overview
+	if err := service.request(ctx, http.MethodGet, target, nil, &report); err != nil {
 		return Overview{}, err
 	}
-	playback, err := service.channelOverview(ctx, service.playback, service.playbackCatalog, days)
-	if err != nil {
-		return Overview{}, err
+	if report.Days != days || report.Playback == nil {
+		return Overview{}, fmt.Errorf("%w: TV site report is incomplete", ErrUnavailable)
 	}
-	return Overview{Days: days, Pages: pages, Playback: playback}, nil
+	return report, nil
 }
 
-func (service *Traffic) channelOverview(ctx context.Context, module Recorder, catalog *traffic.Catalog, days int) (ChannelOverview, error) {
-	now := service.clock()
-	to := catalog.DayAt(now.AddDate(0, 0, 1))
-	from := catalog.DayAt(now.AddDate(0, 0, -(days - 1)))
-	rangeValue := traffic.DateRange{From: from, To: to}
-	allTime, err := module.Summary(ctx, traffic.SummaryQuery{Scope: traffic.InstanceScope()})
-	if err != nil {
-		return ChannelOverview{}, err
+// The collector receives stable opaque keys instead of product paths or raw browser identifiers.
+func opaqueKey(value string) string {
+	digest := sha256.Sum256([]byte(value))
+	return hex.EncodeToString(digest[:])
+}
+
+func (service *Traffic) request(ctx context.Context, method string, target *url.URL, payload []byte, result any) error {
+	retry, err := service.send(ctx, method, target, payload, result)
+	if !retry || ctx.Err() != nil {
+		return err
 	}
-	recent, err := module.Summary(ctx, traffic.SummaryQuery{Scope: traffic.InstanceScope(), Range: &rangeValue})
-	if err != nil {
-		return ChannelOverview{}, err
+	// POST retries resend the exact same event ID, occurrence time and payload.
+	timer := time.NewTimer(100 * time.Millisecond)
+	defer timer.Stop()
+	select {
+	case <-timer.C:
+		_, err = service.send(ctx, method, target, payload, result)
+		return err
+	case <-ctx.Done():
+		return fmt.Errorf("%w: %v", ErrUnavailable, ctx.Err())
 	}
-	series, err := module.Series(ctx, traffic.SeriesQuery{Scope: traffic.InstanceScope(), Range: rangeValue})
+}
+
+func (service *Traffic) send(ctx context.Context, method string, target *url.URL, payload []byte, result any) (bool, error) {
+	request, err := http.NewRequestWithContext(ctx, method, target.String(), bytes.NewReader(payload))
 	if err != nil {
-		return ChannelOverview{}, err
+		return false, ErrUnavailable
 	}
-	return ChannelOverview{AllTime: allTime.Totals, Recent: recent.Totals, Series: series}, nil
+	request.Header.Set("Authorization", "Bearer "+service.token)
+	if method == http.MethodPost {
+		request.Header.Set("Content-Type", "application/json")
+	}
+	response, err := service.http.Do(request)
+	if err != nil {
+		return true, fmt.Errorf("%w: request failed", ErrUnavailable)
+	}
+	defer response.Body.Close()
+	switch response.StatusCode {
+	case http.StatusOK:
+		if err := json.NewDecoder(io.LimitReader(response.Body, 64<<10)).Decode(result); err != nil {
+			return false, fmt.Errorf("%w: invalid response", ErrUnavailable)
+		}
+		return false, nil
+	case http.StatusBadRequest:
+		return false, ErrInvalid
+	case http.StatusConflict:
+		return false, ErrConflict
+	case http.StatusBadGateway, http.StatusServiceUnavailable, http.StatusGatewayTimeout:
+		return true, ErrUnavailable
+	default:
+		return false, fmt.Errorf("%w: status %d", ErrUnavailable, response.StatusCode)
+	}
 }

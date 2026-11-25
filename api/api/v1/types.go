@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/gogf/gf/v2/frame/g"
+	"github.com/yueli-official/foundation/go/siteprofile"
 )
 
 type GetMetaReq struct {
@@ -149,12 +150,13 @@ type ResolvePlaybackReq struct {
 }
 
 type ResolvePlaybackRes struct {
-	SourceName string `json:"sourceName"`
-	EpisodeKey string `json:"episodeKey"`
-	URL        string `json:"url"`
-	Engine     string `json:"engine"`
-	Timeline   string `json:"timeline"`
-	MediaType  string `json:"mediaType"`
+	SourceName   string `json:"sourceName"`
+	EpisodeKey   string `json:"episodeKey"`
+	URL          string `json:"url"`
+	Engine       string `json:"engine"`
+	Timeline     string `json:"timeline"`
+	MediaType    string `json:"mediaType"`
+	PlaylistText string `json:"playlistText,omitempty"`
 }
 
 type RecordPageViewReq struct {
@@ -418,6 +420,7 @@ type SaveSourcePreferenceRes struct {
 }
 
 type SiteProfileView struct {
+	siteprofile.BrandImageURLs
 	SiteKey     string    `json:"siteKey"`
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
@@ -434,6 +437,7 @@ type GetSiteProfileRes struct {
 }
 
 type UpdateSiteProfileReq struct {
+	siteprofile.BrandImagePatch
 	g.Meta      `path:"/api/v1/admin/site-profile" method:"put" tags:"Administration" summary:"Update the public site profile"`
 	Name        string `json:"name" v:"required|length:1,80"`
 	Description string `json:"description" v:"max-length:300"`

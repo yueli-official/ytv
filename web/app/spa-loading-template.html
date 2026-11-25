@@ -1,0 +1,11 @@
+<div class="ytv-boot" role="status" aria-label="正在加载">
+  <strong>YTV</strong>
+  <span class="ytv-boot-progress" aria-hidden="true"></span>
+</div>
+<style>
+  .ytv-boot { position: fixed; inset: 0; display: grid; place-content: center; justify-items: center; gap: 18px; background: #0d141b; color: #ffc533; font: 600 22px/1.4 system-ui, sans-serif; letter-spacing: .08em; }
+  .ytv-boot-progress { width: 96px; height: 3px; overflow: hidden; border-radius: 2px; background: #233243; }
+  .ytv-boot-progress::after { content: ""; display: block; width: 40%; height: 100%; border-radius: inherit; background: #ffc533; animation: ytv-boot-progress 1.1s ease-in-out infinite alternate; }
+  @keyframes ytv-boot-progress { to { transform: translateX(150%); } }
+  @media (prefers-reduced-motion: reduce) { .ytv-boot-progress::after { animation: none; width: 100%; } }
+</style>

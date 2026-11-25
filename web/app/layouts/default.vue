@@ -10,14 +10,16 @@ const sourceSettingsOpen=useState('ytv-source-settings-open',()=>false);
 const api=useYtvApi();
 const {data:siteMeta}=await useAsyncData('ytv-site-meta',()=>api.meta());
 const siteName=computed(()=>siteMeta.value?.name||'YTV');
+const { data: branding } = useNuxtData<{ logoUrl: string }>("ytv-branding");
+const logoUrl = computed(() => branding.value?.logoUrl === "/favicon.svg" ? "" : branding.value?.logoUrl);
 const accountActions:readonly AccountMenuAction[]=[{label:'播放历史',icon:'i-tabler-history',to:'/history'},{label:'管理后台',icon:'i-tabler-shield-cog',to:'/manage'}];
 </script>
 <template>
  <div class="ytv-public min-h-dvh text-white" :class="{'mp-immersive':mobile&&immersive}">
   <a href="#page-content" class="ytv-skip">跳到内容</a>
   <main id="main-content" class="ytv-main">
-   <DesktopHeader v-if="!mobile" :site-name="siteName" :account-actions="accountActions" @sources="sourceSettingsOpen=true"/>
-   <MobileHeader v-else-if="!immersive" :site-name="siteName" :account-actions="accountActions" @sources="sourceSettingsOpen=true"/>
+   <DesktopHeader v-if="!mobile" :site-name="siteName" :logo-url="logoUrl" :account-actions="accountActions" @sources="sourceSettingsOpen=true"/>
+   <MobileHeader v-else-if="!immersive" :site-name="siteName" :logo-url="logoUrl" />
    <div id="page-content" tabindex="-1"><slot/></div>
   </main>
   <MobileNavigation v-if="mobile&&!immersive"/>

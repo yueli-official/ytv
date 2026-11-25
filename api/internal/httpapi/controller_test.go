@@ -3,11 +3,12 @@ package httpapi
 import (
 	"context"
 	"net/http"
+	"net/http/httptest"
+	"strings"
 	"testing"
 	"time"
 
 	"github.com/yueli-official/foundation/go/authorization"
-	"github.com/yueli-official/foundation/go/traffic"
 	v1 "github.com/yueli-official/ytv/api/api/v1"
 	"github.com/yueli-official/ytv/api/internal/analytics"
 	"github.com/yueli-official/ytv/api/internal/authz"
@@ -99,17 +100,9 @@ func testController(t *testing.T) *Core {
 		t.Fatal(err)
 	}
 	now := time.Date(2026, 8, 30, 12, 0, 0, 0, time.FixedZone("CST", 8*60*60))
-	pageCatalog := traffic.MustCompile(analytics.Definition(analytics.PageResourceKind))
-	playbackCatalog := traffic.MustCompile(analytics.Definition(analytics.PlaybackResourceKind))
-	pageModule, err := traffic.NewMemory(pageCatalog, traffic.MemoryOptions{Secret: []byte("page-secret-32-bytes-for-testing-1"), Clock: func() time.Time { return now }})
-	if err != nil {
-		t.Fatal(err)
-	}
-	playbackModule, err := traffic.NewMemory(playbackCatalog, traffic.MemoryOptions{Secret: []byte("playback-secret-32-bytes-testing"), Clock: func() time.Time { return now }})
-	if err != nil {
-		t.Fatal(err)
-	}
-	trafficService, err := analytics.NewTraffic(pageModule, pageCatalog, playbackModule, playbackCatalog, func() time.Time { return now })
+	collector := httptest.NewServer(http.NotFoundHandler())
+	t.Cleanup(collector.Close)
+	trafficService, err := analytics.NewTraffic(collector.URL, strings.Repeat("A", 32), func() time.Time { return now })
 	if err != nil {
 		t.Fatal(err)
 	}

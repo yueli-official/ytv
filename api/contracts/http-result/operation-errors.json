@@ -73,6 +73,8 @@
       "common.internal",
       "common.rate_limited",
       "common.validation_failed",
+      "ytv.conflict",
+      "ytv.gateway_unavailable",
       "ytv.invalid_input",
       "ytv.not_authenticated"
     ],
@@ -80,6 +82,8 @@
       "common.internal",
       "common.rate_limited",
       "common.validation_failed",
+      "ytv.conflict",
+      "ytv.gateway_unavailable",
       "ytv.invalid_input",
       "ytv.not_authenticated",
       "ytv.not_found",
@@ -90,6 +94,7 @@
       "common.rate_limited",
       "common.validation_failed",
       "ytv.forbidden",
+      "ytv.gateway_unavailable",
       "ytv.invalid_input",
       "ytv.not_authenticated"
     ],
@@ -260,6 +265,19 @@
       "ytv.invalid_input",
       "ytv.not_authenticated",
       "ytv.not_found"
+    ],
+    "GET /api/v1/site/branding": [
+      "common.internal",
+      "common.rate_limited"
+    ],
+    "PATCH /api/v1/site/branding": [
+      "common.internal",
+      "common.rate_limited",
+      "common.validation_failed",
+      "ytv.forbidden",
+      "ytv.invalid_input",
+      "ytv.not_authenticated",
+      "ytv.revision_conflict"
     ]
   }
 }

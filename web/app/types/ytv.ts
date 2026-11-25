@@ -75,6 +75,7 @@ export interface PlaybackManifest {
   engine: "hls" | "direct";
   timeline: string;
   mediaType?: string;
+  playlistText?: string;
 }
 
 export interface SearchAnalyticsOverview {
@@ -173,6 +174,8 @@ export interface PlaybackProgress {
 }
 
 export interface SiteProfile {
+  logoUrl?: string;
+  faviconUrl?: string;
   siteKey: string;
   name: string;
   description: string;

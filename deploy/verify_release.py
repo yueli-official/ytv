@@ -1,4 +1,4 @@
-"""Portable release gate. Canonical source: Docs deploy/verify_release.py."""
+"""Portable release gate. Canonical source: Workspace .agents/skills/yueli-deploy/scripts/verify_release.py."""
 import argparse
 import hashlib
 import json

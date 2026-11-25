@@ -1,0 +1,14 @@
+{
+  "date": "2026-11-17",
+  "action": "disable",
+  "preserveDefinitions": true,
+  "sources": [
+    {"key": "ffzy", "name": "非凡", "reason": "当前直连及Android模拟器无法连接媒体CDN；仅传清单不足以修复", "restoreWhen": "不使用视频代理的播放路径在目标网络通过起播及跳转验证"},
+    {"key": "jinying", "name": "金鹰", "reason": "媒体CDN连接重置或超时，暂无已验证的直连修复", "restoreWhen": "真实媒体直连恢复并通过播放验证"},
+    {"key": "piaoling", "name": "飘零", "reason": "配置的目录接口返回closed", "restoreWhen": "取得并审阅有效接口，搜索、详情、播放均通过"},
+    {"key": "kazumi-mutefun", "name": "MuteFun", "reason": "固定规则过期；新站使用不同搜索结构及人工验证码会话流程", "restoreWhen": "完成固定规则和人工验证码流程适配及端到端验收"},
+    {"key": "kazumi-dmghg", "name": "动漫共和国", "reason": "上游规则deprecated并移出索引；现有入口不可达", "restoreWhen": "有受维护的固定来源规则并通过接入验证"},
+    {"key": "kazumi-moonci", "name": "Moonci", "reason": "取址补验503，旧媒体401；尚无稳定修复", "restoreWhen": "来源页、解析器捕获、新媒体鉴权及60秒画面验证通过"},
+    {"key": "haohua", "name": "豪华", "reason": "目录曾间歇503；复验仍被源站连接重置，延长响应体期限不能修复连接重置", "restoreWhen": "目录接口、详情、云线路及媒体直连稳定通过验证"}
+  ]
+}

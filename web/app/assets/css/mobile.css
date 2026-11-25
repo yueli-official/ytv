@@ -30,4 +30,4 @@
 .mp-episodes{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
 .mp-episodes>a{display:flex;align-items:center;justify-content:center;min-height:44px;padding:6px 3px;border:1px solid #ffffff12;border-radius:6px;background:var(--ui-bg-muted);color:#dce7ef;font-size:12px;text-align:center;text-decoration:none;overflow-wrap:anywhere}
 .mp-episodes>a.selected{background:var(--ytv-selected);border-color:color-mix(in srgb,var(--ui-primary) 33%,transparent);color:var(--ui-primary)}
-@media(max-width:767px), (pointer:coarse) and (max-height:767px) and (max-width:1024px){.ytv-surface[data-ready=false]{visibility:hidden}.ytv-public{padding-bottom:calc(72px + env(safe-area-inset-bottom))}.ytv-public.mp-immersive{padding-bottom:0}}
+@media(max-width:767px), (pointer:coarse) and (max-height:767px) and (max-width:1024px){.ytv-surface[data-ready=false]{visibility:hidden}.ytv-public [data-mobile-bottom-nav]{display:flex;flex-direction:column;padding-bottom:env(safe-area-inset-bottom)}.ytv-public [data-mobile-bottom-spacer]{display:block;height:calc(49px + env(safe-area-inset-bottom))}}
