@@ -12,9 +12,9 @@
     "@yueli/nuxt-runtime": "file:vendor/yueli-nuxt-runtime-0.1.5-preview.20261125.traffic.1.tgz",
     "@yueli/ui": "file:vendor/yueli-ui-0.10.4-preview.20261124.contacts.1.tgz",
     "anime4k-webgpu": "1.0.0",
-    "nuxt": "4.5.1",
+    "nuxt": "4.7.0",
     "tailwindcss": "4.3.1",
-    "vue": "3.5.39",
+    "vue": "3.5.46",
     "vue-router": "5.1.0",
     "zod": "4.4.3"
   },
@@ -40,7 +40,7 @@
       "vue-demi"
     ],
     "overrides": {
-      "vue": "3.5.39",
+      "vue": "3.5.46",
       "vue-router": "5.1.0"
     }
   },
